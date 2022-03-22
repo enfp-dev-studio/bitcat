@@ -7,6 +7,7 @@ import { preferenceAtom } from "./jotai/Preference";
 import { MemoType } from "./type/Type";
 import { addMemoAtom, memosAtom, updateMemoAtom } from "./jotai/Data";
 import { DraggableEvent, DraggableEventHandler } from "react-draggable";
+import { hexToRgb } from "@mui/material";
 // import ReactRough, { Circle, Rectangle } from "react-rough";
 
 // https://freefrontend.com/css-border-examples/
@@ -37,7 +38,7 @@ export const Memo = (props: {
   const textareaRef = useRef(null);
   const [, updateMemo] = useAtom(updateMemoAtom);
   const [memo] = useAtom(props.memoAtom);
-  // console.log(memo);
+  console.log(hexToRgb(preference.backgroundColor));
   const _handleCloseMemo = () => {
     // let newMemoDats = memos;
     // const removeIndex = memos.findIndex((e) => {
@@ -142,7 +143,7 @@ export const Memo = (props: {
           fontFamily: "NanumD",
           fontSize: 20,
           minWidth: preference.minBoxWidth,
-          fontWeight: preference.fontWeight
+          fontWeight: preference.fontWeight,
           // ...optionStyle,
         }}
         spellCheck={false}

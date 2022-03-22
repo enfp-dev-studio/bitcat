@@ -5,26 +5,19 @@ import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { Memo } from "./Memo";
 // import ReactFlow, { Node } from "react-flow-renderer";
-import {
-  CirclePicker,
-  ColorChangeHandler,
-  ColorResult,
-  CompactPicker,
-  SketchPicker,
-} from "react-color";
-
 import { useAtom } from "jotai";
 import { TopMenu } from "./TopMenu";
 import { preferenceAtom } from "./jotai/Preference";
-import { MemoType } from "./type/Type";
+import { MemoType, Position } from "./type/Type";
 import { createNewMemoId } from "./util/Util";
 import { memosAtom } from "./jotai/Data";
 import { splitAtom } from "jotai/utils";
-
-// const useStore = create((set: any) => ({
-//   color: "#ffffff",
-//   pickColor: (color: ColorResult) => set(() => ({ color: color.hex })),
-// }));
+import Button from "@mui/material/Button";
+import {
+  BackgroundColorPicker,
+  FontColorPicker,
+} from "./components/ColorPicker";
+import { Row } from "./components/HTMLComponents";
 
 enum TargetColorType {
   COLOR_NONE,
@@ -38,12 +31,13 @@ function App() {
   const [image, setImage] = useState<NativeImage>();
   // const [elements, setElements] = useState<Node[]>([]);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [preference, setPreference] = useAtom(preferenceAtom);
+  const [preference] = useAtom(preferenceAtom);
   const [targetColorType, setTargetColorType] = useState(
     TargetColorType.COLOR_NONE
   );
   const [memoAtoms, removeMemoDataAtom] = useAtom(memoAtomsAtom);
   const [, setMemoDatas] = useAtom(memosAtom);
+  const [showMenu, setShowMenu] = useState(true);
 
   useEffect(() => {
     //@ts-ignore
@@ -64,31 +58,28 @@ function App() {
     }
     // ipcRenderer.on("SET_SOURCE", async (event: any, sourceId: any) => {});
   }, []);
+  const createMemo = (position: Position) => {
+    const memo: MemoType = {
+      id: createNewMemoId(),
+      position,
+      text: "test",
+    };
+
+    setMemoDatas((memos) => [...memos, memo]);
+  };
   const handleClick = (e: any) => {
     if (e.altKey && e.shiftKey) {
       // console.log(e?.clientX);
-      const memo: MemoType = {
-        id: createNewMemoId(),
-        position: {
-          x: e?.clientX,
-          y: e?.clientY,
-        },
-        text: "test",
-      };
-
-      setMemoDatas((memos) => [...memos, memo]);
+      createMemo({ x: e?.clientX, y: e?.clientY });
     }
   };
-  // const pickColor = useStore((state) => state.pickColor);
-  // const color = useStore((state) => state.color);
-
   return (
     <div
       onClick={handleClick}
       // className="App"
       style={{
         display: "flex",
-        height: "100vh",
+        height: "100%",
         width: "100%",
         flex: 1,
         backgroundColor: "rgba(0,0,0,0.3)",
@@ -119,62 +110,84 @@ function App() {
           ></Memo>
         );
       })}
-      <div>
-        <button
-          style={{ color: preference.fontColor }}
-          onClick={() => {
-            setTargetColorType(TargetColorType.COLOR_FONT);
-            setShowColorPicker(!showColorPicker);
-          }}
-        >
-          Font Color
-        </button>
-        <button
-          style={{ color: preference.backgroundColor }}
-          onClick={() => {
-            setTargetColorType(TargetColorType.COLOR_BACKGROUND);
-            setShowColorPicker(!showColorPicker);
-          }}
-        >
-          Background Color
-        </button>
-      </div>
-      {showColorPicker && (
-        <div
-          style={{
-            backgroundColor: "rgba(255,255,255,0.5)",
-            position: "absolute",
-            padding: 10,
-          }}
-        >
-          <SketchPicker
-            onChangeComplete={(
-              colorResult: ColorResult,
-              event: React.ChangeEvent<HTMLInputElement>
-            ) => {
-              // pickColor(color);
-              switch (targetColorType) {
-                case TargetColorType.COLOR_BACKGROUND:
-                  setPreference({
-                    ...preference,
-                    backgroundColor: colorResult.hex,
-                  });
-                  break;
-                case TargetColorType.COLOR_FONT:
-                  setPreference({
-                    ...preference,
-                    fontColor: colorResult.hex,
-                  });
-                  break;
-
-                default:
-                  break;
-              }
-              setShowColorPicker(!showColorPicker);
-            }}
-          />
+      <div
+        style={{
+          position: "absolute",
+          // width: showMenu ? 200 : 60,
+          height: "100%",
+          backgroundColor: "white",
+          // transition: "all 1s ease",
+          // place it initially at -100%
+          // transform: showMenu ? "none" : "translate(140)",
+        }}
+      >
+        <div style={{ minWidth: showMenu ? 200 : 60 }}>
+          {showMenu ? (
+            <div>
+              <Row>
+                Font Color
+                <FontColorPicker></FontColorPicker>
+                {/* <Button
+                style={{ color: preference.fontColor }}
+                onClick={() => {
+                  setTargetColorType(TargetColorType.COLOR_FONT);
+                  setShowColorPicker(!showColorPicker);
+                }}
+              ></Button> */}
+              </Row>
+              <Row>
+                Background Color
+                <BackgroundColorPicker></BackgroundColorPicker>
+                {/* <Button
+                style={{ color: preference.backgroundColor }}
+                onClick={() => {
+                  setTargetColorType(TargetColorType.COLOR_BACKGROUND);
+                  setShowColorPicker(!showColorPicker);
+                }}
+              ></Button> */}
+              </Row>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setShowMenu(!showMenu);
+                }}
+              >
+                Hide
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <Button
+                onClick={() => {
+                  setShowMenu(true);
+                }}
+              >
+                Show
+              </Button>
+            </div>
+          )}
         </div>
-      )}
+        {/* {showColorPicker && (
+          <div
+            style={{
+              backgroundColor: "rgba(255,255,255,0.5)",
+              position: "absolute",
+              padding: 10,
+            }}
+          >
+            <ChromePicker
+              onChangeComplete={(
+                colorResult: ColorResult,
+                event: React.ChangeEvent<HTMLInputElement>
+              ) => {
+                // pickColor(color);
+                
+                setShowColorPicker(!showColorPicker);
+              }}
+            />
+          </div>
+        )} */}
+      </div>
       {/* <ReactFlow elements={elements} /> */}
     </div>
   );
