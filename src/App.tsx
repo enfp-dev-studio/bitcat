@@ -18,6 +18,11 @@ import {
   FontColorPicker,
 } from "./components/ColorPicker";
 import { Row } from "./components/HTMLComponents";
+import {
+  ColorPalete,
+  DefaultWindowStyle,
+  OutlineBorderStyle,
+} from "./constants/Styles";
 
 enum TargetColorType {
   COLOR_NONE,
@@ -76,13 +81,13 @@ function App() {
   return (
     <div
       onClick={handleClick}
-      // className="App"
       style={{
         display: "flex",
-        height: "100%",
-        width: "100%",
         flex: 1,
+        // margin: 10,
         backgroundColor: "rgba(0,0,0,0.3)",
+        ...OutlineBorderStyle,
+        ...DefaultWindowStyle,
         // backgroundImage: ,
       }}
     >
@@ -114,8 +119,8 @@ function App() {
         style={{
           position: "absolute",
           // width: showMenu ? 200 : 60,
-          height: "100%",
-          backgroundColor: "white",
+          height: "100vh",
+          backgroundColor: ColorPalete.PrimaryColor,
           // transition: "all 1s ease",
           // place it initially at -100%
           // transform: showMenu ? "none" : "translate(140)",
@@ -127,24 +132,10 @@ function App() {
               <Row>
                 Font Color
                 <FontColorPicker></FontColorPicker>
-                {/* <Button
-                style={{ color: preference.fontColor }}
-                onClick={() => {
-                  setTargetColorType(TargetColorType.COLOR_FONT);
-                  setShowColorPicker(!showColorPicker);
-                }}
-              ></Button> */}
               </Row>
               <Row>
                 Background Color
                 <BackgroundColorPicker></BackgroundColorPicker>
-                {/* <Button
-                style={{ color: preference.backgroundColor }}
-                onClick={() => {
-                  setTargetColorType(TargetColorType.COLOR_BACKGROUND);
-                  setShowColorPicker(!showColorPicker);
-                }}
-              ></Button> */}
               </Row>
               <Button
                 variant="contained"
@@ -167,28 +158,7 @@ function App() {
             </div>
           )}
         </div>
-        {/* {showColorPicker && (
-          <div
-            style={{
-              backgroundColor: "rgba(255,255,255,0.5)",
-              position: "absolute",
-              padding: 10,
-            }}
-          >
-            <ChromePicker
-              onChangeComplete={(
-                colorResult: ColorResult,
-                event: React.ChangeEvent<HTMLInputElement>
-              ) => {
-                // pickColor(color);
-                
-                setShowColorPicker(!showColorPicker);
-              }}
-            />
-          </div>
-        )} */}
       </div>
-      {/* <ReactFlow elements={elements} /> */}
     </div>
   );
 }

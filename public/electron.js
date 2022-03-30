@@ -17,8 +17,8 @@ let mainWindow;
 function initialize() {
   console.log(path.join(__dirname, "preload.js"));
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
+    width: 800,
+    height: 600,
     transparent: true,
     frame: false,
     webPreferences: {
