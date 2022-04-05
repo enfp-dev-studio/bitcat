@@ -1,13 +1,15 @@
 export const OutlineBorderStyle = {
   borderWidth: 10,
   borderColor: "white",
+  border: "solid 1px white",
 };
 
 export const DefaultWindowStyle = {
-  minWidth: 800,
-  minHeight: 600,
+  width: 800,
+  height: 600,
 };
 
 export const ColorPalete = {
   PrimaryColor: "rgba(54,25,77,1)",
+  BackgroundColor: "white",
 };

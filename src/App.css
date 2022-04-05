@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,9 +35,13 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
 
 @font-face {
   font-family: NanumD;
   src: url(./fonts/nanum.ttf);
+}
+
+body {
+  overflow: hidden;
 }

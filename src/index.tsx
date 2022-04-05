@@ -4,11 +4,24 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "jotai";
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/system";
+import { ColorPalete } from "./constants/Styles";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: ColorPalete.PrimaryColor,
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider>
-      <App />
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

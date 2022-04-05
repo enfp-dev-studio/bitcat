@@ -6,6 +6,8 @@ const {
   desktopCapturer,
   globalShortcut,
   screen,
+  dialog,
+  ipcMain,
 } = require("electron");
 
 const isDev = require("electron-is-dev");
@@ -15,18 +17,24 @@ const fs = require("fs");
 let mainWindow;
 
 function initialize() {
-  console.log(path.join(__dirname, "preload.js"));
+  // console.log(path.join(__dirname, "preload.js"));
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 320,
+    height: 200,
     transparent: true,
-    frame: false,
+    // frame: false,
+    // show: false,
+    // alwaysOnTop: true,
+    autoHideMenuBar: true, // 파일 메뉴를 숨긴다
+    center: true,
+    fullscreenable:false,
+    fullscreen: false,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
       devTools: isDev,
       preload: path.join(__dirname, "preload.js"),
-      contextIsolation:false //없으면 ipcRenderer가 옮겨지지 않는다
+      contextIsolation: false, //없으면 ipcRenderer가 옮겨지지 않는다
     },
   });
 
@@ -50,24 +58,24 @@ function initialize() {
   mainWindow.on("closed", () => (mainWindow = null));
   mainWindow.focus();
 
-  // Add ShortCut
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
 
   const registered = globalShortcut.register("PrintScreen", () => {
-    console.log("global shortcut");
+    // console.log("global shortcut");
     desktopCapturer
       .getSources({ types: ["screen"], thumbnailSize: { width, height } })
       .then(async (sources) => {
         for (const source of sources) {
           if (source.name === "Entire Screen") {
-            // console.log(source.thumbnail, source.thumbnail.getSize());
-
             await sendCaptureEvent({
               thumbnail: source.thumbnail,
               width,
               height,
             });
+            mainWindow.setSize(width, height, true);
+            mainWindow.setPosition(0, 0);
+            mainWindow.moveTop();
             return;
           }
         }
@@ -87,6 +95,30 @@ function initialize() {
   //     }
   //   });
   // });
+
+  ipcMain.on("MAIN_SELECT_PATH", async (event, res) => {
+    const result = await dialog.showOpenDialogSync({
+      // filters: [
+      //   { name: "Images", extensions: ["jpg", "png", "gif"] },
+      //   { name: "Movies", extensions: ["mkv", "avi", "mp4"] },
+      //   { name: "Custom File Type", extensions: ["as"] },
+      //   { name: "All Files", extensions: ["*"] },
+      // ],
+      properties: ["openDirectory"],
+    });
+
+    await mainWindow.webContents.send("SET_SAVE_PATH", {
+      path: result,
+    });
+    // event.sender.send('renderer-test1', 'hello');
+  });
+
+  ipcMain.on("RESIZE_WINDOW", (event, arg) => {
+    win.setSize(arg.width, arg.height);
+  });
+
+  // mainWindow.maximize();
+  // mainWindow.show();
 }
 
 app.on("ready", initialize);

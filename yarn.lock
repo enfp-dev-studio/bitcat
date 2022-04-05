@@ -1584,6 +1584,13 @@
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
+"@mui/icons-material@^5.5.1":
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.5.1.tgz#848a57972617411370775980cbc6990588d4aafb"
+  integrity sha512-40f68p5+Yhq3dCn3QYHqQt5RETPyR3AkDw+fma8PtcjqvZ+d+jF84kFmT6NqwA3he7TlwluEtkyAmPzUE4uPdA==
+  dependencies:
+    "@babel/runtime" "^7.17.2"
+
 "@mui/material@^5.5.1":
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-5.5.1.tgz#9ca89a8b32afd59c843a5bc0332b0786cf9bf1d0"
@@ -4588,6 +4595,11 @@ electron-is-dev@^2.0.0:
   resolved "https://registry.npmjs.org/electron-is-dev/-/electron-is-dev-2.0.0.tgz"
   integrity sha512-3X99K852Yoqu9AcW50qz3ibYBWY79/pBhlMCab8ToEWS48R0T9tyxRiQhwylE7zQdXrMnx2JKqUJyMPmt5FBqA==
 
+electron-is-packaged@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/electron-is-packaged/-/electron-is-packaged-1.0.2.tgz#d4efc0dc14991ab981de65f52271badf92323c7e"
+  integrity sha512-JZpV9QgVsehop7tm3KDll2/iJ9K3e7mL+jm6E3gA96zurIhxv3FZ0kxJK0eGL9c3SYORU1rN+/q2Ia8/v62Pjw==
+
 electron-osx-sign@^0.5.0:
   version "0.5.0"
   resolved "https://registry.npmjs.org/electron-osx-sign/-/electron-osx-sign-0.5.0.tgz"
@@ -4612,6 +4624,13 @@ electron-publish@22.14.13:
     fs-extra "^10.0.0"
     lazy-val "^1.0.5"
     mime "^2.5.2"
+
+electron-root-path@^1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/electron-root-path/-/electron-root-path-1.0.16.tgz#2e18086665303993859e5f9f501cfbcb5cab9351"
+  integrity sha512-5HVw3k5crnbezyPCdkY3wLsbOfCKIrRtbq2IPl5Ocs7FA86b9JxAIESqEXm1YD5MaZq07HOCl2DNOQZl/IWebw==
+  dependencies:
+    electron-is-packaged "^1.0.2"
 
 electron-to-chromium@^1.4.76:
   version "1.4.76"

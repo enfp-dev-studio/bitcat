@@ -2,12 +2,11 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import { Rnd } from "react-rnd";
 import TextareaAutosize from "react-textarea-autosize";
 import { memo, useEffect, useRef, useState } from "react";
-import { addListener } from "process";
 import { preferenceAtom } from "./jotai/Preference";
 import { MemoType } from "./type/Type";
 import { addMemoAtom, memosAtom, updateMemoAtom } from "./jotai/Data";
-import { DraggableEvent, DraggableEventHandler } from "react-draggable";
-import { hexToRgb } from "@mui/material";
+import { ClickAwayListener, hexToRgb } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 // import ReactRough, { Circle, Rectangle } from "react-rough";
 
 // https://freefrontend.com/css-border-examples/
@@ -38,7 +37,8 @@ export const Memo = (props: {
   const textareaRef = useRef(null);
   const [, updateMemo] = useAtom(updateMemoAtom);
   const [memo] = useAtom(props.memoAtom);
-  console.log(hexToRgb(preference.backgroundColor));
+
+  // console.log(hexToRgb(preference.backgroundColor));
   const _handleCloseMemo = () => {
     // let newMemoDats = memos;
     // const removeIndex = memos.findIndex((e) => {
@@ -75,92 +75,104 @@ export const Memo = (props: {
     } else {
     }
   }, [isSelected]);
-  // console.log(memo.id, memo.position);
 
-  // const color = useStore((state) => state.color);
+  const handleClickAway = () => {
+    // console.log("handle");
+    if (isSelected) setIsSelected(false);
+  };
   return (
-    <Rnd
-      disableDragging={isFocused}
-      default={{
-        x: memo?.position.x,
-        y: memo?.position.y,
-        width: 1,
-        height: preference.minBoxHeight,
-      }}
-      onDragStop={(e: any, d: any) => {
-        e?.preventDefault();
-        updateMemo({
-          id: memo?.id,
-          position: {
-            x: d.x,
-            y: d.y,
-          },
-          text: memo.text,
-        });
-
-        // setMemoData((prev) => (prev.position = d));
-      }}
-      position={memo?.position}
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        minWidth: preference.minBoxWidth,
-      }}
-    >
-      <TextareaAutosize
-        onChange={(e: any) => {
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <Rnd
+        disableDragging={isFocused}
+        default={{
+          x: memo?.position.x,
+          y: memo?.position.y,
+          width: 1,
+          height: 1,
+        }}
+        onDragStop={(e: any, d: any) => {
+          e?.preventDefault();
           updateMemo({
             id: memo?.id,
-            position: memo?.position,
-            text: e.target.value,
+            position: {
+              x: d.x,
+              y: d.y,
+            },
+            text: memo.text,
           });
+
+          // setMemoData((prev) => (prev.position = d));
         }}
-        ref={textareaRef}
-        onDoubleClick={() => {
-          //@ts-ignore
-          setIsFocused(true);
-        }}
-        onClick={() => {
-          if (!isFocused) setIsSelected(true);
-        }}
-        onFocus={() => {
-          //@ts-ignore
-          if (!isFocused) textareaRef?.current?.blur();
-        }}
-        onBlur={() => {
-          setIsFocused(false);
-        }}
-        // autoFocus={false}
+        position={memo?.position}
         style={{
-          // border: "none",
-          // backgroundColor: "transparent",
-          resize: "none",
-          // outline: "none",
-          backgroundColor: preference.backgroundColor,
-          padding: 10,
-          color: preference.fontColor,
-          cursor: isFocused ? "text" : "move",
-          fontFamily: "NanumD",
-          fontSize: 20,
+          display: "flex",
+          flexDirection: "row",
           minWidth: preference.minBoxWidth,
-          fontWeight: preference.fontWeight,
-          // ...optionStyle,
+          minHeight: preference.minBoxHeight,
         }}
-        spellCheck={false}
-      />
-      {isSelected && (
-        <button
-          style={{
-            zIndex: 10000,
-            position: "absolute",
-            right: 0,
-            top: 0,
+      >
+        <TextareaAutosize
+          onChange={(e: any) => {
+            updateMemo({
+              id: memo?.id,
+              position: memo?.position,
+              text: e.target.value,
+            });
           }}
-          onClick={_handleCloseMemo}
-        >
-          Delete
-        </button>
-      )}
-    </Rnd>
+          ref={textareaRef}
+          onDoubleClick={() => {
+            //@ts-ignore
+            setIsFocused(true);
+          }}
+          onClick={() => {
+            if (!isFocused) setIsSelected(true);
+          }}
+          onFocus={() => {
+            //@ts-ignore
+            if (!isFocused) textareaRef?.current?.blur();
+          }}
+          onBlur={() => {
+            setIsFocused(false);
+          }}
+          // autoFocus={false}
+          style={{
+            // border: "none",
+            // backgroundColor: "transparent",
+            resize: "none",
+            // outline: "none",
+            backgroundColor: preference.backgroundColor,
+            padding: 10,
+            color: preference.fontColor,
+            cursor: isSelected ? "pointer" : isFocused ? "text" : "move",
+            fontFamily: "NanumD",
+            fontSize: 20,
+            minWidth: preference.minBoxWidth,
+            fontWeight: preference.fontWeight,
+            // border: isSelected ? "solid 2px white" : "none",
+            // ...optionStyle,
+          }}
+          spellCheck={false}
+        />
+        {isSelected && (
+          <button
+            style={{
+              zIndex: 10000,
+              position: "absolute",
+              right: 0,
+              top: 0,
+              height: preference.minBoxHeight,
+              padding: 0,
+              border: "none",
+              paddingLeft: 4,
+              paddingRight: 4,
+              marginRight: 4,
+            }}
+            onClick={_handleCloseMemo}
+          >
+            <DeleteIcon fontSize="small" color="primary"></DeleteIcon>
+          </button>
+        )}
+      </Rnd>
+    </ClickAwayListener>
   );
 };

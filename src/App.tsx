@@ -1,10 +1,7 @@
 import { IpcRenderer, NativeImage } from "electron";
 import React, { useCallback, useEffect, useState } from "react";
-// import Draggable from "react-draggable";
-// import logo from "./logo.svg";
 import "./App.css";
 import { Memo } from "./Memo";
-// import ReactFlow, { Node } from "react-flow-renderer";
 import { useAtom } from "jotai";
 import { TopMenu } from "./TopMenu";
 import { preferenceAtom } from "./jotai/Preference";
@@ -13,16 +10,25 @@ import { createNewMemoId } from "./util/Util";
 import { memosAtom } from "./jotai/Data";
 import { splitAtom } from "jotai/utils";
 import Button from "@mui/material/Button";
+import MenuIcon from "@mui/icons-material/Menu";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import FontDownloadIcon from "@mui/icons-material/FontDownload";
+import WallpaperIcon from "@mui/icons-material/Wallpaper";
+import FolderIcon from "@mui/icons-material/Folder";
+//@ts-ignore
+import { rootPath } from "electron-root-path";
+
 import {
   BackgroundColorPicker,
   FontColorPicker,
 } from "./components/ColorPicker";
-import { Row } from "./components/HTMLComponents";
+import { Row, VerticalDivider } from "./components/HTMLComponents";
 import {
   ColorPalete,
   DefaultWindowStyle,
   OutlineBorderStyle,
 } from "./constants/Styles";
+import { Box, Card, Divider, Input, TextField, Tooltip } from "@mui/material";
 
 enum TargetColorType {
   COLOR_NONE,
@@ -34,8 +40,11 @@ const memoAtomsAtom = splitAtom(memosAtom);
 
 function App() {
   const [image, setImage] = useState<NativeImage>();
-  // const [elements, setElements] = useState<Node[]>([]);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [winSize, setWinSize] = useState({
+    width: 1,
+    height: 1,
+  });
   const [preference] = useAtom(preferenceAtom);
   const [targetColorType, setTargetColorType] = useState(
     TargetColorType.COLOR_NONE
@@ -43,12 +52,13 @@ function App() {
   const [memoAtoms, removeMemoDataAtom] = useAtom(memoAtomsAtom);
   const [, setMemoDatas] = useAtom(memosAtom);
   const [showMenu, setShowMenu] = useState(true);
+  const [savePath, setSavePath] = useState(rootPath);
 
   useEffect(() => {
     //@ts-ignore
     const it = document?.fonts?.entries();
     var result = it.next();
-    console.log(result);
+    // console.log(result);
     while (!result.done) {
       console.log(result.value); // 1 2 3
       result = it.next();
@@ -59,8 +69,26 @@ function App() {
       ipcRenderer?.on("SET_SOURCE", (event: any, data: any) => {
         console.log("set source invoke", data);
         setImage(data?.image);
+        setWinSize({
+          width: data.width,
+          height: data.height,
+        });
+      });
+
+      ipcRenderer?.on("SET_SAVE_PATH", (event: any, data: any) => {
+        console.log(data);
+        setSavePath(data?.path);
       });
     }
+
+    window.addEventListener("resize", (e) => {
+      console.log(e);
+      //@ts-ignore
+      if (window?.ipcRenderer) {
+        //@ts-ignore
+        // window?.ipcRenderer.send("RESIZE_WINDOW", {width: e.});
+      }
+    });
     // ipcRenderer.on("SET_SOURCE", async (event: any, sourceId: any) => {});
   }, []);
   const createMemo = (position: Position) => {
@@ -74,7 +102,6 @@ function App() {
   };
   const handleClick = (e: any) => {
     if (e.altKey && e.shiftKey) {
-      // console.log(e?.clientX);
       createMemo({ x: e?.clientX, y: e?.clientY });
     }
   };
@@ -84,14 +111,15 @@ function App() {
       style={{
         display: "flex",
         flex: 1,
-        // margin: 10,
-        backgroundColor: "rgba(0,0,0,0.3)",
-        ...OutlineBorderStyle,
+        backgroundColor: "rgba(0,0,0,0.15)",
+        // ...OutlineBorderStyle,
         ...DefaultWindowStyle,
-        // backgroundImage: ,
+        width: winSize.width,
+        height: winSize.height,
+        // resize: "none",
       }}
     >
-      <div
+      {/* <div
         style={{
           position: "absolute",
           backgroundColor: "rgba(255,255,255,0.5)",
@@ -101,7 +129,7 @@ function App() {
         }}
       >
         <TopMenu></TopMenu>
-      </div>
+      </div> */}
       <img
         style={{ position: "absolute", zIndex: -1 }}
         src={image?.toDataURL()}
@@ -117,47 +145,68 @@ function App() {
       })}
       <div
         style={{
+          width: showMenu ? 320 : 60,
+          resize: "none",
           position: "absolute",
-          // width: showMenu ? 200 : 60,
-          height: "100vh",
-          backgroundColor: ColorPalete.PrimaryColor,
-          // transition: "all 1s ease",
-          // place it initially at -100%
-          // transform: showMenu ? "none" : "translate(140)",
+          // height: "100vh",
+          backgroundColor: ColorPalete.BackgroundColor,
         }}
       >
-        <div style={{ minWidth: showMenu ? 200 : 60 }}>
-          {showMenu ? (
-            <div>
-              <Row>
-                Font Color
-                <FontColorPicker></FontColorPicker>
-              </Row>
-              <Row>
-                Background Color
-                <BackgroundColorPicker></BackgroundColorPicker>
-              </Row>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setShowMenu(!showMenu);
-                }}
-              >
-                Hide
-              </Button>
-            </div>
-          ) : (
-            <div>
-              <Button
-                onClick={() => {
-                  setShowMenu(true);
-                }}
-              >
-                Show
-              </Button>
-            </div>
-          )}
-        </div>
+        {showMenu ? (
+          <Box boxShadow={3}>
+            <Row>
+              <FontDownloadIcon></FontDownloadIcon>
+              <VerticalDivider />
+              <FontColorPicker></FontColorPicker>
+            </Row>
+            <Divider />
+            <Row>
+              <WallpaperIcon></WallpaperIcon>
+              <VerticalDivider />
+              <BackgroundColorPicker></BackgroundColorPicker>
+            </Row>
+            <Divider />
+            <Row>
+              <FolderIcon></FolderIcon>
+              <VerticalDivider />
+              <Tooltip title={savePath ? savePath : ""} arrow>
+                <Box
+                  onClick={() => {
+                    //@ts-ignore
+                    if (window?.ipcRenderer) {
+                      //@ts-ignore
+                      window?.ipcRenderer.send("MAIN_SELECT_PATH", "start-ipc");
+                    }
+                  }}
+                >
+                  {savePath?.slice(0, 20)}...
+                </Box>
+              </Tooltip>
+            </Row>
+            <Divider />
+            {image && (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Button
+                  onClick={() => {
+                    setShowMenu(!showMenu);
+                  }}
+                >
+                  <KeyboardArrowUpIcon fontSize="large"></KeyboardArrowUpIcon>
+                </Button>
+              </div>
+            )}
+          </Box>
+        ) : (
+          <Box boxShadow={3}>
+            <Button
+              onClick={() => {
+                setShowMenu(true);
+              }}
+            >
+              <MenuIcon></MenuIcon>
+            </Button>
+          </Box>
+        )}
       </div>
     </div>
   );
