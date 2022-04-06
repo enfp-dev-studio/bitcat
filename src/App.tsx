@@ -1,10 +1,15 @@
 import { IpcRenderer, NativeImage } from "electron";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { Memo } from "./Memo";
 import { useAtom } from "jotai";
 import { TopMenu } from "./TopMenu";
-import { preferenceAtom } from "./jotai/Preference";
+import {
+  preferenceAtom,
+  setFontSizeAtom,
+  setMemoBoxWidthAtom,
+  setMemoPrefixAtom,
+} from "./jotai/Preference";
 import { MemoType, Position } from "./type/Type";
 import { createNewMemoId } from "./util/Util";
 import { memosAtom } from "./jotai/Data";
@@ -15,6 +20,15 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FontDownloadIcon from "@mui/icons-material/FontDownload";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import FolderIcon from "@mui/icons-material/Folder";
+import FormatSizeIcon from "@mui/icons-material/FormatSize";
+import StraightenIcon from "@mui/icons-material/Straighten";
+import CallMergeIcon from "@mui/icons-material/CallMerge";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+// import MemoryIcon from "@mui/icons-material/Memory";
+
+//@ts-ignore
+import { useScreenshot } from "use-react-screenshot";
+
 //@ts-ignore
 import { rootPath } from "electron-root-path";
 
@@ -22,13 +36,25 @@ import {
   BackgroundColorPicker,
   FontColorPicker,
 } from "./components/ColorPicker";
-import { Row, VerticalDivider } from "./components/HTMLComponents";
+import { Row, RowRight, VerticalDivider } from "./components/HTMLComponents";
 import {
   ColorPalete,
   DefaultWindowStyle,
   OutlineBorderStyle,
+  Params,
 } from "./constants/Styles";
-import { Box, Card, Divider, Input, TextField, Tooltip } from "@mui/material";
+import {
+  Box,
+  Card,
+  Divider,
+  IconButton,
+  Input,
+  TextField,
+  Tooltip,
+} from "@mui/material";
+// @ts-ignore
+// import html2canvas from "html2canvas-render-offscreen";
+import html2canvas from "html2canvas-render-offscreen";
 
 enum TargetColorType {
   COLOR_NONE,
@@ -40,7 +66,6 @@ const memoAtomsAtom = splitAtom(memosAtom);
 
 function App() {
   const [image, setImage] = useState<NativeImage>();
-  const [showColorPicker, setShowColorPicker] = useState(false);
   const [winSize, setWinSize] = useState({
     width: 1,
     height: 1,
@@ -50,9 +75,34 @@ function App() {
     TargetColorType.COLOR_NONE
   );
   const [memoAtoms, removeMemoDataAtom] = useAtom(memoAtomsAtom);
+  const [, setFontSize] = useAtom(setFontSizeAtom);
+  const [, setMemoBoxWidth] = useAtom(setMemoBoxWidthAtom);
   const [, setMemoDatas] = useAtom(memosAtom);
+  const [, setMemoPrefix] = useAtom(setMemoPrefixAtom);
   const [showMenu, setShowMenu] = useState(true);
   const [savePath, setSavePath] = useState(rootPath);
+  const [tempFontSize, setTempFontSize] = useState(preference.fontSize);
+  const [tempMemoBoxWidth, setTempMemoBoxWidth] = useState(
+    preference.memoBoxWidth
+  );
+  const [tempMemoPrefix, setTempMemoPrefix] = useState(preference.memoPrefix);
+
+  const handleSave = () => {
+    let element = document.getElementById("save_area");
+    if (element) {
+      html2canvas(element, {
+        allowTaint: false,
+      }).then((canvas: any) => {
+        document.body.appendChild(canvas);
+        const dataURL = canvas.toDataURL("image/png");
+        let link = document.createElement("a");
+        link.href = dataURL;
+        link.download = "filename";
+        link.click();
+        console.log(canvas);
+      });
+    }
+  };
 
   useEffect(() => {
     //@ts-ignore
@@ -77,7 +127,11 @@ function App() {
 
       ipcRenderer?.on("SET_SAVE_PATH", (event: any, data: any) => {
         console.log(data);
-        setSavePath(data?.path);
+        if (data?.path) {
+          setSavePath(data?.path);
+        } else {
+          setSavePath(rootPath);
+        }
       });
     }
 
@@ -106,43 +160,7 @@ function App() {
     }
   };
   return (
-    <div
-      onClick={handleClick}
-      style={{
-        display: "flex",
-        flex: 1,
-        backgroundColor: "rgba(0,0,0,0.15)",
-        // ...OutlineBorderStyle,
-        ...DefaultWindowStyle,
-        width: winSize.width,
-        height: winSize.height,
-        // resize: "none",
-      }}
-    >
-      {/* <div
-        style={{
-          position: "absolute",
-          backgroundColor: "rgba(255,255,255,0.5)",
-          height: 60,
-          right: 0,
-          top: 0,
-        }}
-      >
-        <TopMenu></TopMenu>
-      </div> */}
-      <img
-        style={{ position: "absolute", zIndex: -1 }}
-        src={image?.toDataURL()}
-      ></img>
-      {memoAtoms?.map((e, i) => {
-        return (
-          <Memo
-            key={i}
-            memoAtom={e}
-            removeMemoDataAtom={removeMemoDataAtom}
-          ></Memo>
-        );
-      })}
+    <div>
       <div
         style={{
           width: showMenu ? 320 : 60,
@@ -150,24 +168,107 @@ function App() {
           position: "absolute",
           // height: "100vh",
           backgroundColor: ColorPalete.BackgroundColor,
+          zIndex: 10000,
         }}
       >
         {showMenu ? (
-          <Box boxShadow={3}>
+          <Box>
             <Row>
-              <FontDownloadIcon></FontDownloadIcon>
+              <Tooltip title="Memo Font Color">
+                <FontDownloadIcon></FontDownloadIcon>
+              </Tooltip>
               <VerticalDivider />
               <FontColorPicker></FontColorPicker>
             </Row>
             <Divider />
             <Row>
-              <WallpaperIcon></WallpaperIcon>
+              <Tooltip title="Memo Background Color">
+                <WallpaperIcon></WallpaperIcon>
+              </Tooltip>
               <VerticalDivider />
               <BackgroundColorPicker></BackgroundColorPicker>
             </Row>
             <Divider />
             <Row>
-              <FolderIcon></FolderIcon>
+              <Tooltip title="Memo Font Size">
+                <FormatSizeIcon></FormatSizeIcon>
+              </Tooltip>
+              <VerticalDivider />
+              <input
+                style={{
+                  height: 18,
+                  width: 40,
+                  border: "none",
+                  borderBottom: "solid 0.5px grey",
+                }}
+                type="number"
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    setFontSize({ fontSize: tempFontSize });
+                    e.currentTarget.blur();
+                  }
+                  console.log(e.target);
+                }}
+                onBlur={() => {
+                  setFontSize({ fontSize: tempFontSize });
+                }}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  if (value > Params.MAX_FONT_SIZE) {
+                    setTempFontSize(Params.MAX_FONT_SIZE);
+                  } else if (value < Params.MIN_FONT_SIZE) {
+                    setTempFontSize(Params.MIN_FONT_SIZE);
+                  } else {
+                    setTempFontSize(value);
+                  }
+                  // console.log(e);
+                }}
+                defaultValue={tempFontSize}
+              />
+              {/* <TextField inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} /> */}
+            </Row>
+            <Divider />
+            <Row>
+              <Tooltip title="Memo Width(px)">
+                <StraightenIcon></StraightenIcon>
+              </Tooltip>
+              <VerticalDivider />
+              <input
+                style={{
+                  height: 18,
+                  width: 40,
+                  border: "none",
+                  borderBottom: "solid 0.5px grey",
+                }}
+                type="number"
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    setMemoBoxWidth({ memoBoxWidth: tempMemoBoxWidth });
+                    e.currentTarget.blur();
+                  }
+                  console.log(e.target);
+                }}
+                onBlur={() => {
+                  setMemoBoxWidth({ memoBoxWidth: tempMemoBoxWidth });
+                }}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  if (value > Params.MAX_MEMOBOX_WIDTH) {
+                    setTempMemoBoxWidth(Params.MAX_MEMOBOX_WIDTH);
+                  } else if (value < Params.MIN_MEMOBOX_WIDTH) {
+                    setTempMemoBoxWidth(Params.MIN_MEMOBOX_WIDTH);
+                  } else {
+                    setTempMemoBoxWidth(value);
+                  }
+                }}
+                defaultValue={tempMemoBoxWidth}
+              />
+            </Row>
+            <Divider />
+            <Row>
+              <Tooltip title="Save Directory">
+                <FolderIcon></FolderIcon>
+              </Tooltip>
               <VerticalDivider />
               <Tooltip title={savePath ? savePath : ""} arrow>
                 <Box
@@ -179,11 +280,55 @@ function App() {
                     }
                   }}
                 >
-                  {savePath?.slice(0, 20)}...
+                  {savePath?.length > Params.MAX_PATH_LENGTH_IN_UI
+                    ? savePath?.slice(0, Params.MAX_PATH_LENGTH_IN_UI) + "..."
+                    : savePath}
                 </Box>
               </Tooltip>
             </Row>
             <Divider />
+            <Row>
+              <Tooltip title="Memo File Prefix">
+                <DriveFileRenameOutlineIcon></DriveFileRenameOutlineIcon>
+              </Tooltip>
+              <VerticalDivider />
+              <input
+                style={{
+                  height: 18,
+                  width: 40,
+                  border: "none",
+                  borderBottom: "solid 0.5px grey",
+                }}
+                // type="number"
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    setMemoPrefix({ memoPrefix: tempMemoPrefix });
+                    e.currentTarget.blur();
+                  }
+                  console.log(e.target);
+                }}
+                onBlur={() => {
+                  setMemoPrefix({ memoPrefix: tempMemoPrefix });
+                }}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setTempMemoPrefix(e.target.value);
+                }}
+                defaultValue={tempMemoPrefix}
+              />
+            </Row>
+            <Divider />
+            <Row>
+              <Tooltip title="Merge Memo and Image">
+                <Button
+                  onClick={handleSave}
+                  variant="contained"
+                  startIcon={<CallMergeIcon />}
+                >
+                  Save
+                </Button>
+              </Tooltip>
+            </Row>
             {image && (
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button
@@ -197,7 +342,7 @@ function App() {
             )}
           </Box>
         ) : (
-          <Box boxShadow={3}>
+          <Box>
             <Button
               onClick={() => {
                 setShowMenu(true);
@@ -207,6 +352,38 @@ function App() {
             </Button>
           </Box>
         )}
+      </div>
+      <div
+        id="save_area"
+        onClick={handleClick}
+        style={{
+          display: "flex",
+          flex: 1,
+          backgroundColor: "rgba(0,0,0,0.15)",
+          // ...OutlineBorderStyle,
+          ...DefaultWindowStyle,
+          width: winSize.width,
+          height: winSize.height,
+          // resize: "none",
+        }}
+      >
+        <img
+          style={{
+            position: "absolute",
+            zIndex: -1,
+            userSelect: "none",
+          }}
+          src={image?.toDataURL()}
+        ></img>
+        {memoAtoms?.map((e, i) => {
+          return (
+            <Memo
+              key={i}
+              memoAtom={e}
+              removeMemoDataAtom={removeMemoDataAtom}
+            ></Memo>
+          );
+        })}
       </div>
     </div>
   );

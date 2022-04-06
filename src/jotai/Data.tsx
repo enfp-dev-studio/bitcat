@@ -2,7 +2,6 @@ import { Atom, atom } from "jotai";
 import { atomWithStorage, splitAtom } from "jotai/utils";
 import { MemoType, Position } from "../type/Type";
 import { createNewMemoId } from "../util/Util";
-
 // const createInitialValues = () => {
 //   const initialValues: MemoType[] = [];
 //   const get = () => initialValues;

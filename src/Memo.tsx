@@ -5,7 +5,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import { preferenceAtom } from "./jotai/Preference";
 import { MemoType } from "./type/Type";
 import { addMemoAtom, memosAtom, updateMemoAtom } from "./jotai/Data";
-import { ClickAwayListener, hexToRgb } from "@mui/material";
+import { Button, ClickAwayListener, hexToRgb } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 // import ReactRough, { Circle, Rectangle } from "react-rough";
 
@@ -16,8 +16,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const optionStyle: object = {
   //NEON
   animation: "pulsate 1.5s infinite alternate",
-  border: "0.2rem solid #fff",
-  borderRadius: "2rem",
+  border: "0.2rem solid grey",
+  borderRadius: "4rem",
   padding: "0.4em",
   boxShadow:
     "0 0 .2rem #fff, 0 0 .2rem #fff, 0 0 2rem #bc13fe, 0 0 0.8rem #bc13fe, 0 0 2.8rem #bc13fe, inset 0 0 1.3rem #bc13fe",
@@ -37,6 +37,7 @@ export const Memo = (props: {
   const textareaRef = useRef(null);
   const [, updateMemo] = useAtom(updateMemoAtom);
   const [memo] = useAtom(props.memoAtom);
+  console.log(preference.memoBoxWidth);
 
   // console.log(hexToRgb(preference.backgroundColor));
   const _handleCloseMemo = () => {
@@ -107,7 +108,7 @@ export const Memo = (props: {
         style={{
           display: "flex",
           flexDirection: "row",
-          minWidth: preference.minBoxWidth,
+          width: preference.memoBoxWidth,
           minHeight: preference.minBoxHeight,
         }}
       >
@@ -145,32 +146,21 @@ export const Memo = (props: {
             color: preference.fontColor,
             cursor: isSelected ? "pointer" : isFocused ? "text" : "move",
             fontFamily: "NanumD",
-            fontSize: 20,
-            minWidth: preference.minBoxWidth,
+            fontSize: preference.fontSize,
+            minWidth: preference.memoBoxWidth,
             fontWeight: preference.fontWeight,
-            // border: isSelected ? "solid 2px white" : "none",
+            border: "solid 0.2px grey",
+            borderRadius: 4,
             // ...optionStyle,
           }}
           spellCheck={false}
         />
         {isSelected && (
-          <button
-            style={{
-              zIndex: 10000,
-              position: "absolute",
-              right: 0,
-              top: 0,
-              height: preference.minBoxHeight,
-              padding: 0,
-              border: "none",
-              paddingLeft: 4,
-              paddingRight: 4,
-              marginRight: 4,
-            }}
+          <Button
             onClick={_handleCloseMemo}
-          >
-            <DeleteIcon fontSize="small" color="primary"></DeleteIcon>
-          </button>
+            // variant="contained"
+            startIcon={<DeleteIcon />}
+          ></Button>
         )}
       </Rnd>
     </ClickAwayListener>

@@ -20,14 +20,14 @@ function initialize() {
   // console.log(path.join(__dirname, "preload.js"));
   mainWindow = new BrowserWindow({
     width: 320,
-    height: 200,
+    height: 480,
     transparent: true,
     // frame: false,
     // show: false,
     // alwaysOnTop: true,
     autoHideMenuBar: true, // 파일 메뉴를 숨긴다
     center: true,
-    fullscreenable:false,
+    // fullscreenable:false,
     fullscreen: false,
     webPreferences: {
       nodeIntegration: true,
