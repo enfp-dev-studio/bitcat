@@ -135,18 +135,18 @@ app.on("activate", () => {
   }
 });
 
-let tray = null;
-app.whenReady().then(() => {
-  tray = new Tray("logo192.png");
-  const contextMenu = Menu.buildFromTemplate([
-    { label: "Item1", type: "radio" },
-    { label: "Item2", type: "radio" },
-    { label: "Item3", type: "radio", checked: true },
-    { label: "Item4", type: "radio" },
-  ]);
-  tray.setToolTip("This is my application.");
-  tray.setContextMenu(contextMenu);
-});
+// let tray = null;
+// app.whenReady().then(() => {
+//   tray = new Tray("logo192.png");
+//   const contextMenu = Menu.buildFromTemplate([
+//     { label: "Item1", type: "radio" },
+//     { label: "Item2", type: "radio" },
+//     { label: "Item3", type: "radio", checked: true },
+//     { label: "Item4", type: "radio" },
+//   ]);
+//   tray.setToolTip("This is my application.");
+//   tray.setContextMenu(contextMenu);
+// });
 
 const sendCaptureEvent = async ({ thumbnail, width, height }) => {
   // console.log(win);
