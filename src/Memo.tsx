@@ -1,30 +1,25 @@
 import { PrimitiveAtom, useAtom } from "jotai";
 import { Rnd } from "react-rnd";
 import TextareaAutosize from "react-textarea-autosize";
-import { memo, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { preferenceAtom } from "./jotai/Preference";
 import { MemoType } from "./type/Type";
-import { addMemoAtom, memosAtom, updateMemoAtom } from "./jotai/Data";
-import { Button, ClickAwayListener, hexToRgb } from "@mui/material";
+import { updateMemoAtom } from "./jotai/Data";
+import { Button, ClickAwayListener } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-// import ReactRough, { Circle, Rectangle } from "react-rough";
 
 // https://freefrontend.com/css-border-examples/
 // https://codepen.io/SelenIT/pen/pqNZQv
 // https://codepen.io/jadlimcaco/pen/ExjGrqJ
 // https://codepen.io/silvia-odwyer/pen/RwKMOpb
-const optionStyle: object = {
-  //NEON
-  animation: "pulsate 1.5s infinite alternate",
-  border: "0.2rem solid grey",
-  borderRadius: "4rem",
-  padding: "0.4em",
-  boxShadow:
-    "0 0 .2rem #fff, 0 0 .2rem #fff, 0 0 2rem #bc13fe, 0 0 0.8rem #bc13fe, 0 0 2.8rem #bc13fe, inset 0 0 1.3rem #bc13fe",
-};
-
-// const optionStyle3: object = {
-//   boxShadow: "3px 15px 8px -10px rgba(0, 0, 0, 0.3)",
+// const optionStyle: object = {
+//   //NEON
+//   animation: "pulsate 1.5s infinite alternate",
+//   border: "0.2rem solid grey",
+//   borderRadius: "4rem",
+//   padding: "0.4em",
+//   boxShadow:
+//     "0 0 .2rem #fff, 0 0 .2rem #fff, 0 0 2rem #bc13fe, 0 0 0.8rem #bc13fe, 0 0 2.8rem #bc13fe, inset 0 0 1.3rem #bc13fe",
 // };
 
 export const Memo = (props: {
@@ -37,16 +32,8 @@ export const Memo = (props: {
   const textareaRef = useRef(null);
   const [, updateMemo] = useAtom(updateMemoAtom);
   const [memo] = useAtom(props.memoAtom);
-  console.log(preference.memoBoxWidth);
 
-  // console.log(hexToRgb(preference.backgroundColor));
   const _handleCloseMemo = () => {
-    // let newMemoDats = memos;
-    // const removeIndex = memos.findIndex((e) => {
-    //   return e.id === props.memo.id;
-    // });
-    // newMemoDats.splice(removeIndex, 1);
-    // console.log(newMemoDats);
     props.removeMemoDataAtom(props.memoAtom);
   };
 
@@ -60,7 +47,7 @@ export const Memo = (props: {
     return () => {
       document.removeEventListener("keyup", _handleKeyDown);
     };
-  }, []);
+  });
   useEffect(() => {
     if (isFocused) {
       //@ts-ignore
@@ -156,11 +143,11 @@ export const Memo = (props: {
           spellCheck={false}
         />
         {isSelected && (
-          <Button
-            onClick={_handleCloseMemo}
-            // variant="contained"
-            startIcon={<DeleteIcon />}
-          ></Button>
+          <div style={{ marginLeft: 10 }}>
+            <Button onClick={_handleCloseMemo} variant="contained">
+              <DeleteIcon fontSize="small" />
+            </Button>
+          </div>
         )}
       </Rnd>
     </ClickAwayListener>

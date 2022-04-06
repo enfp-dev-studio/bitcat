@@ -35,6 +35,7 @@ function initialize() {
       devTools: isDev,
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: false, //없으면 ipcRenderer가 옮겨지지 않는다
+      icon: path.join(__dirname, "favicon.ico"),
     },
   });
 
@@ -62,7 +63,6 @@ function initialize() {
   const { width, height } = primaryDisplay.workAreaSize;
 
   const registered = globalShortcut.register("PrintScreen", () => {
-    // console.log("global shortcut");
     desktopCapturer
       .getSources({ types: ["screen"], thumbnailSize: { width, height } })
       .then(async (sources) => {
@@ -81,20 +81,7 @@ function initialize() {
         }
       });
   });
-  console.log(`global short cut registered? : ${registered}`);
-
-  // globalShortcut.register("Control+PrintScreen", () => {
-  //   console.log("TODO START CAPTURE");
-  //   desktopCapturer.getSources({ types: ["screen"] }).then(async (sources) => {
-  //     for (const source of sources) {
-  //       if (source.name === "Entire Screen") {
-  //         console.log(source.id);
-  //         mainWindow.webContents.send("SET_SOURCE", source.id);
-  //         return;
-  //       }
-  //     }
-  //   });
-  // });
+  // console.log(`global short cut registered? : ${registered}`);
 
   ipcMain.on("MAIN_SELECT_PATH", async (event, res) => {
     const result = await dialog.showOpenDialogSync({
@@ -110,7 +97,6 @@ function initialize() {
     await mainWindow.webContents.send("SET_SAVE_PATH", {
       path: result,
     });
-    // event.sender.send('renderer-test1', 'hello');
   });
 
   ipcMain.on("RESIZE_WINDOW", (event, arg) => {
@@ -135,18 +121,18 @@ app.on("activate", () => {
   }
 });
 
-let tray = null;
-app.whenReady().then(() => {
-  tray = new Tray("logo192.png");
-  const contextMenu = Menu.buildFromTemplate([
-    { label: "Item1", type: "radio" },
-    { label: "Item2", type: "radio" },
-    { label: "Item3", type: "radio", checked: true },
-    { label: "Item4", type: "radio" },
-  ]);
-  tray.setToolTip("This is my application.");
-  tray.setContextMenu(contextMenu);
-});
+// let tray = null;
+// app.whenReady().then(() => {
+//   tray = new Tray("logo192.png");
+//   const contextMenu = Menu.buildFromTemplate([
+//     { label: "Item1", type: "radio" },
+//     { label: "Item2", type: "radio" },
+//     { label: "Item3", type: "radio", checked: true },
+//     { label: "Item4", type: "radio" },
+//   ]);
+//   tray.setToolTip("This is my application.");
+//   tray.setContextMenu(contextMenu);
+// });
 
 const sendCaptureEvent = async ({ thumbnail, width, height }) => {
   // console.log(win);

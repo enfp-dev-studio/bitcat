@@ -36,9 +36,17 @@
   "main": "public/electron.js",
   "homepage": "./",
   "build": {
-    "productName": "electron-test-app",
+    "productName": "Capture Memo",
     "asar": true,
-    "appId": "org.cpro95.electron-test-app"
+    "appId": "com.enfpdev.shotnote",
+    "mac": {
+      "target": "dmg",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": true,
+      "extendInfo": {
+        "NSScreenCaptureDescription": "Let me take screenshots"
+      }
+    }
   },
   "scripts": {
     "react-start": "react-scripts start",

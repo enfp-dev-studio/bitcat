@@ -1,9 +1,8 @@
 import { IpcRenderer, NativeImage } from "electron";
-import React, { createRef, useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Memo } from "./Memo";
 import { useAtom } from "jotai";
-import { TopMenu } from "./TopMenu";
 import {
   preferenceAtom,
   setFontSizeAtom,
@@ -27,7 +26,6 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 // import MemoryIcon from "@mui/icons-material/Memory";
 
 //@ts-ignore
-import { useScreenshot } from "use-react-screenshot";
 
 //@ts-ignore
 import { rootPath } from "electron-root-path";
@@ -36,31 +34,12 @@ import {
   BackgroundColorPicker,
   FontColorPicker,
 } from "./components/ColorPicker";
-import { Row, RowRight, VerticalDivider } from "./components/HTMLComponents";
-import {
-  ColorPalete,
-  DefaultWindowStyle,
-  OutlineBorderStyle,
-  Params,
-} from "./constants/Styles";
-import {
-  Box,
-  Card,
-  Divider,
-  IconButton,
-  Input,
-  TextField,
-  Tooltip,
-} from "@mui/material";
+import { Row, VerticalDivider } from "./components/HTMLComponents";
+import { ColorPalete, DefaultWindowStyle, Params } from "./constants/Styles";
+import { Box, Divider, Tooltip } from "@mui/material";
 // @ts-ignore
 // import html2canvas from "html2canvas-render-offscreen";
 import html2canvas from "html2canvas-render-offscreen";
-
-enum TargetColorType {
-  COLOR_NONE,
-  COLOR_BACKGROUND,
-  COLOR_FONT,
-}
 
 const memoAtomsAtom = splitAtom(memosAtom);
 
@@ -71,9 +50,6 @@ function App() {
     height: 1,
   });
   const [preference] = useAtom(preferenceAtom);
-  const [targetColorType, setTargetColorType] = useState(
-    TargetColorType.COLOR_NONE
-  );
   const [memoAtoms, removeMemoDataAtom] = useAtom(memoAtomsAtom);
   const [, setFontSize] = useAtom(setFontSizeAtom);
   const [, setMemoBoxWidth] = useAtom(setMemoBoxWidthAtom);
@@ -99,7 +75,6 @@ function App() {
         link.href = dataURL;
         link.download = "filename";
         link.click();
-        console.log(canvas);
       });
     }
   };
@@ -108,16 +83,14 @@ function App() {
     //@ts-ignore
     const it = document?.fonts?.entries();
     var result = it.next();
-    // console.log(result);
     while (!result.done) {
-      console.log(result.value); // 1 2 3
       result = it.next();
     }
     //@ts-ignore
     const ipcRenderer: IpcRenderer = window.ipcRenderer;
     if (ipcRenderer) {
       ipcRenderer?.on("SET_SOURCE", (event: any, data: any) => {
-        console.log("set source invoke", data);
+        // console.log("set source invoke", data);
         setImage(data?.image);
         setWinSize({
           width: data.width,
@@ -126,7 +99,6 @@ function App() {
       });
 
       ipcRenderer?.on("SET_SAVE_PATH", (event: any, data: any) => {
-        console.log(data);
         if (data?.path) {
           setSavePath(data?.path);
         } else {
@@ -136,7 +108,6 @@ function App() {
     }
 
     window.addEventListener("resize", (e) => {
-      console.log(e);
       //@ts-ignore
       if (window?.ipcRenderer) {
         //@ts-ignore
@@ -207,7 +178,7 @@ function App() {
                     setFontSize({ fontSize: tempFontSize });
                     e.currentTarget.blur();
                   }
-                  console.log(e.target);
+                  // console.log(e.target);
                 }}
                 onBlur={() => {
                   setFontSize({ fontSize: tempFontSize });
@@ -246,7 +217,6 @@ function App() {
                     setMemoBoxWidth({ memoBoxWidth: tempMemoBoxWidth });
                     e.currentTarget.blur();
                   }
-                  console.log(e.target);
                 }}
                 onBlur={() => {
                   setMemoBoxWidth({ memoBoxWidth: tempMemoBoxWidth });
@@ -305,13 +275,11 @@ function App() {
                     setMemoPrefix({ memoPrefix: tempMemoPrefix });
                     e.currentTarget.blur();
                   }
-                  console.log(e.target);
                 }}
                 onBlur={() => {
                   setMemoPrefix({ memoPrefix: tempMemoPrefix });
                 }}
                 onChange={(e) => {
-                  console.log(e.target.value);
                   setTempMemoPrefix(e.target.value);
                 }}
                 defaultValue={tempMemoPrefix}
@@ -374,6 +342,7 @@ function App() {
             userSelect: "none",
           }}
           src={image?.toDataURL()}
+          alt="loading"
         ></img>
         {memoAtoms?.map((e, i) => {
           return (
