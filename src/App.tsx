@@ -71,10 +71,18 @@ function App() {
       }).then((canvas: any) => {
         document.body.appendChild(canvas);
         const dataURL = canvas.toDataURL("image/png");
-        let link = document.createElement("a");
-        link.href = dataURL;
-        link.download = "filename";
-        link.click();
+        //@ts-ignore
+        if (window?.ipcRenderer) {
+          //@ts-ignore
+          window?.ipcRenderer.send("SAVE_IMAGE_FILE", {
+            dataURL,
+            savePath: preference.savePath,
+          });
+        }
+        // let link = document.createElement("a");
+        // link.href = dataURL;
+        // link.download = "filename";
+        // link.click();
       });
     }
   };

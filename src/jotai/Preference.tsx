@@ -3,7 +3,7 @@ import { atomWithStorage } from "jotai/utils";
 import { ColorResult } from "react-color";
 // @ts-ignore
 import { rootPath } from "electron-root-path";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 
 export const preferenceAtom = atomWithStorage("preference", {
   fontColor: "#FFFFFF",
@@ -15,7 +15,7 @@ export const preferenceAtom = atomWithStorage("preference", {
   fontSize: 32,
   savePath: rootPath,
   memoBoxWidth: 200,
-  memoPrefix: "memo_" + dayjs().format(),
+  memoPrefix: "",
 });
 
 export const setFontColorAtom = atom(

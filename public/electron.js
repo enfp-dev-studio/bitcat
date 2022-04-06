@@ -24,7 +24,7 @@ function initialize() {
     transparent: true,
     // frame: false,
     // show: false,
-    // alwaysOnTop: true,
+    // alwaysOnTop: true, // 무조건 최상단에 유지 되기 때문에 사용하기 어렵다
     autoHideMenuBar: true, // 파일 메뉴를 숨긴다
     center: true,
     // fullscreenable:false,
@@ -35,9 +35,10 @@ function initialize() {
       devTools: isDev,
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: false, //없으면 ipcRenderer가 옮겨지지 않는다
-      icon: path.join(__dirname, "favicon.ico"),
     },
+    icon: path.join(__dirname, "../src/assets/icons/logo192.png"),
   });
+  // console.log(path.join(__dirname, "../src/assets/icons/logo192.png"));
 
   // const backgroundURL = 'file://' + __dirname + '/background.html';
   // const backgroundProcessHandler = main.createBackgroundProcess(backgroundURL, true);
@@ -75,6 +76,7 @@ function initialize() {
             });
             mainWindow.setSize(width, height, true);
             mainWindow.setPosition(0, 0);
+            mainWindow.focus();
             mainWindow.moveTop();
             return;
           }
@@ -83,7 +85,7 @@ function initialize() {
   });
   // console.log(`global short cut registered? : ${registered}`);
 
-  ipcMain.on("MAIN_SELECT_PATH", async (event, res) => {
+  ipcMain.on("SAVE_IMAGE_FILE", async (event, { dataURL, savePath }) => {
     const result = await dialog.showOpenDialogSync({
       // filters: [
       //   { name: "Images", extensions: ["jpg", "png", "gif"] },
