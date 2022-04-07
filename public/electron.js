@@ -19,12 +19,12 @@ let mainWindow;
 function initialize() {
   // console.log(path.join(__dirname, "preload.js"));
   mainWindow = new BrowserWindow({
-    width: 320,
-    height: 480,
+    width: 1298,
+    height: 762,
     transparent: true,
     frame: false,
     // show: false,
-    // alwaysOnTop: true, // 무조건 최상단에 유지 되기 때문에 사용하기 어렵다
+    alwaysOnTop: true, // 무조건 최상단에 유지 되기 때문에 사용하기 어렵다
     autoHideMenuBar: true, // 파일 메뉴를 숨긴다
     // center: true,
     // fullscreenable:false,
@@ -59,7 +59,7 @@ function initialize() {
   mainWindow.setResizable(true);
   mainWindow.on("closed", () => (mainWindow = null));
   mainWindow.focus();
-  mainWindow.setPosition(width, height);
+  // mainWindow.setPosition(width, height);
 
 
   const primaryDisplay = screen.getPrimaryDisplay();
