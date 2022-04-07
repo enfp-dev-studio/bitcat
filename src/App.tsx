@@ -26,6 +26,7 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 // import MemoryIcon from "@mui/icons-material/Memory";
 
 //@ts-ignore
+import Spritesheet from "react-responsive-spritesheet";
 
 //@ts-ignore
 import { rootPath } from "electron-root-path";
@@ -139,229 +140,30 @@ function App() {
     }
   };
   return (
-    <div>
-      <div
-        style={{
-          width: showMenu ? 320 : 60,
-          resize: "none",
-          position: "absolute",
-          // height: "100vh",
-          backgroundColor: ColorPalete.BackgroundColor,
-          zIndex: 10000,
-        }}
-      >
-        {showMenu ? (
-          <Box>
-            <Row>
-              <Tooltip title="Memo Font Color">
-                <FontDownloadIcon></FontDownloadIcon>
-              </Tooltip>
-              <VerticalDivider />
-              <FontColorPicker></FontColorPicker>
-            </Row>
-            <Divider />
-            <Row>
-              <Tooltip title="Memo Background Color">
-                <WallpaperIcon></WallpaperIcon>
-              </Tooltip>
-              <VerticalDivider />
-              <BackgroundColorPicker></BackgroundColorPicker>
-            </Row>
-            <Divider />
-            <Row>
-              <Tooltip title="Memo Font Size">
-                <FormatSizeIcon></FormatSizeIcon>
-              </Tooltip>
-              <VerticalDivider />
-              <input
-                style={{
-                  height: 18,
-                  width: 40,
-                  border: "none",
-                  borderBottom: "solid 0.5px grey",
-                }}
-                type="number"
-                onKeyUp={(e) => {
-                  if (e.key === "Enter") {
-                    setFontSize({ fontSize: tempFontSize });
-                    e.currentTarget.blur();
-                  }
-                  // console.log(e.target);
-                }}
-                onBlur={() => {
-                  setFontSize({ fontSize: tempFontSize });
-                }}
-                onChange={(e) => {
-                  const value = parseInt(e.target.value);
-                  if (value > Params.MAX_FONT_SIZE) {
-                    setTempFontSize(Params.MAX_FONT_SIZE);
-                  } else if (value < Params.MIN_FONT_SIZE) {
-                    setTempFontSize(Params.MIN_FONT_SIZE);
-                  } else {
-                    setTempFontSize(value);
-                  }
-                  // console.log(e);
-                }}
-                defaultValue={tempFontSize}
-              />
-              {/* <TextField inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} /> */}
-            </Row>
-            <Divider />
-            <Row>
-              <Tooltip title="Memo Width(px)">
-                <StraightenIcon></StraightenIcon>
-              </Tooltip>
-              <VerticalDivider />
-              <input
-                style={{
-                  height: 18,
-                  width: 40,
-                  border: "none",
-                  borderBottom: "solid 0.5px grey",
-                }}
-                type="number"
-                onKeyUp={(e) => {
-                  if (e.key === "Enter") {
-                    setMemoBoxWidth({ memoBoxWidth: tempMemoBoxWidth });
-                    e.currentTarget.blur();
-                  }
-                }}
-                onBlur={() => {
-                  setMemoBoxWidth({ memoBoxWidth: tempMemoBoxWidth });
-                }}
-                onChange={(e) => {
-                  const value = parseInt(e.target.value);
-                  if (value > Params.MAX_MEMOBOX_WIDTH) {
-                    setTempMemoBoxWidth(Params.MAX_MEMOBOX_WIDTH);
-                  } else if (value < Params.MIN_MEMOBOX_WIDTH) {
-                    setTempMemoBoxWidth(Params.MIN_MEMOBOX_WIDTH);
-                  } else {
-                    setTempMemoBoxWidth(value);
-                  }
-                }}
-                defaultValue={tempMemoBoxWidth}
-              />
-            </Row>
-            <Divider />
-            <Row>
-              <Tooltip title="Save Directory">
-                <FolderIcon></FolderIcon>
-              </Tooltip>
-              <VerticalDivider />
-              <Tooltip title={savePath ? savePath : ""} arrow>
-                <Box
-                  onClick={() => {
-                    //@ts-ignore
-                    if (window?.ipcRenderer) {
-                      //@ts-ignore
-                      window?.ipcRenderer.send("MAIN_SELECT_PATH", "start-ipc");
-                    }
-                  }}
-                >
-                  {savePath?.length > Params.MAX_PATH_LENGTH_IN_UI
-                    ? savePath?.slice(0, Params.MAX_PATH_LENGTH_IN_UI) + "..."
-                    : savePath}
-                </Box>
-              </Tooltip>
-            </Row>
-            <Divider />
-            <Row>
-              <Tooltip title="Memo File Prefix">
-                <DriveFileRenameOutlineIcon></DriveFileRenameOutlineIcon>
-              </Tooltip>
-              <VerticalDivider />
-              <input
-                style={{
-                  height: 18,
-                  width: 40,
-                  border: "none",
-                  borderBottom: "solid 0.5px grey",
-                }}
-                // type="number"
-                onKeyUp={(e) => {
-                  if (e.key === "Enter") {
-                    setMemoPrefix({ memoPrefix: tempMemoPrefix });
-                    e.currentTarget.blur();
-                  }
-                }}
-                onBlur={() => {
-                  setMemoPrefix({ memoPrefix: tempMemoPrefix });
-                }}
-                onChange={(e) => {
-                  setTempMemoPrefix(e.target.value);
-                }}
-                defaultValue={tempMemoPrefix}
-              />
-            </Row>
-            <Divider />
-            <Row>
-              <Tooltip title="Merge Memo and Image">
-                <Button
-                  onClick={handleSave}
-                  variant="contained"
-                  startIcon={<CallMergeIcon />}
-                >
-                  Save
-                </Button>
-              </Tooltip>
-            </Row>
-            {image && (
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Button
-                  onClick={() => {
-                    setShowMenu(!showMenu);
-                  }}
-                >
-                  <KeyboardArrowUpIcon fontSize="large"></KeyboardArrowUpIcon>
-                </Button>
-              </div>
-            )}
-          </Box>
-        ) : (
-          <Box>
-            <Button
-              onClick={() => {
-                setShowMenu(true);
-              }}
-            >
-              <MenuIcon></MenuIcon>
-            </Button>
-          </Box>
-        )}
-      </div>
-      <div
-        id="save_area"
-        onClick={handleClick}
-        style={{
-          display: "flex",
-          flex: 1,
-          backgroundColor: "rgba(0,0,0,0.15)",
-          // ...OutlineBorderStyle,
-          ...DefaultWindowStyle,
-          width: winSize.width,
-          height: winSize.height,
-          // resize: "none",
-        }}
-      >
-        <img
-          style={{
-            position: "absolute",
-            zIndex: -1,
-            userSelect: "none",
-          }}
-          src={image?.toDataURL()}
-          alt="loading"
-        ></img>
-        {memoAtoms?.map((e, i) => {
-          return (
-            <Memo
-              key={i}
-              memoAtom={e}
-              removeMemoDataAtom={removeMemoDataAtom}
-            ></Memo>
-          );
-        })}
-      </div>
+    <div
+      style={{
+        backgroundColor: "transparent",
+      }}
+    >
+      <Spritesheet
+        // image={"src/assets/bitcat_down_sheet.png"}
+        // widthFrame={1298}
+        // heightFrame={762}
+        // steps={9}
+        // fps={100}
+        image={`https://raw.githubusercontent.com/danilosetra/react-responsive-spritesheet/master/assets/images/examples/sprite-image-horizontal.png`}
+        widthFrame={420}
+        heightFrame={500}
+        steps={14}
+        fps={10}
+        autoplay={true}
+        loop={true}
+        // background={`https://raw.githubusercontent.com/danilosetra/react-responsive-spritesheet/master/assets/images/examples/sprite-image-background.png`}
+        // backgroundSize={`cover`}
+        // backgroundRepeat={`no-repeat`}
+        // backgroundPosition={`center center`}
+      />
+      <div style={{ backgroundColor: "transparent" }}>123456</div>
     </div>
   );
 }

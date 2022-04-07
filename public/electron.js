@@ -22,11 +22,11 @@ function initialize() {
     width: 320,
     height: 480,
     transparent: true,
-    // frame: false,
+    frame: false,
     // show: false,
     // alwaysOnTop: true, // 무조건 최상단에 유지 되기 때문에 사용하기 어렵다
     autoHideMenuBar: true, // 파일 메뉴를 숨긴다
-    center: true,
+    // center: true,
     // fullscreenable:false,
     fullscreen: false,
     webPreferences: {
@@ -59,6 +59,8 @@ function initialize() {
   mainWindow.setResizable(true);
   mainWindow.on("closed", () => (mainWindow = null));
   mainWindow.focus();
+  mainWindow.setPosition(width, height);
+
 
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
@@ -75,7 +77,6 @@ function initialize() {
               height,
             });
             mainWindow.setSize(width, height, true);
-            mainWindow.setPosition(0, 0);
             mainWindow.focus();
             mainWindow.moveTop();
             return;
