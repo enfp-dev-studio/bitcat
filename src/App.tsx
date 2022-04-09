@@ -1,11 +1,6 @@
 import { IpcRenderer, NativeImage } from "electron";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import {
-  preferenceAtom,
-} from "./jotai/Preference";
-import { Position } from "./type/Type";
-import { createNewMemoId } from "./util/Util";
 import { splitAtom } from "jotai/utils";
 
 //@ts-ignore
@@ -13,10 +8,7 @@ import Spritesheet from "react-responsive-spritesheet";
 
 //@ts-ignore
 import { rootPath } from "electron-root-path";
-
-// @ts-ignore
-// import html2canvas from "html2canvas-render-offscreen";
-import html2canvas from "html2canvas-render-offscreen";
+import { CryptoInfo } from "./components/CryptoInfo";
 
 function App() {
   const [image, setImage] = useState<NativeImage>();
@@ -24,34 +16,6 @@ function App() {
     width: 1,
     height: 1,
   });
-  const [preference] = useAtom(preferenceAtom);
-    preference.memoBoxWidth
-  );
-  const [tempMemoPrefix, setTempMemoPrefix] = useState(preference.memoPrefix);
-
-  const handleSave = () => {
-    let element = document.getElementById("save_area");
-    if (element) {
-      html2canvas(element, {
-        allowTaint: false,
-      }).then((canvas: any) => {
-        document.body.appendChild(canvas);
-        const dataURL = canvas.toDataURL("image/png");
-        //@ts-ignore
-        if (window?.ipcRenderer) {
-          //@ts-ignore
-          window?.ipcRenderer.send("SAVE_IMAGE_FILE", {
-            dataURL,
-            savePath: preference.savePath,
-          });
-        }
-        // let link = document.createElement("a");
-        // link.href = dataURL;
-        // link.download = "filename";
-        // link.click();
-      });
-    }
-  };
 
   useEffect(() => {
     //@ts-ignore
@@ -93,23 +57,28 @@ function App() {
   return (
     <div
       style={{
-        backgroundColor: "transparent",
+        // backgroundColor: "transparent",
+        backgroundColor: "white",
       }}
     >
       <Spritesheet
         image={"image/bitcat_down_sheet.png"}
-        widthFrame={1298}
-        heightFrame={762}
+        widthFrame={649}
+        heightFrame={381}
         steps={9}
         fps={12}
         autoplay={true}
         loop={true}
+        scale={0.1}
         /////////////
         // background={`https://raw.githubusercontent.com/danilosetra/react-responsive-spritesheet/master/assets/images/examples/sprite-image-background.png`}
         // backgroundSize={`cover`}
         // backgroundRepeat={`no-repeat`}
         // backgroundPosition={`center center`}
       />
+      <div style={{ position: "absolute", top: 10, right: 10 }}>
+        <CryptoInfo></CryptoInfo>
+      </div>
     </div>
   );
 }

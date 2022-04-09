@@ -6,12 +6,11 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "jotai";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/system";
-import { ColorPalete } from "./constants/Styles";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: ColorPalete.PrimaryColor,
+      main: "#000000",
     },
   },
 });
