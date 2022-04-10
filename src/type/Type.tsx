@@ -7,6 +7,8 @@ export type Position = {
 
 export type ExchangeDataType = {
   enum: CryptoExchange;
-  getUrl: (cryptoSymbol: string, currencySymbol: string) => string;
-  getPrice: (result: any) => { openingPrice: number; tradePrice: number };
+  getPrice: (
+    cryptoSymbol: string,
+    currencySymbol: string
+  ) => Promise<{ openingPrice: number; tradePrice: number }>;
 };

@@ -28,6 +28,7 @@
     "react-responsive-spritesheet": "^2.3.9",
     "react-rnd": "^10.3.5",
     "react-scripts": "5.0.0",
+    "react-spritesheet": "^1.0.1",
     "react-textarea-autosize": "^8.3.3",
     "typescript": "^4.6.2",
     "use-react-screenshot": "^3.0.0",

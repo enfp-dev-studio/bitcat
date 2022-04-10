@@ -32,3 +32,8 @@ export const getChildDirectories = (folderPath: string) => {
   });
   return children;
 };
+
+export const formatNumber = (num: number) => {
+  if (typeof num !== "number") return 0;
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+};
