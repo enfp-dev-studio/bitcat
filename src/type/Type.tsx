@@ -12,3 +12,10 @@ export type ExchangeDataType = {
     currencySymbol: string
   ) => Promise<{ openingPrice: number; tradePrice: number }>;
 };
+
+export type WindowInfo = {
+  maxX: number;
+  maxY: number;
+  x: number;
+  y: number;
+};

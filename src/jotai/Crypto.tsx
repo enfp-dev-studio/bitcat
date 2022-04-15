@@ -55,6 +55,26 @@ export enum BitcatState {
 
 export const ExchangeDatas: ExchangeDataType[] = [
   {
+    enum: CryptoExchange.coingeko,
+    getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
+      // bitcoin
+      const response = await fetch(
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currencySymbol}&ids=${CoinGeko(
+          cryptoSymbol
+        )}&price_change_percentage=24h`
+      );
+      const result = await response.json();
+      // console.log(result[0]);
+      return {
+        tradePrice: result?.length > 0 ? result[0].current_price : 0,
+        openingPrice:
+          result?.length > 0
+            ? result[0].current_price + result[0].price_change_24h
+            : 0,
+      };
+    },
+  },
+  {
     enum: CryptoExchange.ubbit,
     getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
       const response = await fetch(
@@ -95,7 +115,7 @@ export const ExchangeDatas: ExchangeDataType[] = [
       const result = await response.json();
       const value = result?.quotes[currencySymbol];
 
-      console.log(value);
+      // console.log(value);
       return {
         tradePrice: parseInt(value.price),
         openingPrice: Math.floor(
@@ -104,26 +124,7 @@ export const ExchangeDatas: ExchangeDataType[] = [
       };
     },
   },
-  {
-    enum: CryptoExchange.coingeko,
-    getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
-      // bitcoin
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currencySymbol}&ids=${CoinGeko(
-          cryptoSymbol
-        )}&price_change_percentage=24h`
-      );
-      const result = await response.json();
-      console.log(result[0]);
-      return {
-        tradePrice: result?.length > 0 ? result[0].current_price : 0,
-        openingPrice:
-          result?.length > 0
-            ? result[0].current_price + result[0].price_change_24h
-            : 0,
-      };
-    },
-  },
+
   // {
   //   name: "코인마켓캡 (Coinmarketcap)",
   //   getUrl: (cryptoSymbol, currencySymbol) => `https://api.coinmarketcap.com/v1/ticker/?limit=20`,

@@ -1,4 +1,4 @@
-import { IpcRenderer } from "electron";
+import { ipcRenderer, IpcRenderer } from "electron";
 import { createRef, useEffect, useState } from "react";
 import Fab from "@mui/material/Fab";
 //@ts-ignore
@@ -15,18 +15,28 @@ import Dialog from "@mui/material/Dialog";
 import { SettingDialog } from "./components/SettingDialog";
 import { UI } from "./constants/UI";
 import { BitcatState } from "./jotai/Crypto";
-import FastForwardIcon from '@mui/icons-material/FastForward';
-import FastRewindIcon from '@mui/icons-material/FastRewind';
+import FastForwardIcon from "@mui/icons-material/FastForward";
+import FastRewindIcon from "@mui/icons-material/FastRewind";
+import { WindowInfo } from "./type/Type";
+import { useAtom } from "jotai";
+import { Preference } from "./jotai/Preference";
 
 function App() {
   // const [image, setImage] = useState<NativeImage>();
   const spritesheetRef = createRef();
   const [fps, setFPS] = useState(12);
+  const [preference] = useAtom(Preference);
+  // const [windowInfo, setWindowInfo] = useState<WindowInfo>({
+  //   x: 0,
+  //   y: 0,
+  //   maxX: UI.frameWidth * preference.scale,
+  //   maxY: UI.frameHeight * preference.scale,
+  // });
+
   // const [winSize, setWinSize] = useState({
   //   width: 1,
   //   height: 1,
   // });
-  const [showSetting, setShowSetting] = useState(false);
 
   useEffect(() => {
     //@ts-ignore
@@ -38,13 +48,13 @@ function App() {
     //@ts-ignore
     const ipcRenderer: IpcRenderer = window.ipcRenderer;
     if (ipcRenderer) {
-      ipcRenderer?.on("SET_SOURCE", (event: any, data: any) => {
+      ipcRenderer?.on("MOVE_WINDOW", (event: any, data: any) => {
         // console.log("set source invoke", data);
         // setImage(data?.image);
-        setWinSize({
-          width: data.width,
-          height: data.height,
-        });
+        // setWinSize({
+        //   width: data.width,
+        //   height: data.height,
+        // });
       });
 
       ipcRenderer?.on("SET_SAVE_PATH", (event: any, data: any) => {
@@ -63,12 +73,43 @@ function App() {
         // window?.ipcRenderer.send("RESIZE_WINDOW", {width: e.});
       }
     });
+
+    // const getWindowPosition = async () => {
+    //   //@ts-ignore
+    //   const ipcRenderer: IpcRenderer = window.ipcRenderer;
+    //   if (ipcRenderer) {
+    //     ipcRenderer.send("GET_POSITION");
+    //   }
+    //   if (ipcRenderer) {
+    //     ipcRenderer?.on(
+    //       "GET_POSITION_RETURN",
+    //       (
+    //         event: any,
+    //         data: { maxX: number; maxY: number; x: number; y: number }
+    //       ) => {
+    //         setWindowInfo(data);
+    //       }
+    //     );
+    //   }
+    // };
+    // getWindowPosition();
+    const applyPreference = () => {
+      // console.log(preference);
+      //@ts-ignore
+      const ipcRenderer: IpcRenderer = window.ipcRenderer;
+      if (ipcRenderer) {
+        ipcRenderer.send("APPLY_PREFERENCE", preference);
+      }
+    };
+    applyPreference();
     // ipcRenderer.on("SET_SOURCE", async (event: any, sourceId: any) => {});
   }, []);
   return (
     <div
       style={{
         backgroundColor: "transparent",
+        width: UI.frameWidth * preference.scale,
+        height: UI.frameHeight * preference.scale,
         // backgroundColor: "rgba(255, 255, 255, 0.3)",
         // backdropFilter: "blur(30px)",
         // WebkitBackdropFilter: "blur(30px)",
@@ -83,7 +124,6 @@ function App() {
         fps={fps}
         autoplay={true}
         loop={true}
-        scale={0.1}
         /////////////
         // background={`https://raw.githubusercontent.com/danilosetra/react-responsive-spritesheet/master/assets/images/examples/sprite-image-background.png`}
         // backgroundSize={`cover`}
@@ -102,27 +142,44 @@ function App() {
       <div
         style={{
           position: "absolute",
-          top: 20,
+          top: 40 * preference.scale,
           // bottom: 0,
 
           left: 0,
           right: 0,
           marginLeft: "auto",
           marginRight: "auto",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "cetner",
         }}
       >
         <CryptoInfo></CryptoInfo>
-      </div>
-      <div style={{ position: "absolute", bottom: 10, right: 10 }}>
-        <Paper elevation={3} style={{ borderRadius: 40 }}>
-          <IconButton
-            onClick={() => {
-              setShowSetting(true);
+        <IconButton
+          style={{
+            backgroundColor: "white",
+            marginLeft: UI.margin,
+            height: UI.priceBarHeight * preference.scale,
+            width: UI.priceBarHeight * preference.scale,
+          }}
+          onClick={() => {
+            //@ts-ignore
+            const ipcRenderer: IpcRenderer = window.ipcRenderer;
+            if (ipcRenderer) {
+              ipcRenderer.send("SHOW_SETTING_DIALOG");
+            }
+          }}
+        >
+          <SettingsIcon
+            sx={{
+              width: UI.textSize * preference.scale,
+              height: UI.textSize * preference.scale,
             }}
-          >
-            <SettingsIcon />
-          </IconButton>
-        </Paper>
+          />
+        </IconButton>
+      </div>
+      {/* <div style={{ position: "absolute", bottom: 10, right: 10 }}>
         <Paper elevation={3} style={{ borderRadius: 40 }}>
           <IconButton
             onClick={() => {
@@ -135,8 +192,12 @@ function App() {
             <FastForwardIcon />
           </IconButton>
         </Paper>
-        <Paper elevation={3} style={{ borderRadius: 40 }}>
+        <Paper
+          elevation={3}
+          style={{ borderRadius: UI.textSize * preference.scale }}
+        >
           <IconButton
+            sx={{ fontSize: UI.textSize * preference.scale }}
             onClick={() => {
               // setIsPlaying(!isPlaying);
               setFPS(fps - 12 > 0 ? fps - 12 : 1);
@@ -147,16 +208,7 @@ function App() {
             <FastRewindIcon />
           </IconButton>
         </Paper>
-
-      </div>
-      <Dialog
-        open={showSetting}
-        onClose={() => {
-          setShowSetting(false);
-        }}
-      >
-        <SettingDialog></SettingDialog>
-      </Dialog>
+      </div> */}
     </div>
   );
 }

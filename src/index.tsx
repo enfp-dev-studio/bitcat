@@ -6,6 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "jotai";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/system";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+import { SettingDialog } from "./components/SettingDialog";
 
 const theme = createTheme({
   palette: {
@@ -19,7 +21,12 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider>
       <ThemeProvider theme={theme}>
-        <App />
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={<App />}></Route>
+            <Route path="/setting" element={<SettingDialog />}></Route>
+          </Routes>
+        </HashRouter>
       </ThemeProvider>
     </Provider>
   </React.StrictMode>,
