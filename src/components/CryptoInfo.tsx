@@ -11,7 +11,11 @@ import {
 import { UI } from "../constants/UI";
 import { IconButton } from "@mui/material";
 import { formatNumber } from "../util/Util";
-import { Preference } from "../jotai/Preference";
+import {
+  Preference,
+  resetPreference,
+  resetPreferenceAtom,
+} from "../jotai/Preference";
 import { Spring, animated, useSpringRef } from "@react-spring/web";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
@@ -20,6 +24,7 @@ export const CryptoInfo = () => {
   const [cryptoData] = useAtom(CryptoDataAtom);
   const [exchangeData] = useAtom(ExchangeDataAtom);
   const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom);
+  const [, resetPreference] = useAtom(resetPreferenceAtom);
   const [duringProgress, setDuringProgress] = useState(false);
   const springRef = useSpringRef();
 
@@ -113,7 +118,8 @@ export const CryptoInfo = () => {
       >
         <IconButton
           onClick={() => {
-            updatePrice();
+            // updatePrice();
+            resetPreference();
           }}
         >
           <RefreshIcon></RefreshIcon>

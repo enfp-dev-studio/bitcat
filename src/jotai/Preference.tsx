@@ -9,12 +9,17 @@ export type PreferenceType = {
   displayIndex: number;
 };
 
-export const Preference = atomWithStorage<PreferenceType>("preference", {
+const defaultPreference: PreferenceType = {
   positionX: 0,
   positionY: 0,
-  scale: 0.5,
+  scale: 1,
   displayIndex: 0,
-});
+};
+
+export const Preference = atomWithStorage<PreferenceType>(
+  "bitcat_preference",
+  defaultPreference
+);
 
 const savePosition = (preference: PreferenceType, x: number, y: number) => {
   sendToMain("SET_POSITION", { x, y });
@@ -58,5 +63,17 @@ export const setDisplayIndexAtom = atom(
   () => "",
   (get, set, { index }: { index: number }) => {
     set(Preference, setDisplayIndex(get(Preference), index));
+  }
+);
+
+export const resetPreference = () => {
+  sendToMain("APPLY_PREFERENCE", defaultPreference);
+  return defaultPreference;
+};
+
+export const resetPreferenceAtom = atom(
+  () => "",
+  (get, set) => {
+    set(Preference, resetPreference());
   }
 );

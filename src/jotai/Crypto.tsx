@@ -118,7 +118,7 @@ export const ExchangeDatas: ExchangeDataType[] = [
       // console.log(value);
       return {
         tradePrice: parseInt(value.price),
-        openingPrice: Math.floor(
+        openingPrice: Math.ceil(
           (value.percent_change_24h / 100 + 1) * value.price
         ),
       };

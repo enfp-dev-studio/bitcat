@@ -12,7 +12,6 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { CryptoInfo } from "./components/CryptoInfo";
 import { IconButton, Paper } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import { SettingDialog } from "./components/SettingDialog";
 import { UI } from "./constants/UI";
 import { BitcatState } from "./jotai/Crypto";
 import FastForwardIcon from "@mui/icons-material/FastForward";
@@ -98,6 +97,7 @@ function App() {
       //@ts-ignore
       const ipcRenderer: IpcRenderer = window.ipcRenderer;
       if (ipcRenderer) {
+        console.log(preference);
         ipcRenderer.send("APPLY_PREFERENCE", preference);
       }
     };
@@ -107,10 +107,10 @@ function App() {
   return (
     <div
       style={{
-        backgroundColor: "transparent",
+        // backgroundColor: "transparent",
         width: UI.frameWidth * preference.scale,
         height: UI.frameHeight * preference.scale,
-        // backgroundColor: "rgba(255, 255, 255, 0.3)",
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
         // backdropFilter: "blur(30px)",
         // WebkitBackdropFilter: "blur(30px)",
       }}

@@ -6,11 +6,13 @@ const {
   screen,
   dialog,
   ipcMain,
+  shell,
 } = require("electron");
 
 const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
+const electronReload = require("electron-reload");
 
 let mainWindow;
 let settingWindow;
@@ -21,13 +23,14 @@ const windowHeight = 381;
 const createSettingWindow = () => {
   settingWindow = new BrowserWindow({
     parent: mainWindow,
+    // transparent: true,
     modal: true,
-    title: "Setting",
+    title: "",
     // center: true,
     hasShadow: false, // MAC 창 그림자 옵션을 끄위서
     // show: false,
-    // frame: false,
-    alwaysOnTop: true, // 무조건 최상단에 유지 되기 때문에 사용하기 어렵다
+    frame: false,
+    // alwaysOnTop: true, // 무조건 최상단에 유지 되기 때문에 사용하기 어렵다
     // autoHideMenuBar: true, // 파일 메뉴를 숨긴다
     // center: true,
     // fullscreenable:false,
@@ -76,10 +79,11 @@ function initialize() {
   mainWindow = new BrowserWindow({
     width: windowWidth,
     height: windowHeight,
-    transparent: true, // 배경이 투명하게 만들려면 이렇게 해야 한다
+    transparent: isDev ? false : true, // 배경이 투명하게 만들려면 이렇게 해야 한다
     frame: false, // 상단프레임이 있으면 구리다
     hasShadow: false, // MAC 창 그림자 옵션을 끄위서
     // show: false,
+    resizable: false,
     alwaysOnTop: true, // 무조건 최상단에 유지 되기 때문에 사용하기 어렵다
     autoHideMenuBar: true, // 파일 메뉴를 숨긴다
     // center: true,
@@ -126,11 +130,11 @@ function initialize() {
   );
 
   if (isDev) {
-    mainWindow.webContents.openDevTools({ mode: "detach" });
-    settingWindow.webContents.openDevTools({ mode: "detach" });
+    // mainWindow.webContents.openDevTools({ mode: "detach" });
+    // settingWindow.webContents.openDevTools({ mode: "detach" });
   }
 
-  mainWindow.setResizable(false);
+  // mainWindow.setResizable(false);
   mainWindow.focus();
   mainWindow.on("closed", () => {
     mainWindow = null;
@@ -185,25 +189,49 @@ function initialize() {
   });
 
   ipcMain.on("SET_SCALE", async (event, { scale }) => {
-    // console.log(scale);
-    mainWindow.setSize(windowWidth * scale, windowHeight * scale, true);
+    console.log(scale);
+    mainWindow.setResizable(true);
+    await mainWindow.setSize(
+      Math.ceil(windowWidth * scale),
+      Math.ceil(windowHeight * scale),
+      true
+    );
+    mainWindow.setResizable(false);
+    mainWindow.webContents.reloadIgnoringCache();
     // sendWindowInfo();
   });
 
-  ipcMain.once("APPLY_PREFERENCE", (event, preference) => {
+  ipcMain.on("APPLY_PREFERENCE", async (event, preference) => {
+    console.log(preference);
     // jotai에 저장한 preference로 부터 초기에 한번 불러와서 적용한다
-    mainWindow.setPosition(preference.positionX, preference.positionY, true);
-    mainWindow.setSize(
-      parseInt(windowWidth * preference.scale),
-      parseInt(windowHeight * preference.scale),
+    console.log(
+      "set size",
+      Math.ceil(windowWidth * preference.scale),
+      Math.ceil(windowHeight * preference.scale)
+    );
+    await mainWindow.setSize(
+      Math.ceil(windowWidth * preference.scale),
+      Math.ceil(windowHeight * preference.scale),
       true
+    );
+    await mainWindow.setPosition(
+      Math.ceil(preference.positionX),
+      Math.ceil(preference.positionY)
     );
     // sendWindowInfo();
   });
 
-  ipcMain.on("RESTART_WINDOW", () => {
-    app.relaunch(); // 재시작이 필요한 경우, relaunch를 호출하고 종료한다
-    app.exit();
+  ipcMain.on("RESTART_WINDOW", (preference) => {
+    mainWindow.setSize(
+      Math.ceil(windowWidth * preference.scale),
+      Math.ceil(windowHeight * preference.scale)
+      // true
+    );
+    mainWindow.webContents.reloadIgnoringCache();
+
+    // electronReload
+    // app.relaunch(); // 재시작이 필요한 경우, relaunch를 호출하고 종료한다
+    // app.exit();
   });
 
   ipcMain.on("GET_DISPLAYS", async () => {
@@ -229,6 +257,19 @@ function initialize() {
     }
     settingWindow.hide();
     mainWindow.focus();
+  });
+
+  ipcMain.on("OPEN_DOCUMENT_SITE", async (event, arg) => {
+    // console.log("open doc");
+    shell.openExternal(
+      "https://puffy-sauce-5a7.notion.site/Bitcat-76740b78aa3e4fe69312f14983d60924"
+    );
+  });
+
+  ipcMain.on("SET_SETTING_DIALOG_WINDOW_SIZE", async (event, {width, height}) => {
+    settingWindow.setResizable(true);
+    settingWindow.setSize(width, height, false);
+    settingWindow.setResizable(false);
   });
 }
 

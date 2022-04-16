@@ -1,15 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
+  Container,
   FormControl,
   FormControlLabel,
   FormLabel,
+  IconButton,
   MenuItem,
   Radio,
   RadioGroup,
   Slider,
 } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import {
   ExchangeDatas,
   setExchangeAtom,
@@ -95,7 +98,13 @@ export const SettingDialog = () => {
   };
 
   return (
-    <div style={{ width: UI.frameWidth * 0.8, padding: 10 }}>
+    <Container
+      style={{
+        width: UI.frameWidth * 0.8,
+        padding: 10,
+        backgroundColor: UI.DialogBackgroundColor,
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -123,10 +132,13 @@ export const SettingDialog = () => {
           })}
         </Select>
       </Box>
-      <Select onChange={handleChangeDisplayIndex}>
+      <Select
+        value={selectedDisplay?.id.toString()}
+        onChange={handleChangeDisplayIndex}
+      >
         {displays?.map((display, index) => {
           return (
-            <MenuItem key={index} value={index}>
+            <MenuItem key={index} value={display?.id}>
               Display {index}
             </MenuItem>
           );
@@ -158,32 +170,30 @@ export const SettingDialog = () => {
             <FormControlLabel value="1" control={<Radio />} label="크게" />
           </RadioGroup>
         </FormControl>
-        {/* <Button
+        <IconButton
           onClick={() => {
-            //@ts-ignore
-            const ipcRenderer: IpcRenderer = window.ipcRenderer;
-            if (ipcRenderer) {
-              ipcRenderer.send("RESTART_WINDOW");
-            }
+            sendToMain("OPEN_DOCUMENT_SITE", {});
           }}
         >
-          적용하기
-        </Button> */}
+          <QuestionMarkIcon></QuestionMarkIcon>
+        </IconButton>
         <Button
           onClick={() => {
             savePosition(position);
             // console.log("restart", tempScale, preference.scale);
-            if (tempScale > 0 && tempScale !== preference.scale) {
-              setScale({ scale: tempScale });
-              sendToMain("RESTART_WINDOW", {});
-            } else {
-              sendToMain("HIDE_SETTING_DIALOG", {});
-            }
+            setScale({ scale: tempScale });
+          }}
+        >
+          적용하기
+        </Button>
+        <Button
+          onClick={() => {
+            sendToMain("HIDE_SETTING_DIALOG", {});
           }}
         >
           닫기
         </Button>
       </Row>
-    </div>
+    </Container>
   );
 };

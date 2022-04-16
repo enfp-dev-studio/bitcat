@@ -11,4 +11,5 @@ export const UI = {
   fillBackgroundColor: "#E1E1E1",
   prmaryColor: "#132323",
   margin: 10,
+  DialogBackgroundColor: "#E1E1E1",
 };

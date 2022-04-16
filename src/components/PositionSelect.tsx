@@ -19,6 +19,7 @@ export const PositionSelect = ({
   const [preference] = useAtom(Preference);
   const screenWidth = display.size.width;
   const screenHeight = display.size.height;
+  // console.log(preference.scale);
   return (
     <div
       style={{
@@ -35,10 +36,10 @@ export const PositionSelect = ({
           height: UI.frameHeight * UIScale * preference.scale,
         }}
         // position={position}
-        // size={{
-        //   width: UI.frameWidth * UIScale,
-        //   height: UI.frameHeight * UIScale,
-        // }}
+        size={{
+          width: UI.frameWidth * UIScale * preference.scale,
+          height: UI.frameHeight * UIScale * preference.scale,
+        }}
         // dragGrid={[1, 1]}
         bounds="parent"
         onDragStop={(e, d) => {
