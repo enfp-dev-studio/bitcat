@@ -9,7 +9,8 @@ export const UI = {
   frameHeight: 381,
   updateDuration: 10000, //ms
   fillBackgroundColor: "#E1E1E1",
-  prmaryColor: "#132323",
+  PrimaryColor: "#ef476f",
   margin: 10,
-  DialogBackgroundColor: "#E1E1E1",
+  DialogBackgroundColor: "#ffffff",
+  ScreenBackground: "#073b4c",
 };

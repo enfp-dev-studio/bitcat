@@ -8,11 +8,12 @@ import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/system";
 import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import { SettingDialog } from "./components/SettingDialog";
+import { UI } from "./constants/UI";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#000000",
+      main: UI.PrimaryColor
     },
   },
 });

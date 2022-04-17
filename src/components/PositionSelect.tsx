@@ -6,7 +6,7 @@ import { UI } from "../constants/UI";
 import { Preference } from "../jotai/Preference";
 import { Position } from "../type/Type";
 
-const UIScale = 0.2;
+const UIScale = 0.25;
 export const PositionSelect = ({
   display,
   setPosition,
@@ -23,9 +23,10 @@ export const PositionSelect = ({
   return (
     <div
       style={{
+        borderRadius: 4,
         width: screenWidth * UIScale,
         height: screenHeight * UIScale,
-        backgroundColor: "black",
+        backgroundColor: UI.ScreenBackground,
       }}
     >
       <Rnd
@@ -46,9 +47,19 @@ export const PositionSelect = ({
           setPosition({ x: d.x / UIScale, y: d.y / UIScale });
         }}
       >
-        <Box
-          sx={{ backgroundColor: "white", width: "100%", height: "100%" }}
-        ></Box>
+        <div
+          style={{
+            borderRadius: 4,
+            backgroundColor: "white",
+            width: "100%",
+            height: "100%",
+            // backgroundSize: "",
+            backgroundImage: 'url("image/position_img.png")',
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+          }}
+        ></div>
       </Rnd>
     </div>
   );

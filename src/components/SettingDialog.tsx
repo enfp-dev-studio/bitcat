@@ -7,6 +7,7 @@ import {
   FormLabel,
   IconButton,
   MenuItem,
+  Paper,
   Radio,
   RadioGroup,
   Slider,
@@ -23,10 +24,12 @@ import { useAtom } from "jotai";
 import { Typography } from "@mui/material";
 import { Divider } from "@mui/material";
 import { Button } from "@mui/material";
+import "react-use-measure";
 import { IpcRenderer } from "electron";
-import { Row } from "./HTMLComponents";
+import { HorizontalDivider, Row, VerticalDivider } from "./HTMLComponents";
 import {
   Preference,
+  resetPreferenceAtom,
   savePositionAtom,
   setDisplayIndexAtom,
   setScaleAtom,
@@ -34,6 +37,9 @@ import {
 import { UI } from "../constants/UI";
 import { PositionSelect } from "./PositionSelect";
 import { sendToMain } from "../util/Util";
+import useMeasure from "react-use-measure";
+
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export const SettingDialog = () => {
   const [, savePosition] = useAtom(savePositionAtom);
@@ -59,6 +65,10 @@ export const SettingDialog = () => {
   });
 
   const [tempScale, setTempScale] = useState(preference.scale);
+  const [ref, bounds] = useMeasure();
+
+  const [, resetPreference] = useAtom(resetPreferenceAtom);
+
   useEffect(() => {
     const getCoinList = async () => {
       const response = await fetch("https://api.coinpaprika.com/v1/coins");
@@ -97,79 +107,164 @@ export const SettingDialog = () => {
     }
   };
 
+  // useEffect(() => {
+  //   console.log(bounds);
+  //   if (bounds?.width > 0 && bounds?.height > 0) {
+  //     sendToMain("SET_SETTING_DIALOG_WINDOW_SIZE", {
+  //       width: bounds.width,
+  //       height: bounds.height,
+  //     });
+  //   }
+  // }, [bounds?.width, bounds?.height]);
+
   return (
-    <Container
+    <Paper
+      elevation={10}
+      ref={ref}
       style={{
-        width: UI.frameWidth * 0.8,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         padding: 10,
         backgroundColor: UI.DialogBackgroundColor,
+        borderRadius: 4,
+        // justifyContent: "space-evenly",
       }}
     >
-      <Box
-        sx={{
+      <div>
+        <Row>
+          <Typography fontFamily={"Maplestory"}>거래소: </Typography>
+          <VerticalDivider></VerticalDivider>
+          <Select
+            // labelId="demo-simple-select-label"
+            // id="demo-simple-select"
+            value={exchangeData.enum}
+            // label="Exchange"
+            onChange={handleChange}
+          >
+            {ExchangeDatas.map((e) => {
+              return (
+                <MenuItem key={e.enum} value={e.enum}>
+                  {e.enum}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </Row>
+        <Row>
+          <Typography fontFamily={"Maplestory"}>디스플레이: </Typography>
+          <VerticalDivider></VerticalDivider>
+          <Select
+            value={selectedDisplay?.id.toString()}
+            onChange={handleChangeDisplayIndex}
+          >
+            {displays?.map((display, index) => {
+              return (
+                <MenuItem key={index} value={display?.id}>
+                  Display {index}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </Row>
+        <div
+          style={{
+            padding: 10,
+          }}
+        >
+          <Typography fontFamily={"Maplestory"}>비트캣 위치</Typography>
+          <HorizontalDivider></HorizontalDivider>
+          {selectedDisplay && (
+            <PositionSelect
+              position={position}
+              setPosition={setPosition}
+              display={selectedDisplay}
+            ></PositionSelect>
+          )}
+        </div>
+        <Row>
+          <FormControl>
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <FormLabel id="demo-radio-buttons-group-label">
+                <Typography fontFamily={"Maplestory"}>비트캣 크기</Typography>
+              </FormLabel>
+              <VerticalDivider></VerticalDivider>
+              <RadioGroup
+                onChange={(e) => {
+                  e.preventDefault();
+                  // console.log(e.target.value);
+                  setTempScale(parseFloat(e.target.value));
+                }}
+                row
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue={tempScale}
+                name="radio-buttons-group"
+              >
+                <FormControlLabel
+                  value="0.25"
+                  control={<Radio />}
+                  label="작게"
+                />
+                <FormControlLabel
+                  value="0.5"
+                  control={<Radio />}
+                  label="중간"
+                />
+                <FormControlLabel value="1" control={<Radio />} label="크게" />
+              </RadioGroup>
+            </div>
+          </FormControl>
+        </Row>
+      </div>
+      <div
+        style={{
+          padding: 20,
           display: "flex",
-          flex: 1,
           flexDirection: "row",
+          justifyContent: "center",
           alignItems: "center",
-          justifyContent: "space-between",
         }}
       >
-        <Typography>거래소: </Typography>
-        <Divider orientation="vertical" variant="middle" flexItem />
-        <Select
-          // labelId="demo-simple-select-label"
-          // id="demo-simple-select"
-          value={exchangeData.enum}
-          // label="Exchange"
-          onChange={handleChange}
+        <Button
+          sx={{ width: 100 }}
+          variant="contained"
+          onClick={() => {
+            savePosition(position);
+            // console.log("restart", tempScale, preference.scale);
+            setScale({ scale: tempScale });
+          }}
         >
-          {ExchangeDatas.map((e) => {
-            return (
-              <MenuItem key={e.enum} value={e.enum}>
-                {e.enum}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </Box>
-      <Select
-        value={selectedDisplay?.id.toString()}
-        onChange={handleChangeDisplayIndex}
-      >
-        {displays?.map((display, index) => {
-          return (
-            <MenuItem key={index} value={display?.id}>
-              Display {index}
-            </MenuItem>
-          );
-        })}
-      </Select>
-      {selectedDisplay && (
-        <PositionSelect
-          position={position}
-          setPosition={setPosition}
-          display={selectedDisplay}
-        ></PositionSelect>
-      )}
-      <Row>
-        <FormControl>
-          <FormLabel id="demo-radio-buttons-group-label">크기</FormLabel>
-          <RadioGroup
-            onChange={(e) => {
-              e.preventDefault();
-              // console.log(e.target.value);
-              setTempScale(parseFloat(e.target.value));
-            }}
-            row
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue={tempScale}
-            name="radio-buttons-group"
-          >
-            <FormControlLabel value="0.25" control={<Radio />} label="작게" />
-            <FormControlLabel value="0.5" control={<Radio />} label="중간" />
-            <FormControlLabel value="1" control={<Radio />} label="크게" />
-          </RadioGroup>
-        </FormControl>
+          <Typography fontFamily={"Maplestory"}>적용하기</Typography>
+        </Button>
+        <VerticalDivider></VerticalDivider>
+        <Button
+          sx={{ width: 100 }}
+          variant="contained"
+          onClick={() => {
+            sendToMain("HIDE_SETTING_DIALOG", {});
+          }}
+        >
+          <Typography fontFamily={"Maplestory"}>닫기</Typography>
+        </Button>
+      </div>
+      <div style={{ position: "absolute", top: 10, right: 10 }}>
+        <IconButton
+          onClick={() => {
+            // updatePrice();
+            resetPreference();
+          }}
+        >
+          <RefreshIcon></RefreshIcon>
+        </IconButton>
+
         <IconButton
           onClick={() => {
             sendToMain("OPEN_DOCUMENT_SITE", {});
@@ -177,23 +272,7 @@ export const SettingDialog = () => {
         >
           <QuestionMarkIcon></QuestionMarkIcon>
         </IconButton>
-        <Button
-          onClick={() => {
-            savePosition(position);
-            // console.log("restart", tempScale, preference.scale);
-            setScale({ scale: tempScale });
-          }}
-        >
-          적용하기
-        </Button>
-        <Button
-          onClick={() => {
-            sendToMain("HIDE_SETTING_DIALOG", {});
-          }}
-        >
-          닫기
-        </Button>
-      </Row>
-    </Container>
+      </div>
+    </Paper>
   );
 };

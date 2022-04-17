@@ -23,7 +23,9 @@ const windowHeight = 381;
 const createSettingWindow = () => {
   settingWindow = new BrowserWindow({
     parent: mainWindow,
-    // transparent: true,
+    width: 600,
+    height: 800,
+    transparent: true,
     modal: true,
     title: "",
     // center: true,
@@ -79,7 +81,8 @@ function initialize() {
   mainWindow = new BrowserWindow({
     width: windowWidth,
     height: windowHeight,
-    transparent: isDev ? false : true, // 배경이 투명하게 만들려면 이렇게 해야 한다
+    // transparent: isDev ? false : true, // 배경이 투명하게 만들려면 이렇게 해야 한다
+    transparent: true,
     frame: false, // 상단프레임이 있으면 구리다
     hasShadow: false, // MAC 창 그림자 옵션을 끄위서
     // show: false,
@@ -131,7 +134,7 @@ function initialize() {
 
   if (isDev) {
     // mainWindow.webContents.openDevTools({ mode: "detach" });
-    // settingWindow.webContents.openDevTools({ mode: "detach" });
+    settingWindow.webContents.openDevTools({ mode: "detach" });
   }
 
   // mainWindow.setResizable(false);
@@ -266,9 +269,10 @@ function initialize() {
     );
   });
 
-  ipcMain.on("SET_SETTING_DIALOG_WINDOW_SIZE", async (event, {width, height}) => {
+  ipcMain.on("SET_SETTING_DIALOG_WINDOW_SIZE", (event, { width, height }) => {
+    console.log(width, height);
     settingWindow.setResizable(true);
-    settingWindow.setSize(width, height, false);
+    settingWindow.setSize(Math.ceil(width), Math.ceil(height), false);
     settingWindow.setResizable(false);
   });
 }

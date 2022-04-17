@@ -107,10 +107,10 @@ function App() {
   return (
     <div
       style={{
-        // backgroundColor: "transparent",
+        backgroundColor: "transparent",
+        // backgroundColor: "rgba(255, 255, 255, 0.3)",
         width: UI.frameWidth * preference.scale,
         height: UI.frameHeight * preference.scale,
-        backgroundColor: "rgba(255, 255, 255, 0.3)",
         // backdropFilter: "blur(30px)",
         // WebkitBackdropFilter: "blur(30px)",
       }}

@@ -22,6 +22,7 @@
     "electron-store": "^8.0.1",
     "html2canvas": "^1.4.1",
     "html2canvas-render-offscreen": "^0.0.3",
+    "immer": "^9.0.12",
     "jotai": "^1.6.1",
     "react": "^17.0.2",
     "react-color": "^2.19.3",

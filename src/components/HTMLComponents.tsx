@@ -5,8 +5,9 @@ export const Row = (props: any) => {
         display: "flex",
         flex: 1,
         flexDirection: "row",
+        alignItems: "center",
         padding: 10,
-        // justifyContent: 'space-between'
+        // justifyContent: "space-between",
       }}
     >
       {props.children}
@@ -39,6 +40,19 @@ export const VerticalDivider = (props: any) => {
         backgroundColor: "grey",
         marginLeft: 10,
         marginRight: 10,
+        // justifyContent: 'space-between'
+      }}
+    ></div>
+  );
+};
+
+export const HorizontalDivider = (props: any) => {
+  return (
+    <div
+      style={{
+        width: "100%",
+        backgroundColor: "grey",
+        margin: 10,
         // justifyContent: 'space-between'
       }}
     ></div>
