@@ -10,7 +10,11 @@ export type ExchangeDataType = {
   getPrice: (
     cryptoSymbol: string,
     currencySymbol: string
-  ) => Promise<{ openingPrice: number; tradePrice: number }>;
+  ) => Promise<{
+    openingPrice: number;
+    tradePrice: number;
+    priceChangePercentage: number;
+  }>;
 };
 
 export type WindowInfo = {

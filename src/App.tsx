@@ -13,18 +13,23 @@ import { CryptoInfo } from "./components/CryptoInfo";
 import { IconButton, Paper } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { UI } from "./constants/UI";
-import { BitcatState } from "./jotai/Crypto";
+// import { BitcatState } from "./jotai/Crypto";
 import FastForwardIcon from "@mui/icons-material/FastForward";
 import FastRewindIcon from "@mui/icons-material/FastRewind";
 import { WindowInfo } from "./type/Type";
 import { useAtom } from "jotai";
 import { Preference } from "./jotai/Preference";
+import { AnimationAtom } from "./jotai/Animation";
+import { sendToMain } from "./util/Util";
 
 function App() {
+  const [animation] = useAtom(AnimationAtom);
   // const [image, setImage] = useState<NativeImage>();
   const spritesheetRef = createRef();
-  const [fps, setFPS] = useState(12);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  // const [fps, setFPS] = useState(animation.fps);
   const [preference] = useAtom(Preference);
+  const [isGrabbing, setIsGrabbing] = useState(false);
   // const [windowInfo, setWindowInfo] = useState<WindowInfo>({
   //   x: 0,
   //   y: 0,
@@ -73,6 +78,32 @@ function App() {
       }
     });
 
+    // window.addEventListener("mousedown", (e) => {
+    //   e.preventDefault();
+    //   console.log("mousedown");
+    //   if (!isGrabbing) {
+    //     setIsGrabbing(true);
+    //   }
+    // });
+
+    // window.addEventListener("mousemove", (e) => {
+    //   e.preventDefault();
+    //   console.log(1, isGrabbing);
+    //   if (isGrabbing) {
+    //     sendToMain("SET_POSITION", { x: e.clientX, y: e.clientY });
+    //   }
+    // });
+
+    // window.addEventListener("mouseup", (e) => {
+    //   e.preventDefault();
+    //   if (isGrabbing) {
+    //     setIsGrabbing(false);
+    //     // sendToMain("SET_POSITION", { x: e.x, y: e.y });
+    //   }
+    // });
+
+    // console.log(isGrabbing);
+
     // const getWindowPosition = async () => {
     //   //@ts-ignore
     //   const ipcRenderer: IpcRenderer = window.ipcRenderer;
@@ -106,22 +137,46 @@ function App() {
   }, []);
   return (
     <div
+      // draggable="true"
+      //   // onDrag={(e) => {
+      //   //   console.log(e);
+      //   // }}
+      //   onDragStart={(e) => {
+      //     // e.preventDefault();
+      //     console.log(e);
+      //     // e.dataTransfer.setDragImage(document.getElementById("myElement", 0, 0));
+      //     setDragOffset({ x: e.clientX, y: e.clientY });
+      //   }}
+      //   onDragOver={(e) => {
+      //     e.preventDefault();
+      //     // console.log(e);
+      //   }}
+      //   onDragEnd={(e) => {
+      //     e.preventDefault();
+      //     console.log(dragOffset, e.screenX, e.screenY);
+      //     sendToMain("SET_POSITION", {
+      //       x: e.screenX - dragOffset.x,
+      //       y: e.screenY - dragOffset.y,
+      //     });
+      //   }}
       style={{
-        backgroundColor: "transparent",
+        backgroundColor: isGrabbing ? "red" : "transparent",
         // backgroundColor: "rgba(255, 255, 255, 0.3)",
         width: UI.frameWidth * preference.scale,
         height: UI.frameHeight * preference.scale,
+        cursor: isGrabbing ? "grabbing" : "grab",
         // backdropFilter: "blur(30px)",
         // WebkitBackdropFilter: "blur(30px)",
       }}
     >
       <Spritesheet
         ref={spritesheetRef}
-        image={"image/bitcat_down_sheet.png"}
+        image={animation.spritesheet}
         widthFrame={UI.frameWidth}
         heightFrame={UI.frameHeight}
         steps={9}
-        fps={fps}
+        // fps={fps}
+        fps={animation.fps}
         autoplay={true}
         loop={true}
         /////////////

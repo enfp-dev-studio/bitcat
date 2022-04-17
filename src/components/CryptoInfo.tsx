@@ -1,44 +1,72 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAtom } from "jotai";
 import {
-  BitcatState,
+  // BitcatState,
   CryptoDataAtom,
-  ExchangeDataAtom,
+  getPrice,
+  // ExchangeDataAtom,
   getPriceColor,
-  getPriceIcon,
+  // getPriceIcon,
   updateCryptoPriceAtom,
 } from "../jotai/Crypto";
 import { UI } from "../constants/UI";
 import { IconButton } from "@mui/material";
 import { formatNumber } from "../util/Util";
-import {
-  Preference,
-} from "../jotai/Preference";
+import { Preference } from "../jotai/Preference";
 import { Spring, animated, useSpringRef } from "@react-spring/web";
+import { setAnimationAtom } from "../jotai/Animation";
+
+const UIScale = 0.6;
 
 export const CryptoInfo = () => {
   const [preference] = useAtom(Preference);
   const [cryptoData] = useAtom(CryptoDataAtom);
-  const [exchangeData] = useAtom(ExchangeDataAtom);
+  // const [exchangeData] = useAtom(ExchangeDataAtom);
   const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom);
   const [duringProgress, setDuringProgress] = useState(false);
   const springRef = useSpringRef();
+  const [, setAnimation] = useAtom(setAnimationAtom);
 
   const updatePrice = useCallback(async () => {
-    console.log(" call update", exchangeData);
-    const { openingPrice, tradePrice } = await exchangeData?.getPrice(
+    // console.log(" call update", exchangeData);
+    const { openingPrice, tradePrice, priceChangePercentage } = await getPrice(
       cryptoData.cryptoSymbol,
       cryptoData.currencySymbol
     );
+    console.log(priceChangePercentage);
     updateCryptoPrice({
       openingPrice,
       tradePrice,
-      bitcatState:
-        tradePrice > openingPrice
-          ? BitcatState.STATE_HAPPY
-          : BitcatState.STATE_PANIC,
+      priceChangePercentage,
+      // bitcatState:
+      //   tradePrice > openingPrice
+      //     ? BitcatState.STATE_HAPPY
+      //     : BitcatState.STATE_PANIC,
     });
+    setAnimation({ percentage: priceChangePercentage });
     // setDuringProgress(true);
+    springRef.start({
+      to: {
+        height: UI.frameHeight,
+        width: UI.frameWidth * 0.75 * preference.scale,
+        backgroundColor: UI.fillBackgroundColor,
+        // borderRadius: (UI.priceBarHeight / 2) * preference.scale,
+      },
+      onRest: async () => {
+        console.log("onreset");
+        updatePrice();
+      },
+    });
+  }, [
+    cryptoData.cryptoSymbol,
+    cryptoData.currencySymbol,
+    preference.scale,
+    setAnimation,
+    springRef,
+    updateCryptoPrice,
+  ]);
+
+  const fillColor = () => {
     springRef.start({
       to: {
         height: UI.frameHeight,
@@ -50,18 +78,17 @@ export const CryptoInfo = () => {
         updatePrice();
       },
     });
-  }, []);
-
-  // useEffect(() => {
-  //   updatePrice();
-  // }, []);
+  };
 
   useEffect(() => {
     updatePrice();
-  }, [exchangeData]);
+  }, []);
 
   return (
     <div
+      onClick={() => {
+        fillColor();
+      }}
       // ref={ref}
       style={{
         backgroundColor: "white",
@@ -77,6 +104,9 @@ export const CryptoInfo = () => {
       }}
     >
       <Spring
+        onStart={() => {
+          console.log("onstart");
+        }}
         // onResolve={(e) => {
         //   console.log("resolve", duringProgress);
         //   if (duringProgress) setDuringProgress(!duringProgress);
@@ -127,12 +157,10 @@ export const CryptoInfo = () => {
         {/* <VerticalDivider></VerticalDivider> */}
         <div
           style={{
+            height: "100%",
             fontSize: UI.textSize * preference.scale,
             fontWeight: "bold",
-            color: getPriceColor(
-              cryptoData.tradePrice,
-              cryptoData.openingPrice
-            ),
+            color: getPriceColor(cryptoData.priceChangePercentage),
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
@@ -143,11 +171,28 @@ export const CryptoInfo = () => {
           {formatNumber(cryptoData.tradePrice)}
           <div
             style={{
-              fontSize: UI.textSize * 0.6 * preference.scale,
-              marginLeft: 10,
+              height: "70%",
+              display: "flex",
+              alignItems: "flex-end",
+              flexDirection: "row",
             }}
           >
-            {cryptoData.currencySymbol}
+            <div
+              style={{
+                fontSize: UI.textSize * UIScale * preference.scale,
+                marginLeft: 10,
+              }}
+            >
+              {cryptoData.currencySymbol}
+            </div>
+            <div
+              style={{
+                fontSize: UI.textSize * UIScale * preference.scale,
+                marginLeft: 10,
+              }}
+            >
+              {cryptoData.priceChangePercentage.toFixed(2)}%
+            </div>
           </div>
         </div>
       </animated.div>

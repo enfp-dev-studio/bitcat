@@ -133,8 +133,8 @@ function initialize() {
   );
 
   if (isDev) {
-    // mainWindow.webContents.openDevTools({ mode: "detach" });
-    settingWindow.webContents.openDevTools({ mode: "detach" });
+    mainWindow.webContents.openDevTools({ mode: "detach" });
+    // settingWindow.webContents.openDevTools({ mode: "detach" });
   }
 
   // mainWindow.setResizable(false);
@@ -187,7 +187,14 @@ function initialize() {
   });
 
   ipcMain.on("SET_POSITION", async (event, { x, y }) => {
+    console.log(x, y);
     mainWindow.setPosition(x, y);
+    // sendWindowInfo();
+  });
+
+  ipcMain.on("MOVE_POSITION", async (event, { x, y }) => {
+    const position = mainWindow.getPosition();
+    mainWindow.setPosition(position.x + x, position.y + y);
     // sendWindowInfo();
   });
 
@@ -205,22 +212,22 @@ function initialize() {
   });
 
   ipcMain.on("APPLY_PREFERENCE", async (event, preference) => {
-    console.log(preference);
-    // jotai에 저장한 preference로 부터 초기에 한번 불러와서 적용한다
-    console.log(
-      "set size",
-      Math.ceil(windowWidth * preference.scale),
-      Math.ceil(windowHeight * preference.scale)
-    );
-    await mainWindow.setSize(
-      Math.ceil(windowWidth * preference.scale),
-      Math.ceil(windowHeight * preference.scale),
-      true
-    );
-    await mainWindow.setPosition(
-      Math.ceil(preference.positionX),
-      Math.ceil(preference.positionY)
-    );
+    // console.log(preference);
+    // // jotai에 저장한 preference로 부터 초기에 한번 불러와서 적용한다
+    // console.log(
+    //   "set size",
+    //   Math.ceil(windowWidth * preference.scale),
+    //   Math.ceil(windowHeight * preference.scale)
+    // );
+    // await mainWindow.setSize(
+    //   Math.ceil(windowWidth * preference.scale),
+    //   Math.ceil(windowHeight * preference.scale),
+    //   true
+    // );
+    // await mainWindow.setPosition(
+    //   Math.ceil(preference.positionX),
+    //   Math.ceil(preference.positionY)
+    // );
     // sendWindowInfo();
   });
 

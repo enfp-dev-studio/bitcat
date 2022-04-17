@@ -6,9 +6,9 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Coinprika, CoinGeko } from "../constants/CryptoSymbol2ID";
 
-export const getPriceColor = (tradePrice: number, openingPrice: number) => {
-  if (tradePrice > openingPrice) return UI.UpColor;
-  else if (tradePrice < openingPrice) return UI.DownColor;
+export const getPriceColor = (percentage: number) => {
+  if (percentage > 0) return UI.UpColor;
+  else if (percentage < 0) return UI.DownColor;
   else return UI.EqualColor;
 };
 
@@ -53,6 +53,28 @@ export enum BitcatState {
   STATE_HAPPY = 6,
 }
 
+export const getPrice = async (
+  cryptoSymbol: string,
+  currencySymbol: string
+) => {
+  // bitcoin
+  const response = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currencySymbol}&ids=${CoinGeko(
+      cryptoSymbol
+    )}&price_change_percentage=24h`
+  );
+  const result = await response.json();
+  // console.log(result[0]);
+  return {
+    tradePrice: result?.length > 0 ? result[0].current_price : 0,
+    openingPrice:
+      result?.length > 0
+        ? result[0].current_price + result[0].price_change_24h
+        : 0,
+    priceChangePercentage: result[0].price_change_percentage_24h,
+  };
+};
+
 export const ExchangeDatas: ExchangeDataType[] = [
   {
     enum: CryptoExchange.coingeko,
@@ -71,59 +93,60 @@ export const ExchangeDatas: ExchangeDataType[] = [
           result?.length > 0
             ? result[0].current_price + result[0].price_change_24h
             : 0,
+        priceChangePercentage: result[0].price_change_percentage_24h,
       };
     },
   },
-  {
-    enum: CryptoExchange.ubbit,
-    getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
-      const response = await fetch(
-        `https://crix-api-endpoint.upbit.com/v1/crix/candles/days/?code=CRIX.UPBIT.KRW-${cryptoSymbol}`
-      );
-      const result = await response?.json();
-      const value = result?.length > 0 && result[0];
-      return {
-        tradePrice: value?.tradePrice,
-        openingPrice: value?.openingPrice,
-      };
-    },
-  },
-  {
-    enum: CryptoExchange.bithumb,
-    getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
-      const response = await fetch(
-        `https://api.bithumb.com/public/ticker/${cryptoSymbol}`
-      );
-      const result = await response.json();
-      // console.log(result?.data);
+  // {
+  //   enum: CryptoExchange.ubbit,
+  //   getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
+  //     const response = await fetch(
+  //       `https://crix-api-endpoint.upbit.com/v1/crix/candles/days/?code=CRIX.UPBIT.KRW-${cryptoSymbol}`
+  //     );
+  //     const result = await response?.json();
+  //     const value = result?.length > 0 && result[0];
+  //     return {
+  //       tradePrice: value?.tradePrice,
+  //       openingPrice: value?.openingPrice,
+  //     };
+  //   },
+  // },
+  // {
+  //   enum: CryptoExchange.bithumb,
+  //   getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
+  //     const response = await fetch(
+  //       `https://api.bithumb.com/public/ticker/${cryptoSymbol}`
+  //     );
+  //     const result = await response.json();
+  //     // console.log(result?.data);
 
-      return {
-        tradePrice: result?.data?.closing_price,
-        openingPrice: result?.data?.opening_price,
-      };
-    },
-  },
-  {
-    enum: CryptoExchange.coinpaprika,
-    getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
-      // 'btc-bitcoin'
-      const response = await fetch(
-        `https://api.coinpaprika.com/v1/tickers/${Coinprika(
-          cryptoSymbol
-        )}?quotes=${currencySymbol}`
-      );
-      const result = await response.json();
-      const value = result?.quotes[currencySymbol];
+  //     return {
+  //       tradePrice: result?.data?.closing_price,
+  //       openingPrice: result?.data?.opening_price,
+  //     };
+  //   },
+  // },
+  // {
+  //   enum: CryptoExchange.coinpaprika,
+  //   getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
+  //     // 'btc-bitcoin'
+  //     const response = await fetch(
+  //       `https://api.coinpaprika.com/v1/tickers/${Coinprika(
+  //         cryptoSymbol
+  //       )}?quotes=${currencySymbol}`
+  //     );
+  //     const result = await response.json();
+  //     const value = result?.quotes[currencySymbol];
 
-      // console.log(value);
-      return {
-        tradePrice: parseInt(value.price),
-        openingPrice: Math.ceil(
-          (value.percent_change_24h / 100 + 1) * value.price
-        ),
-      };
-    },
-  },
+  //     // console.log(value);
+  //     return {
+  //       tradePrice: parseInt(value.price),
+  //       openingPrice: Math.ceil(
+  //         (value.percent_change_24h / 100 + 1) * value.price
+  //       ),
+  //     };
+  //   },
+  // },
 
   // {
   //   name: "코인마켓캡 (Coinmarketcap)",
@@ -147,7 +170,8 @@ export type CryptoDataType = {
   currencySymbol: CurrencySymbol;
   tradePrice: number;
   openingPrice: number;
-  bitcatState: BitcatState;
+  priceChangePercentage: number;
+  // bitcatState: BitcatState;
 };
 
 export const CryptoDataAtom = atomWithStorage<CryptoDataType>("crypto", {
@@ -155,20 +179,23 @@ export const CryptoDataAtom = atomWithStorage<CryptoDataType>("crypto", {
   currencySymbol: CurrencySymbol.KRW,
   tradePrice: 100000000,
   openingPrice: 90000000,
-  bitcatState: BitcatState.STATE_NORMAL,
+  priceChangePercentage: 0,
+  // bitcatState: BitcatState.STATE_NORMAL,
 });
 
 const updatePrice = (
   cryptoData: CryptoDataType,
   tradePrice: number,
   openingPrice: number,
-  bitcatState: BitcatState
+  priceChangePercentage: number
+  // bitcatState: BitcatState
 ) => {
   return {
     ...cryptoData,
     tradePrice,
     openingPrice,
-    bitcatState,
+    priceChangePercentage,
+    // bitcatState,
   };
 };
 
@@ -180,12 +207,24 @@ export const updateCryptoPriceAtom = atom(
     {
       tradePrice,
       openingPrice,
-      bitcatState,
-    }: { tradePrice: number; openingPrice: number; bitcatState: BitcatState }
+      priceChangePercentage,
+    }: // bitcatState,
+    {
+      tradePrice: number;
+      openingPrice: number;
+      priceChangePercentage: number;
+      // bitcatState: BitcatState;
+    }
   ) => {
     set(
       CryptoDataAtom,
-      updatePrice(get(CryptoDataAtom), tradePrice, openingPrice, bitcatState)
+      updatePrice(
+        get(CryptoDataAtom),
+        tradePrice,
+        openingPrice,
+        priceChangePercentage
+        // bitcatState
+      )
     );
   }
 );

@@ -209,12 +209,12 @@ export const SettingDialog = () => {
                 name="radio-buttons-group"
               >
                 <FormControlLabel
-                  value="0.25"
+                  value="0.5"
                   control={<Radio />}
                   label="작게"
                 />
                 <FormControlLabel
-                  value="0.5"
+                  value="0.75"
                   control={<Radio />}
                   label="중간"
                 />
