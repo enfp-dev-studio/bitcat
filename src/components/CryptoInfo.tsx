@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import {
   // BitcatState,
   CryptoDataAtom,
+  currencyAtom,
   getPrice,
   // ExchangeDataAtom,
   getPriceColor,
@@ -15,12 +16,15 @@ import { formatNumber } from "../util/Util";
 import { Preference } from "../jotai/Preference";
 import { Spring, animated, useSpringRef } from "@react-spring/web";
 import { setAnimationAtom } from "../jotai/Animation";
+import { loadingAtom } from "../jotai/Loading";
 
 const UIScale = 0.6;
 
 export const CryptoInfo = () => {
+  const [, setLoading] = useAtom(loadingAtom);
   const [preference] = useAtom(Preference);
   const [cryptoData] = useAtom(CryptoDataAtom);
+  const [currency, setCurrency] = useAtom(currencyAtom);
   // const [exchangeData] = useAtom(ExchangeDataAtom);
   const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom);
   const [duringProgress, setDuringProgress] = useState(false);
@@ -29,9 +33,10 @@ export const CryptoInfo = () => {
 
   const updatePrice = useCallback(async () => {
     // console.log(" call update", cryptoData);
+    setLoading(true);
     const { openingPrice, tradePrice, priceChangePercentage } = await getPrice(
       cryptoData.cryptoId,
-      cryptoData.currencySymbol
+      currency
     );
     // console.log(priceChangePercentage);
     updateCryptoPrice({
@@ -44,6 +49,8 @@ export const CryptoInfo = () => {
       //     : BitcatState.STATE_PANIC,
     });
     setAnimation({ percentage: priceChangePercentage });
+    setLoading(false);
+
     // setDuringProgress(true);
     springRef.start({
       to: {
@@ -59,7 +66,6 @@ export const CryptoInfo = () => {
     });
   }, [
     cryptoData.cryptoSymbol,
-    cryptoData.currencySymbol,
     preference.scale,
     setAnimation,
     springRef,
@@ -188,7 +194,7 @@ export const CryptoInfo = () => {
                 marginLeft: 10,
               }}
             >
-              {cryptoData.currencySymbol}
+              {currency}
             </div>
             <div
               style={{

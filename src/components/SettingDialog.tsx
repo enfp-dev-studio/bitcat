@@ -19,6 +19,10 @@ import {
   setExchangeAtom,
   ExchangeDataAtom,
   CryptoExchange,
+  currencyAtom,
+  CryptoDataAtom,
+  getPrice,
+  updateCryptoPriceAtom,
 } from "../jotai/Crypto";
 import { useAtom } from "jotai";
 import { Typography } from "@mui/material";
@@ -35,27 +39,34 @@ import {
   setScaleAtom,
 } from "../jotai/Preference";
 import { UI } from "../constants/UI";
-import { PositionSelect } from "./PositionSelect";
-import { sendToMain } from "../util/Util";
-import useMeasure from "react-use-measure";
+// import { PositionSelect } from "./PositionSelect";
+import { getLocalCurrencies, sendToMain } from "../util/Util";
+// import useMeasure from "react-use-measure";
 
-import RefreshIcon from "@mui/icons-material/Refresh";
+// import RefreshIcon from "@mui/icons-material/Refresh";
 import CryptoSelect from "./CryptoSelect";
+import { setAnimationAtom } from "../jotai/Animation";
+import { loadingAtom } from "../jotai/Loading";
 
 export const SettingDialog = () => {
-  const [, savePosition] = useAtom(savePositionAtom);
-  const [exchangeData] = useAtom(ExchangeDataAtom);
+  const [, setLoading] = useAtom(loadingAtom);
+  const [cryptoData] = useAtom(CryptoDataAtom);
+  // const [, savePosition] = useAtom(savePositionAtom);
+  // const [exchangeData] = useAtom(ExchangeDataAtom);
   const [, setExchange] = useAtom(setExchangeAtom);
   const [preference] = useAtom(Preference);
   const [, setScale] = useAtom(setScaleAtom);
+  const [currency, setCurrency] = useAtom(currencyAtom);
+  const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom);
+  const [, setAnimation] = useAtom(setAnimationAtom);
 
-  const [coins, setCoins] =
-    useState<[{ symbol: string; id: string; name: string }]>();
-  const [coin, setCoin] = useState<{
-    symbol: string;
-    id: string;
-    name: string;
-  }>();
+  // const [coins, setCoins] =
+  //   useState<[{ symbol: string; id: string; name: string }]>();
+  // const [coin, setCoin] = useState<{
+  //   symbol: string;
+  //   id: string;
+  //   name: string;
+  // }>();
   const [, setDisplayIndex] = useAtom(setDisplayIndexAtom);
   const [selectedDisplay, setSelectedDisplay] = useState<Electron.Display>();
   const [displays, setDisplays] = useState<Electron.Display[]>();
@@ -65,11 +76,7 @@ export const SettingDialog = () => {
     y: preference.positionY,
   });
 
-  const [tempScale, setTempScale] = useState(preference.scale);
-  // const [ref, bounds] = useMeasure();
   const ref = useRef<HTMLInputElement>(null);
-
-  const [, resetPreference] = useAtom(resetPreferenceAtom);
 
   useEffect(() => {
     const getDisplays = () => {
@@ -94,11 +101,11 @@ export const SettingDialog = () => {
     }
   }, []);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    if (event.target.value) {
-      setExchange({ name: event.target.value });
-    }
-  };
+  // const handleChange = (event: SelectChangeEvent) => {
+  //   if (event.target.value) {
+  //     setExchange({ name: event.target.value });
+  //   }
+  // };
 
   const handleChangeDisplayIndex = (event: SelectChangeEvent) => {
     event.preventDefault();
@@ -107,12 +114,30 @@ export const SettingDialog = () => {
     }
   };
 
-  const handleResize = () => {
-    // console.log("resize");
-    sendToMain("SET_SETTING_DIALOG_WINDOW_SIZE", {
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
+  const handleChangeCurrency = (event: SelectChangeEvent) => {
+    event.preventDefault();
+    if (event?.target?.value) {
+      setLoading(true);
+      getPrice(cryptoData.cryptoId, event?.target?.value)
+        .then((result) => {
+          const { openingPrice, tradePrice, priceChangePercentage } = result;
+          updateCryptoPrice({
+            openingPrice,
+            tradePrice,
+            priceChangePercentage,
+            // bitcatState:
+            //   tradePrice > openingPrice
+            //     ? BitcatState.STATE_HAPPY
+            //     : BitcatState.STATE_PANIC,
+          });
+          setAnimation({ percentage: priceChangePercentage });
+          setCurrency(event?.target?.value);
+        })
+        .catch(console.log)
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
   // useEffect(() => {
   //   window?.addEventListener("resize", handleResize);
@@ -175,6 +200,24 @@ export const SettingDialog = () => {
             <CryptoSelect></CryptoSelect>
           </Row>
           <Row>
+            <Typography fontFamily={"Maplestory"}>통화: </Typography>
+            <VerticalDivider></VerticalDivider>
+            <Select
+              sx={{ width: 200 }}
+              size="small"
+              value={currency}
+              onChange={handleChangeCurrency}
+            >
+              {getLocalCurrencies().map((currency) => {
+                return (
+                  <MenuItem key={currency} value={currency}>
+                    {currency}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </Row>
+          <Row>
             <Typography fontFamily={"Maplestory"}>디스플레이: </Typography>
             <VerticalDivider></VerticalDivider>
             <Select
@@ -226,11 +269,11 @@ export const SettingDialog = () => {
                   onChange={(e) => {
                     e.preventDefault();
                     // console.log(e.target.value);
-                    setTempScale(parseFloat(e.target.value));
+                    setScale({ scale: parseFloat(e.target.value) });
                   }}
                   row
                   aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue={tempScale}
+                  defaultValue={preference.scale}
                   name="radio-buttons-group"
                 >
                   <FormControlLabel
@@ -263,7 +306,7 @@ export const SettingDialog = () => {
             alignItems: "center",
           }}
         >
-          <Button
+          {/* <Button
             sx={{ width: 100 }}
             variant="contained"
             onClick={() => {
@@ -274,7 +317,7 @@ export const SettingDialog = () => {
           >
             <Typography fontFamily={"Maplestory"}>적용하기</Typography>
           </Button>
-          <VerticalDivider></VerticalDivider>
+          <VerticalDivider></VerticalDivider> */}
           <Button
             sx={{ width: 100 }}
             variant="contained"

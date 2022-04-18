@@ -23,10 +23,14 @@ const defaultAnimation: AnimationType = {
   spritesheet: "image/bitcat_up_sheet.png",
 };
 
-export const AnimationAtom = atom<AnimationType>(defaultAnimation);
+export const AnimationAtom = atomWithStorage<AnimationType>(
+  "bitcat_animation",
+  defaultAnimation
+);
 
 const setAnimation = (animation: AnimationType, percentage: number) => {
   //   sendToMain("SET_POSITION", { x, y });
+  console.log("set animation");
 
   return {
     spritesheet: getSpritesheet(percentage),

@@ -138,7 +138,7 @@ function initialize() {
   );
 
   if (isDev) {
-    // mainWindow.webContents.openDevTools({ mode: "detach" });
+    mainWindow.webContents.openDevTools({ mode: "detach" });
     settingWindow.webContents.openDevTools({ mode: "detach" });
   }
 

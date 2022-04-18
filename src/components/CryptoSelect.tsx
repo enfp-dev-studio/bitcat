@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
   CryptoDataAtom,
+  currencyAtom,
   getCoinList,
   getPrice,
   setCryptoAtom,
@@ -18,11 +19,12 @@ export default function CryptoSelect() {
   const [coins, setCoins] = React.useState([]);
   const [selectedCoin, setSelectedCoin] = React.useState();
   const [cryptoData] = useAtom(CryptoDataAtom);
+  const [currency] = useAtom(currencyAtom);
   const [, setCrypto] = useAtom(setCryptoAtom);
   const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom);
   const [, setAnimation] = useAtom(setAnimationAtom);
   React.useEffect(() => {
-    getCoinList().then((result) => {
+    getCoinList(currency).then((result) => {
       setCoins(result);
     });
     return () => {};
@@ -47,7 +49,7 @@ export default function CryptoSelect() {
               cryptoId: d?.id,
               cryptoImage: d?.image,
             });
-            getPrice(d?.id, cryptoData.currencySymbol)
+            getPrice(d?.id, currency)
               .then((result) => {
                 const { openingPrice, tradePrice, priceChangePercentage } =
                   result;

@@ -1,5 +1,5 @@
 import { ipcRenderer, IpcRenderer } from "electron";
-import { createRef, useEffect, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import Fab from "@mui/material/Fab";
 //@ts-ignore
 import Spritesheet from "react-responsive-spritesheet";
@@ -10,7 +10,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 //@ts-ignore
 // import { rootPath } from "electron-root-path";
 import { CryptoInfo } from "./components/CryptoInfo";
-import { IconButton, Paper } from "@mui/material";
+import { CircularProgress, IconButton, Modal, Paper } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { UI } from "./constants/UI";
 // import { BitcatState } from "./jotai/Crypto";
@@ -22,11 +22,13 @@ import { Preference, resetPreference } from "./jotai/Preference";
 import { AnimationAtom } from "./jotai/Animation";
 import { sendToMain } from "./util/Util";
 import "./App.css";
+import { loadingAtom } from "./jotai/Loading";
 
 function App() {
+  const [loading] = useAtom(loadingAtom);
   const [animation] = useAtom(AnimationAtom);
   // const [image, setImage] = useState<NativeImage>();
-  const spritesheetRef = createRef();
+  const spritesheetRef = useRef(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   // const [fps, setFPS] = useState(animation.fps);
   const [preference] = useAtom(Preference);
@@ -140,6 +142,15 @@ function App() {
     applyPreference();
     // ipcRenderer.on("SET_SOURCE", async (event: any, sourceId: any) => {});
   }, []);
+
+  console.log(animation);
+  useEffect(() => {
+    // @ts-ignore
+    if (animation.fps !== spritesheetRef?.current?.fps) {
+      // @ts-ignore
+      spritesheetRef?.current?.setFps(animation.fps);
+    }
+  }, [animation]);
   return (
     <div
       style={{
@@ -193,8 +204,8 @@ function App() {
           heightFrame={UI.frameHeight}
           steps={9}
           // fps={fps}
-          fps={animation.fps}
-          autoplay={true}
+          // fps={animation.fps}
+          // autoplay={true}
           loop={true}
           /////////////
           // background={`https://raw.githubusercontent.com/danilosetra/react-responsive-spritesheet/master/assets/images/examples/sprite-image-background.png`}
@@ -276,6 +287,21 @@ function App() {
         </Paper>
       </div> */}
       </div>
+      <Modal
+        open={loading}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <div
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <CircularProgress></CircularProgress>
+        </div>
+      </Modal>
     </div>
   );
 }
