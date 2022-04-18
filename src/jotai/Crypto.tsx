@@ -4,7 +4,7 @@ import { UI } from "../constants/UI";
 import { ExchangeDataType } from "../type/Type";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Coinprika, CoinGeko } from "../constants/CryptoSymbol2ID";
+// import { Coinprika, CoinGeko } from "../constants/CryptoSymbol2ID";
 
 export const getPriceColor = (percentage: number) => {
   if (percentage > 0) return UI.UpColor;
@@ -22,20 +22,20 @@ export const getPriceIcon = (tradePrice: number, openingPrice: number): any => {
   else return <div></div>;
 };
 
-export enum CryptoSymbol {
-  BTC = "btc",
-  ETH = "eth",
-}
+// export enum CryptoSymbol {
+//   BTC = "btc",
+//   ETH = "eth",
+// }
 
-export enum CryptoName {
-  BTC = "bitcoin",
-  ETH = "ethterum",
-}
+// export enum CryptoName {
+//   BTC = "bitcoin",
+//   ETH = "ethterum",
+// }
 
-export enum CurrencySymbol {
-  KRW = "KRW",
-  USD = "USD",
-}
+// export enum CurrencySymbol {
+//   KRW = "KRW",
+//   USD = "USD",
+// }
 
 export enum CryptoExchange {
   ubbit = "업비트 (Upbit)",
@@ -52,17 +52,25 @@ export enum BitcatState {
   STATE_FEVER = 14,
   STATE_HAPPY = 6,
 }
+export const getCoinList = async () => {
+  const response = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${"usd"}&order=market_cap_desc&per_page=200&page=1`
+  );
+  const result = await response.json();
+  // console.log(result);
+  if (result?.length > 100) {
+    return result;
+  }
+};
 
 export const getPrice = async (
-  cryptoSymbol: string,
+  cryptoId: string,
   currencySymbol: string
 ) => {
+  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currencySymbol}&ids=${cryptoId}&price_change_percentage=24h`;
+  // console.log(url);
   // bitcoin
-  const response = await fetch(
-    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currencySymbol}&ids=${CoinGeko(
-      cryptoSymbol
-    )}&price_change_percentage=24h`
-  );
+  const response = await fetch(url);
   const result = await response.json();
   // console.log(result[0]);
   return {
@@ -78,12 +86,10 @@ export const getPrice = async (
 export const ExchangeDatas: ExchangeDataType[] = [
   {
     enum: CryptoExchange.coingeko,
-    getPrice: async (cryptoSymbol: string, currencySymbol: string) => {
+    getPrice: async (cryptoId: string, currencySymbol: string) => {
       // bitcoin
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currencySymbol}&ids=${CoinGeko(
-          cryptoSymbol
-        )}&price_change_percentage=24h`
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currencySymbol}&ids=${cryptoId}&price_change_percentage=24h`
       );
       const result = await response.json();
       // console.log(result[0]);
@@ -166,8 +172,10 @@ export const ExchangeDatas: ExchangeDataType[] = [
 ];
 
 export type CryptoDataType = {
-  cryptoSymbol: CryptoSymbol;
-  currencySymbol: CurrencySymbol;
+  cryptoSymbol: string;
+  cryptoId: string;
+  cryptoImage: string;
+  currencySymbol: string;
   tradePrice: number;
   openingPrice: number;
   priceChangePercentage: number;
@@ -175,8 +183,11 @@ export type CryptoDataType = {
 };
 
 export const CryptoDataAtom = atomWithStorage<CryptoDataType>("crypto", {
-  cryptoSymbol: CryptoSymbol.BTC,
-  currencySymbol: CurrencySymbol.KRW,
+  cryptoSymbol: "btc",
+  cryptoId: "bitcoin",
+  currencySymbol: "krw",
+  cryptoImage:
+    "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579",
   tradePrice: 100000000,
   openingPrice: 90000000,
   priceChangePercentage: 0,
@@ -231,13 +242,15 @@ export const updateCryptoPriceAtom = atom(
 
 const setCrypto = (
   cryptoData: CryptoDataType,
-  cryptoSymbol: CryptoSymbol,
-  currencySymbol: CurrencySymbol
+  cryptoSymbol: string,
+  cryptoId: string,
+  cryptoImage: string
 ) => {
   return {
     ...cryptoData,
     cryptoSymbol,
-    currencySymbol,
+    cryptoId,
+    cryptoImage,
   };
 };
 
@@ -248,13 +261,40 @@ export const setCryptoAtom = atom(
     set,
     {
       cryptoSymbol,
-      currencySymbol,
-    }: { cryptoSymbol: CryptoSymbol; currencySymbol: CurrencySymbol }
+      cryptoId,
+      cryptoImage,
+    }: {
+      cryptoSymbol: string;
+      cryptoId: string;
+      cryptoImage: string;
+    }
   ) => {
     set(
       CryptoDataAtom,
-      setCrypto(get(CryptoDataAtom), cryptoSymbol, currencySymbol)
+      setCrypto(get(CryptoDataAtom), cryptoSymbol, cryptoId, cryptoImage)
     );
+  }
+);
+
+const setCurrency = (cryptoData: CryptoDataType, cryptoCurrency: string) => {
+  return {
+    ...cryptoData,
+    cryptoCurrency,
+  };
+};
+
+export const setCurrencyAtom = atom(
+  () => "",
+  (
+    get,
+    set,
+    {
+      cryptoCurrency,
+    }: {
+      cryptoCurrency: string;
+    }
+  ) => {
+    set(CryptoDataAtom, setCurrency(get(CryptoDataAtom), cryptoCurrency));
   }
 );
 

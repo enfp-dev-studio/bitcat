@@ -7,6 +7,8 @@ const {
   dialog,
   ipcMain,
   shell,
+  Tray,
+  Menu,
 } = require("electron");
 
 const isDev = require("electron-is-dev");
@@ -16,6 +18,7 @@ const electronReload = require("electron-reload");
 
 let mainWindow;
 let settingWindow;
+let tray = null;
 
 const windowWidth = 649;
 const windowHeight = 381;
@@ -23,8 +26,8 @@ const windowHeight = 381;
 const createSettingWindow = () => {
   settingWindow = new BrowserWindow({
     parent: mainWindow,
-    width: 600,
-    height: 800,
+    width: 480,
+    height: 640,
     transparent: true,
     modal: true,
     title: "",
@@ -34,10 +37,11 @@ const createSettingWindow = () => {
     frame: false,
     // alwaysOnTop: true, // 무조건 최상단에 유지 되기 때문에 사용하기 어렵다
     // autoHideMenuBar: true, // 파일 메뉴를 숨긴다
-    // center: true,
+    center: true,
     // fullscreenable:false,
     resizable: false, // 마우스로 사이즈 조절 하는 거 방지
     fullscreen: false,
+    useContentSize: true,
     webPreferences: {
       nodeIntegration: true, // 노드 기본 API들 사용 위해서
       enableRemoteModule: true, // 리모트 모듈 사용 위해서
@@ -92,6 +96,7 @@ function initialize() {
     // center: true,
     // fullscreenable:false,
     fullscreen: false,
+    useContentSize: true,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -133,8 +138,8 @@ function initialize() {
   );
 
   if (isDev) {
-    mainWindow.webContents.openDevTools({ mode: "detach" });
-    // settingWindow.webContents.openDevTools({ mode: "detach" });
+    // mainWindow.webContents.openDevTools({ mode: "detach" });
+    settingWindow.webContents.openDevTools({ mode: "detach" });
   }
 
   // mainWindow.setResizable(false);
@@ -142,7 +147,7 @@ function initialize() {
   mainWindow.on("closed", () => {
     mainWindow = null;
     // 세팅윈도우는 숨기기만 하기 때문에 끄면 같이 해제 되도록 처리
-    settingWindow.close();
+    // settingWindow.close();
     settingWindow = null;
   });
 
@@ -212,22 +217,22 @@ function initialize() {
   });
 
   ipcMain.on("APPLY_PREFERENCE", async (event, preference) => {
-    // console.log(preference);
-    // // jotai에 저장한 preference로 부터 초기에 한번 불러와서 적용한다
-    // console.log(
-    //   "set size",
-    //   Math.ceil(windowWidth * preference.scale),
-    //   Math.ceil(windowHeight * preference.scale)
-    // );
-    // await mainWindow.setSize(
-    //   Math.ceil(windowWidth * preference.scale),
-    //   Math.ceil(windowHeight * preference.scale),
-    //   true
-    // );
-    // await mainWindow.setPosition(
-    //   Math.ceil(preference.positionX),
-    //   Math.ceil(preference.positionY)
-    // );
+    console.log(preference);
+    // jotai에 저장한 preference로 부터 초기에 한번 불러와서 적용한다
+    console.log(
+      "set size",
+      Math.ceil(windowWidth * preference.scale),
+      Math.ceil(windowHeight * preference.scale)
+    );
+    await mainWindow.setSize(
+      Math.ceil(windowWidth * preference.scale),
+      Math.ceil(windowHeight * preference.scale),
+      true
+    );
+    await mainWindow.setPosition(
+      Math.ceil(preference.positionX),
+      Math.ceil(preference.positionY)
+    );
     // sendWindowInfo();
   });
 
@@ -292,6 +297,60 @@ app.on("window-all-closed", () => {
   }
 });
 
+// 트레이 여러 개 보이는 이슈 해결 시도
+app.on('before-quit', function() {
+  tray.destroy();
+});
+
+app
+  .whenReady()
+  .then(() => {
+    tray = new Tray(path.join(__dirname, "logo192.png"));
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: "설정",
+        type: "normal",
+        click: () => {
+          settingWindow.show();
+        },
+      },
+      {
+        label: "초기화",
+        type: "normal",
+        click: () => {
+          sendResetEvent();
+        },
+      },
+      {
+        label: "도움말",
+        type: "normal",
+        click: () => {
+          shell.openExternal(
+            "https://puffy-sauce-5a7.notion.site/Bitcat-76740b78aa3e4fe69312f14983d60924"
+          );
+        },
+      },
+      {
+        label: "",
+        type: "separator",
+      },
+      {
+        label: "종료",
+        type: "normal",
+        click: () => {
+          app.quit();
+        },
+      },
+    ]);
+    tray.setToolTip("This is my application.");
+    tray.setContextMenu(contextMenu);
+
+    tray.on("click", () => {
+      tray.popUpContextMenu();
+    });
+  })
+  .catch(console.log);
+
 const sendCaptureEvent = async ({ thumbnail, width, height }) => {
   // console.log(win);
   if (mainWindow) {
@@ -300,5 +359,12 @@ const sendCaptureEvent = async ({ thumbnail, width, height }) => {
       width,
       height,
     });
+  }
+};
+
+const sendResetEvent = async () => {
+  // console.log(win);
+  if (mainWindow) {
+    await mainWindow.webContents.send("RESET_PREFERENCE", {});
   }
 };

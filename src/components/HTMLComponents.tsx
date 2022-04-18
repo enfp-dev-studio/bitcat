@@ -6,7 +6,7 @@ export const Row = (props: any) => {
         flex: 1,
         flexDirection: "row",
         alignItems: "center",
-        padding: 10,
+        // padding: 10,
         // justifyContent: "space-between",
       }}
     >

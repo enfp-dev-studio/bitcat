@@ -18,9 +18,10 @@ import FastForwardIcon from "@mui/icons-material/FastForward";
 import FastRewindIcon from "@mui/icons-material/FastRewind";
 import { WindowInfo } from "./type/Type";
 import { useAtom } from "jotai";
-import { Preference } from "./jotai/Preference";
+import { Preference, resetPreference } from "./jotai/Preference";
 import { AnimationAtom } from "./jotai/Animation";
 import { sendToMain } from "./util/Util";
+import "./App.css";
 
 function App() {
   const [animation] = useAtom(AnimationAtom);
@@ -29,7 +30,7 @@ function App() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   // const [fps, setFPS] = useState(animation.fps);
   const [preference] = useAtom(Preference);
-  const [isGrabbing, setIsGrabbing] = useState(false);
+  // const [isGrabbing, setIsGrabbing] = useState(false);
   // const [windowInfo, setWindowInfo] = useState<WindowInfo>({
   //   x: 0,
   //   y: 0,
@@ -67,6 +68,10 @@ function App() {
         // } else {
         //   setSavePath(rootPath);
         // }
+      });
+
+      ipcRenderer?.on("RESET_PREFERENCE", (event: any, data: any) => {
+        resetPreference();
       });
     }
 
@@ -128,7 +133,7 @@ function App() {
       //@ts-ignore
       const ipcRenderer: IpcRenderer = window.ipcRenderer;
       if (ipcRenderer) {
-        console.log(preference);
+        // console.log(preference);
         ipcRenderer.send("APPLY_PREFERENCE", preference);
       }
     };
@@ -137,55 +142,67 @@ function App() {
   }, []);
   return (
     <div
-      // draggable="true"
-      //   // onDrag={(e) => {
-      //   //   console.log(e);
-      //   // }}
-      //   onDragStart={(e) => {
-      //     // e.preventDefault();
-      //     console.log(e);
-      //     // e.dataTransfer.setDragImage(document.getElementById("myElement", 0, 0));
-      //     setDragOffset({ x: e.clientX, y: e.clientY });
-      //   }}
-      //   onDragOver={(e) => {
-      //     e.preventDefault();
-      //     // console.log(e);
-      //   }}
-      //   onDragEnd={(e) => {
-      //     e.preventDefault();
-      //     console.log(dragOffset, e.screenX, e.screenY);
-      //     sendToMain("SET_POSITION", {
-      //       x: e.screenX - dragOffset.x,
-      //       y: e.screenY - dragOffset.y,
-      //     });
-      //   }}
       style={{
-        backgroundColor: isGrabbing ? "red" : "transparent",
-        // backgroundColor: "rgba(255, 255, 255, 0.3)",
-        width: UI.frameWidth * preference.scale,
-        height: UI.frameHeight * preference.scale,
-        cursor: isGrabbing ? "grabbing" : "grab",
-        // backdropFilter: "blur(30px)",
-        // WebkitBackdropFilter: "blur(30px)",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "transparent",
       }}
     >
-      <Spritesheet
-        ref={spritesheetRef}
-        image={animation.spritesheet}
-        widthFrame={UI.frameWidth}
-        heightFrame={UI.frameHeight}
-        steps={9}
-        // fps={fps}
-        fps={animation.fps}
-        autoplay={true}
-        loop={true}
-        /////////////
-        // background={`https://raw.githubusercontent.com/danilosetra/react-responsive-spritesheet/master/assets/images/examples/sprite-image-background.png`}
-        // backgroundSize={`cover`}
-        // backgroundRepeat={`no-repeat`}
-        // backgroundPosition={`center center`}
-      />
-      {/* <Spritesheet.AnimatedSpriteSheet
+      <div
+        className="container"
+        // draggable="true"
+        //   // onDrag={(e) => {
+        //   //   console.log(e);
+        //   // }}
+        //   onDragStart={(e) => {
+        //     // e.preventDefault();
+        //     console.log(e);
+        //     // e.dataTransfer.setDragImage(document.getElementById("myElement", 0, 0));
+        //     setDragOffset({ x: e.clientX, y: e.clientY });
+        //   }}
+        //   onDragOver={(e) => {
+        //     e.preventDefault();
+        //     // console.log(e);
+        //   }}
+        //   onDragEnd={(e) => {
+        //     e.preventDefault();
+        //     console.log(dragOffset, e.screenX, e.screenY);
+        //     sendToMain("SET_POSITION", {
+        //       x: e.screenX - dragOffset.x,
+        //       y: e.screenY - dragOffset.y,
+        //     });
+        //   }}
+        style={{
+          overflow: "hidden",
+          backgroundColor: "transparent",
+          alignItems: "center",
+          justifyContent: "center",
+          alignSelf: "center",
+          // backgroundColor: "rgba(255, 255, 255, 0.3)",
+          width: UI.frameWidth * preference.scale,
+          height: UI.frameHeight * preference.scale,
+          cursor: "grabbing",
+          // backdropFilter: "blur(30px)",
+          // WebkitBackdropFilter: "blur(30px)",
+        }}
+      >
+        <Spritesheet
+          ref={spritesheetRef}
+          image={animation.spritesheet}
+          widthFrame={UI.frameWidth}
+          heightFrame={UI.frameHeight}
+          steps={9}
+          // fps={fps}
+          fps={animation.fps}
+          autoplay={true}
+          loop={true}
+          /////////////
+          // background={`https://raw.githubusercontent.com/danilosetra/react-responsive-spritesheet/master/assets/images/examples/sprite-image-background.png`}
+          // backgroundSize={`cover`}
+          // backgroundRepeat={`no-repeat`}
+          // backgroundPosition={`center center`}
+        />
+        {/* <Spritesheet.AnimatedSpriteSheet
         filename="image/bitcat_down_sheet.png"
         initialFrame={0}
         frame={{ width: UI.frameWidth, height: UI.frameHeight }}
@@ -194,24 +211,18 @@ function App() {
         loop
         speed={900}
       /> */}
-      <div
-        style={{
-          position: "absolute",
-          top: 40 * preference.scale,
-          // bottom: 0,
-
-          left: 0,
-          right: 0,
-          marginLeft: "auto",
-          marginRight: "auto",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "cetner",
-        }}
-      >
-        <CryptoInfo></CryptoInfo>
-        <IconButton
+        <div
+          style={{
+            position: "absolute",
+            top: 40 * preference.scale,
+            width: "100%",
+            // bottom: 0,
+            left: "auto",
+            right: "auto",
+          }}
+        >
+          <CryptoInfo></CryptoInfo>
+          {/* <IconButton
           style={{
             backgroundColor: "white",
             marginLeft: UI.margin,
@@ -227,14 +238,14 @@ function App() {
           }}
         >
           <SettingsIcon
-            sx={{
+          sx={{
               width: UI.textSize * preference.scale,
               height: UI.textSize * preference.scale,
             }}
           />
-        </IconButton>
-      </div>
-      {/* <div style={{ position: "absolute", bottom: 10, right: 10 }}>
+        </IconButton> */}
+        </div>
+        {/* <div style={{ position: "absolute", bottom: 10, right: 10 }}>
         <Paper elevation={3} style={{ borderRadius: 40 }}>
           <IconButton
             onClick={() => {
@@ -264,6 +275,7 @@ function App() {
           </IconButton>
         </Paper>
       </div> */}
+      </div>
     </div>
   );
 }

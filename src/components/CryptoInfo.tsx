@@ -28,12 +28,12 @@ export const CryptoInfo = () => {
   const [, setAnimation] = useAtom(setAnimationAtom);
 
   const updatePrice = useCallback(async () => {
-    // console.log(" call update", exchangeData);
+    // console.log(" call update", cryptoData);
     const { openingPrice, tradePrice, priceChangePercentage } = await getPrice(
-      cryptoData.cryptoSymbol,
+      cryptoData.cryptoId,
       cryptoData.currencySymbol
     );
-    console.log(priceChangePercentage);
+    // console.log(priceChangePercentage);
     updateCryptoPrice({
       openingPrice,
       tradePrice,
@@ -53,7 +53,7 @@ export const CryptoInfo = () => {
         // borderRadius: (UI.priceBarHeight / 2) * preference.scale,
       },
       onRest: async () => {
-        console.log("onreset");
+        // console.log("onreset");
         updatePrice();
       },
     });
@@ -91,19 +91,22 @@ export const CryptoInfo = () => {
       }}
       // ref={ref}
       style={{
-        backgroundColor: "white",
+        backgroundColor: UI.SurfaceColor,
         height: UI.priceBarHeight * preference.scale,
         borderRadius: (UI.priceBarHeight / 2) * preference.scale,
         // border: "solid 4px black",
         width: UI.frameWidth * 0.75 * preference.scale,
-        display: "flex",
         overflow: "hidden",
+        paddingLeft: 10,
+        paddingRight: 10,
+        marginLeft: "auto",
+        marginRight: "auto",
+        display: "flex",
         justifyContent: "center",
-        alignSelf: "center",
         // flexDirection: "row",
       }}
     >
-      <Spring
+      {/* <Spring
         onStart={() => {
           console.log("onstart");
         }}
@@ -124,14 +127,13 @@ export const CryptoInfo = () => {
         }}
       >
         {(styles) => <animated.div style={styles}></animated.div>}
-      </Spring>
+      </Spring> */}
       <animated.div
         style={{
-          flex: 1,
           position: "absolute",
           top: 0,
-          // left: 0,
-          // right: 0,
+          left: "auto",
+          right: "auto",
           bottom: 0,
           marginLeft: "auto",
           marginRight: "auto",
@@ -139,12 +141,15 @@ export const CryptoInfo = () => {
           // bottommargin: "auto",
           display: "flex",
           flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          // backgroundColor: "red",
           // maxWidth: UI.frameWidth * 0.75 * preference.scale,
         }}
       >
         <img
-          alt="symbol"
-          src={`image/${cryptoData.cryptoSymbol}.svg`}
+          alt=""
+          src={cryptoData.cryptoImage}
           width={UI.textSize * preference.scale}
           height={UI.textSize * preference.scale}
           style={{
@@ -191,7 +196,7 @@ export const CryptoInfo = () => {
                 marginLeft: 10,
               }}
             >
-              {cryptoData.priceChangePercentage.toFixed(2)}%
+              {cryptoData?.priceChangePercentage?.toFixed(2)}%
             </div>
           </div>
         </div>
