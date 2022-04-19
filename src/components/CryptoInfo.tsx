@@ -11,7 +11,6 @@ import {
   updateCryptoPriceAtom,
 } from "../jotai/Crypto";
 import { UI } from "../constants/UI";
-import { IconButton } from "@mui/material";
 import { formatNumber } from "../util/Util";
 import { Preference } from "../jotai/Preference";
 import { Spring, animated, useSpringRef } from "@react-spring/web";
@@ -24,7 +23,7 @@ export const CryptoInfo = () => {
   const [, setLoading] = useAtom(loadingAtom);
   const [preference] = useAtom(Preference);
   const [cryptoData] = useAtom(CryptoDataAtom);
-  const [currency, setCurrency] = useAtom(currencyAtom);
+  const [currency] = useAtom(currencyAtom);
   const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom);
   const [duringProgress, setDuringProgress] = useState(false);
   const springRef = useSpringRef();
@@ -41,19 +40,23 @@ export const CryptoInfo = () => {
       tradePrice,
       priceChangePercentage,
     });
-    setAnimation({ percentage: priceChangePercentage });
+    if (priceChangePercentage !== cryptoData.priceChangePercentage)
+      setAnimation({ percentage: priceChangePercentage });
     setLoading(false);
     setDuringProgress(true);
-  }, [
-    cryptoData.cryptoSymbol,
-    preference.scale,
-    setAnimation,
-    springRef,
-    updateCryptoPrice,
-  ]);
+  }, [cryptoData, currency]);
+
   useEffect(() => {
     updatePrice();
   }, []);
+
+  useEffect(() => {
+    updatePrice();
+  }, [cryptoData.cryptoId, currency]);
+
+  useEffect(() => {
+    if (!duringProgress) updatePrice();
+  }, [duringProgress]);
 
   return (
     <div
@@ -75,9 +78,9 @@ export const CryptoInfo = () => {
     >
       {duringProgress && (
         <Spring
-          onStart={() => {
-            console.log("onstart");
-          }}
+          // onStart={(e) => {
+          //   console.log("onstart");
+          // }}
           reset={duringProgress}
           loop={false}
           to={{
@@ -94,7 +97,8 @@ export const CryptoInfo = () => {
             duration: UI.updateDuration,
           }}
           onRest={async () => {
-            updatePrice();
+            setDuringProgress(false);
+            // updatePrice();
           }}
         >
           {(styles) => <animated.div style={styles}></animated.div>}
@@ -176,3 +180,15 @@ export const CryptoInfo = () => {
     </div>
   );
 };
+function useTrail(
+  length: any,
+  arg1: {
+    config: { mass: number; tension: number; friction: number };
+    opacity: number;
+    x: number;
+    height: number;
+    from: { opacity: number; x: number; height: number };
+  }
+) {
+  throw new Error("Function not implemented.");
+}

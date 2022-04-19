@@ -6,14 +6,14 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "jotai";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/system";
-import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import { SettingDialog } from "./components/SettingDialog";
 import { UI } from "./constants/UI";
-
+import ViewManager from "./ViewManager";
 const theme = createTheme({
   palette: {
     primary: {
-      main: UI.PrimaryColor
+      main: UI.PrimaryColor,
     },
   },
 });
@@ -22,12 +22,17 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider>
       <ThemeProvider theme={theme}>
-        <HashRouter>
-          <Routes>
-            <Route path="/" element={<App />}></Route>
-            <Route path="/setting" element={<SettingDialog />}></Route>
-          </Routes>
-        </HashRouter>
+        <ViewManager />
+        {/* <HashRouter>
+          <div>
+            <Route path="/" exact>
+              <App />
+            </Route>
+            <Route path="/setting" exact sensitive>
+              <SettingDialog />
+            </Route>
+          </div>
+        </HashRouter> */}
       </ThemeProvider>
     </Provider>
   </React.StrictMode>,

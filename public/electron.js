@@ -126,15 +126,18 @@ function initialize() {
 
   mainWindow.loadURL(
     isDev
-      ? "http://localhost:3000"
-      : `file://${path.join(__dirname, "../build/index.html")}`
+      ? "http://localhost:3000?app"
+      : `file://${path.join(__dirname, "../build/index.html?app")}`
   );
 
   //  하나의 front project에서 두 윈도우를 처리하기 위해  react-router를 사용
+  //  index.html파일은 하나인데 url을 개별 윈도우에서 로드하기 위한 방법
+  // 1. view manager를 만들어서 처리한다
+  // 2.
   settingWindow.loadURL(
     isDev
-      ? "http://localhost:3000/#/setting"
-      : `file://${path.join(__dirname, "../build/index.html#/setting")}`
+      ? "http://localhost:3000?setting"
+      : `file://${path.join(__dirname, "../build/index.html?setting")}`
   );
 
   if (isDev) {
@@ -158,29 +161,26 @@ function initialize() {
     });
   });
 
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const { width, height } = primaryDisplay.workAreaSize;
-
-  const registered = globalShortcut.register("PrintScreen", () => {
-    desktopCapturer
-      .getSources({ types: ["screen"], thumbnailSize: { width, height } })
-      .then(async (sources) => {
-        for (const source of sources) {
-          if (source.name === "Entire Screen") {
-            await sendCaptureEvent({
-              thumbnail: source.thumbnail,
-              width,
-              height,
-            });
-            mainWindow.setSize(width, height, true);
-            mainWindow.focus();
-            mainWindow.moveTop();
-            return;
-          }
-        }
-      });
-  });
-  console.log(`global short cut registered? : ${registered}`);
+  // const registered = globalShortcut.register("PrintScreen", () => {
+  //   desktopCapturer
+  //     .getSources({ types: ["screen"], thumbnailSize: { width, height } })
+  //     .then(async (sources) => {
+  //       for (const source of sources) {
+  //         if (source.name === "Entire Screen") {
+  //           await sendCaptureEvent({
+  //             thumbnail: source.thumbnail,
+  //             width,
+  //             height,
+  //           });
+  //           mainWindow.setSize(width, height, true);
+  //           mainWindow.focus();
+  //           mainWindow.moveTop();
+  //           return;
+  //         }
+  //       }
+  //     });
+  // });
+  // console.log(`global short cut registered? : ${registered}`);
 
   ipcMain.on("SAVE_IMAGE_FILE", async (event, { dataURL, savePath }) => {
     const result = await dialog.showOpenDialogSync({
@@ -296,9 +296,54 @@ function initialize() {
     settingWindow.setSize(Math.ceil(width), Math.ceil(height), false);
     settingWindow.setResizable(false);
   });
+
+  // Create Tray
+  tray = new Tray(path.join(__dirname, "logo192.png"));
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "설정",
+      type: "normal",
+      click: () => {
+        settingWindow.show();
+      },
+    },
+    {
+      label: "초기화",
+      type: "normal",
+      click: () => {
+        sendResetEvent();
+      },
+    },
+    {
+      label: "도움말",
+      type: "normal",
+      click: () => {
+        shell.openExternal(
+          "https://puffy-sauce-5a7.notion.site/Bitcat-76740b78aa3e4fe69312f14983d60924"
+        );
+      },
+    },
+    {
+      label: "",
+      type: "separator",
+    },
+    {
+      label: "종료",
+      type: "normal",
+      click: () => {
+        app.quit();
+      },
+    },
+  ]);
+  tray.setToolTip("This is my application.");
+  tray.setContextMenu(contextMenu);
+
+  tray.on("click", () => {
+    tray.popUpContextMenu();
+  });
 }
 
-app.on("ready", initialize);
+// app.on("ready", initialize);
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -306,59 +351,26 @@ app.on("window-all-closed", () => {
   }
 });
 
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+
+  app.on("ready", initialize);
+}
+
 // 트레이 여러 개 보이는 이슈 해결 시도
 app.on("before-quit", function () {
   tray.destroy();
 });
-
-app
-  .whenReady()
-  .then(() => {
-    tray = new Tray(path.join(__dirname, "logo192.png"));
-    const contextMenu = Menu.buildFromTemplate([
-      {
-        label: "설정",
-        type: "normal",
-        click: () => {
-          settingWindow.show();
-        },
-      },
-      {
-        label: "초기화",
-        type: "normal",
-        click: () => {
-          sendResetEvent();
-        },
-      },
-      {
-        label: "도움말",
-        type: "normal",
-        click: () => {
-          shell.openExternal(
-            "https://puffy-sauce-5a7.notion.site/Bitcat-76740b78aa3e4fe69312f14983d60924"
-          );
-        },
-      },
-      {
-        label: "",
-        type: "separator",
-      },
-      {
-        label: "종료",
-        type: "normal",
-        click: () => {
-          app.quit();
-        },
-      },
-    ]);
-    tray.setToolTip("This is my application.");
-    tray.setContextMenu(contextMenu);
-
-    tray.on("click", () => {
-      tray.popUpContextMenu();
-    });
-  })
-  .catch(console.log);
 
 const sendCaptureEvent = async ({ thumbnail, width, height }) => {
   // console.log(win);

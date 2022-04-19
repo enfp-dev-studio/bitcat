@@ -50,23 +50,23 @@ export default function CryptoSelect() {
               cryptoImage: d?.image,
               cryptoName: d?.name,
             });
-            getPrice(d?.id, currency)
-              .then((result) => {
-                const { openingPrice, tradePrice, priceChangePercentage } =
-                  result;
-                updateCryptoPrice({
-                  openingPrice,
-                  tradePrice,
-                  priceChangePercentage,
-                  // bitcatState:
-                  //   tradePrice > openingPrice
-                  //     ? BitcatState.STATE_HAPPY
-                  //     : BitcatState.STATE_PANIC,
-                });
-                if (priceChangePercentage !== cryptoData.priceChangePercentage)
-                  setAnimation({ percentage: priceChangePercentage });
-              })
-              .catch(console.log);
+            // getPrice(d?.id, currency)
+            //   .then((result) => {
+            //     const { openingPrice, tradePrice, priceChangePercentage } =
+            //       result;
+            //     updateCryptoPrice({
+            //       openingPrice,
+            //       tradePrice,
+            //       priceChangePercentage,
+            //       // bitcatState:
+            //       //   tradePrice > openingPrice
+            //       //     ? BitcatState.STATE_HAPPY
+            //       //     : BitcatState.STATE_PANIC,
+            //     });
+            //     if (priceChangePercentage !== cryptoData.priceChangePercentage)
+            //       setAnimation({ percentage: priceChangePercentage });
+            //   })
+            //   .catch(console.log);
           }
         }}
         id="crypto-select-demo"

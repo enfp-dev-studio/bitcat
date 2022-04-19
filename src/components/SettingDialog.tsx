@@ -106,27 +106,28 @@ export const SettingDialog = () => {
   const handleChangeCurrency = (event: SelectChangeEvent) => {
     event.preventDefault();
     if (event?.target?.value) {
-      setLoading(true);
-      getPrice(cryptoData.cryptoId, event?.target?.value)
-        .then((result) => {
-          const { openingPrice, tradePrice, priceChangePercentage } = result;
-          updateCryptoPrice({
-            openingPrice,
-            tradePrice,
-            priceChangePercentage,
-            // bitcatState:
-            //   tradePrice > openingPrice
-            //     ? BitcatState.STATE_HAPPY
-            //     : BitcatState.STATE_PANIC,
-          });
-          if (priceChangePercentage !== cryptoData.priceChangePercentage)
-            setAnimation({ percentage: priceChangePercentage });
-          setCurrency(event?.target?.value);
-        })
-        .catch(console.log)
-        .finally(() => {
-          setLoading(false);
-        });
+      setCurrency(event?.target?.value);
+      // setLoading(true);
+      // getPrice(cryptoData.cryptoId, event?.target?.value)
+      //   .then((result) => {
+      //     const { openingPrice, tradePrice, priceChangePercentage } = result;
+      //     updateCryptoPrice({
+      //       openingPrice,
+      //       tradePrice,
+      //       priceChangePercentage,
+      //       // bitcatState:
+      //       //   tradePrice > openingPrice
+      //       //     ? BitcatState.STATE_HAPPY
+      //       //     : BitcatState.STATE_PANIC,
+      //     });
+      //     if (priceChangePercentage !== cryptoData.priceChangePercentage)
+      //       setAnimation({ percentage: priceChangePercentage });
+      //     setCurrency(event?.target?.value);
+      //   })
+      //   .catch(console.log)
+      //   .finally(() => {
+      //     setLoading(false);
+      //   });
     }
   };
   // useEffect(() => {
