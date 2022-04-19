@@ -172,6 +172,7 @@ export type CryptoDataType = {
   cryptoSymbol: string;
   cryptoId: string;
   cryptoImage: string;
+  cryptoName: string;
   tradePrice: number;
   openingPrice: number;
   priceChangePercentage: number;
@@ -183,6 +184,7 @@ export const CryptoDataAtom = atomWithStorage<CryptoDataType>("crypto", {
   cryptoId: "bitcoin",
   cryptoImage:
     "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579",
+  cryptoName: "Bitcoin",
   tradePrice: 100000000,
   openingPrice: 90000000,
   priceChangePercentage: 0,
@@ -239,13 +241,15 @@ const setCrypto = (
   cryptoData: CryptoDataType,
   cryptoSymbol: string,
   cryptoId: string,
-  cryptoImage: string
+  cryptoImage: string,
+  cryptoName: string
 ) => {
   return {
     ...cryptoData,
     cryptoSymbol,
     cryptoId,
     cryptoImage,
+    cryptoName
   };
 };
 
@@ -258,15 +262,17 @@ export const setCryptoAtom = atom(
       cryptoSymbol,
       cryptoId,
       cryptoImage,
+      cryptoName
     }: {
       cryptoSymbol: string;
       cryptoId: string;
       cryptoImage: string;
+      cryptoName: string;
     }
   ) => {
     set(
       CryptoDataAtom,
-      setCrypto(get(CryptoDataAtom), cryptoSymbol, cryptoId, cryptoImage)
+      setCrypto(get(CryptoDataAtom), cryptoSymbol, cryptoId, cryptoImage, cryptoName)
     );
   }
 );

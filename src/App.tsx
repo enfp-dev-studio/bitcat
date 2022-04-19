@@ -1,26 +1,24 @@
-import { ipcRenderer, IpcRenderer } from "electron";
-import { createRef, useEffect, useRef, useState } from "react";
-import Fab from "@mui/material/Fab";
+import { IpcRenderer } from "electron";
+import { useEffect, useRef, useState } from "react";
 //@ts-ignore
 import Spritesheet from "react-responsive-spritesheet";
 //@ts-ignore
 // import Spritesheet from "react-spritesheet";
-import SettingsIcon from "@mui/icons-material/Settings";
 
 //@ts-ignore
 // import { rootPath } from "electron-root-path";
 import { CryptoInfo } from "./components/CryptoInfo";
-import { CircularProgress, IconButton, Modal, Paper } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
+import { CircularProgress, Modal } from "@mui/material";
 import { UI } from "./constants/UI";
 // import { BitcatState } from "./jotai/Crypto";
-import FastForwardIcon from "@mui/icons-material/FastForward";
-import FastRewindIcon from "@mui/icons-material/FastRewind";
-import { WindowInfo } from "./type/Type";
 import { useAtom } from "jotai";
-import { Preference, resetPreference } from "./jotai/Preference";
+import {
+  defaultPreference,
+  Preference,
+  savePositionAtom,
+  setScaleAtom,
+} from "./jotai/Preference";
 import { AnimationAtom } from "./jotai/Animation";
-import { sendToMain } from "./util/Util";
 import "./App.css";
 import { loadingAtom } from "./jotai/Loading";
 
@@ -28,6 +26,8 @@ function App() {
   const [loading] = useAtom(loadingAtom);
   const [animation] = useAtom(AnimationAtom);
   // const [image, setImage] = useState<NativeImage>();
+  const [, savePosition] = useAtom(savePositionAtom);
+  const [, setScale] = useAtom(setScaleAtom);
   const spritesheetRef = useRef(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   // const [fps, setFPS] = useState(animation.fps);
@@ -72,8 +72,13 @@ function App() {
         // }
       });
 
-      ipcRenderer?.on("RESET_PREFERENCE", (event: any, data: any) => {
-        resetPreference();
+      ipcRenderer?.on("RESET_PREFERENCE", async (event: any, data: any) => {
+        // resetPreference();
+        setScale({ scale: defaultPreference.scale });
+        savePosition({
+          x: defaultPreference.positionX,
+          y: defaultPreference.positionY,
+        });
       });
     }
 

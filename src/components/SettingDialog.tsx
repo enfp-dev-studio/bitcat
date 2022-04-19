@@ -1,24 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  Box,
-  Container,
   FormControl,
   FormControlLabel,
   FormLabel,
-  IconButton,
   MenuItem,
-  Paper,
   Radio,
   RadioGroup,
-  Slider,
 } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import {
-  ExchangeDatas,
   setExchangeAtom,
-  ExchangeDataAtom,
-  CryptoExchange,
   currencyAtom,
   CryptoDataAtom,
   getPrice,
@@ -30,11 +21,9 @@ import { Divider } from "@mui/material";
 import { Button } from "@mui/material";
 import "react-use-measure";
 import { IpcRenderer } from "electron";
-import { HorizontalDivider, Row, VerticalDivider } from "./HTMLComponents";
+import { Row, VerticalDivider } from "./HTMLComponents";
 import {
   Preference,
-  resetPreferenceAtom,
-  savePositionAtom,
   setDisplayIndexAtom,
   setScaleAtom,
 } from "../jotai/Preference";
@@ -223,13 +212,13 @@ export const SettingDialog = () => {
             <Select
               sx={{ width: 200 }}
               size="small"
-              value={selectedDisplay?.id.toString()}
+              value={preference.displayIndex.toString()}
               onChange={handleChangeDisplayIndex}
             >
               {displays?.map((display, index) => {
                 return (
                   <MenuItem key={index} value={display?.id}>
-                    Display {index}
+                    Display {index + 1}
                   </MenuItem>
                 );
               })}

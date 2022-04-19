@@ -27,7 +27,7 @@ const createSettingWindow = () => {
   settingWindow = new BrowserWindow({
     parent: mainWindow,
     width: 480,
-    height: 640,
+    height: 720,
     transparent: true,
     modal: true,
     title: "",
@@ -233,21 +233,23 @@ function initialize() {
       Math.ceil(preference.positionX),
       Math.ceil(preference.positionY)
     );
+    // mainWindow.webContents.reloadIgnoringCache();
+
     // sendWindowInfo();
   });
 
-  ipcMain.on("RESTART_WINDOW", (preference) => {
-    mainWindow.setSize(
-      Math.ceil(windowWidth * preference.scale),
-      Math.ceil(windowHeight * preference.scale)
-      // true
-    );
-    mainWindow.webContents.reloadIgnoringCache();
+  // ipcMain.on("RESTART_WINDOW", (preference) => {
+  //   mainWindow.setSize(
+  //     Math.ceil(windowWidth * preference.scale),
+  //     Math.ceil(windowHeight * preference.scale)
+  //     // true
+  //   );
+  //   mainWindow.webContents.reloadIgnoringCache();
 
-    // electronReload
-    // app.relaunch(); // 재시작이 필요한 경우, relaunch를 호출하고 종료한다
-    // app.exit();
-  });
+  //   // electronReload
+  //   // app.relaunch(); // 재시작이 필요한 경우, relaunch를 호출하고 종료한다
+  //   // app.exit();
+  // });
 
   ipcMain.on("GET_DISPLAYS", async () => {
     if (settingWindow) {
@@ -298,7 +300,7 @@ app.on("window-all-closed", () => {
 });
 
 // 트레이 여러 개 보이는 이슈 해결 시도
-app.on('before-quit', function() {
+app.on("before-quit", function () {
   tray.destroy();
 });
 

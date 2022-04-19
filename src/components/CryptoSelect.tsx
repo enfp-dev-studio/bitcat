@@ -48,6 +48,7 @@ export default function CryptoSelect() {
               cryptoSymbol: d?.symbol,
               cryptoId: d?.id,
               cryptoImage: d?.image,
+              cryptoName: d?.name,
             });
             getPrice(d?.id, currency)
               .then((result) => {
@@ -72,12 +73,18 @@ export default function CryptoSelect() {
         sx={{ width: 300 }}
         options={coins}
         autoHighlight
+        value={{
+          id: cryptoData.cryptoId,
+          image: cryptoData.cryptoImage,
+          name: cryptoData.cryptoName,
+          symbol: cryptoData.cryptoSymbol,
+        }}
         getOptionLabel={(option: {
           id: string;
           image: string;
           symbol: string;
           name: string;
-        }) => option?.name}
+        }) => `${option?.name} (${option?.symbol})`}
         renderOption={(
           props,
           option: { id: string; image: string; symbol: string; name: string }
@@ -102,10 +109,10 @@ export default function CryptoSelect() {
           return (
             <TextField
               {...params}
-              label="Choose a Crypto"
+              // label="Choose a Crypto"
               inputProps={{
                 ...params.inputProps,
-                autoComplete: "new-password", // disable autocomplete and autofill
+                // autoComplete: "new-password", // disable autocomplete and autofill
               }}
             />
           );

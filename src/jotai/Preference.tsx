@@ -9,7 +9,7 @@ export type PreferenceType = {
   displayIndex: number;
 };
 
-const defaultPreference: PreferenceType = {
+export const defaultPreference: PreferenceType = {
   positionX: 0,
   positionY: 0,
   scale: 1,
