@@ -29,9 +29,6 @@ export const AnimationAtom = atomWithStorage<AnimationType>(
 );
 
 const setAnimation = (animation: AnimationType, percentage: number) => {
-  //   sendToMain("SET_POSITION", { x, y });
-  console.log("set animation");
-
   return {
     spritesheet: getSpritesheet(percentage),
     fps: getFPS(percentage),

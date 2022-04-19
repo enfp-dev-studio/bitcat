@@ -55,15 +55,6 @@ function App() {
     //@ts-ignore
     const ipcRenderer: IpcRenderer = window.ipcRenderer;
     if (ipcRenderer) {
-      ipcRenderer?.on("MOVE_WINDOW", (event: any, data: any) => {
-        // console.log("set source invoke", data);
-        // setImage(data?.image);
-        // setWinSize({
-        //   width: data.width,
-        //   height: data.height,
-        // });
-      });
-
       ipcRenderer?.on("SET_SAVE_PATH", (event: any, data: any) => {
         // if (data?.path) {
         //   setSavePath(data?.path);
@@ -78,6 +69,14 @@ function App() {
         savePosition({
           x: defaultPreference.positionX,
           y: defaultPreference.positionY,
+        });
+      });
+
+      ipcRenderer?.on("MOVE_WINDOW", async (event: any, data: any) => {
+        console.log("MOVE_WINDOW", data);
+        savePosition({
+          x: data.x,
+          y: data.y,
         });
       });
     }
@@ -148,7 +147,6 @@ function App() {
     // ipcRenderer.on("SET_SOURCE", async (event: any, sourceId: any) => {});
   }, []);
 
-  console.log(animation);
   useEffect(() => {
     // @ts-ignore
     if (animation.fps !== spritesheetRef?.current?.fps) {
@@ -166,6 +164,9 @@ function App() {
     >
       <div
         className="container"
+        onMouseUp={(e) => {
+          console.log("123");
+        }}
         // draggable="true"
         //   // onDrag={(e) => {
         //   //   console.log(e);
@@ -292,7 +293,7 @@ function App() {
         </Paper>
       </div> */}
       </div>
-      <Modal
+      {/* <Modal
         open={loading}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
@@ -306,7 +307,7 @@ function App() {
         >
           <CircularProgress></CircularProgress>
         </div>
-      </Modal>
+      </Modal> */}
     </div>
   );
 }

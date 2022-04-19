@@ -25,45 +25,25 @@ export const CryptoInfo = () => {
   const [preference] = useAtom(Preference);
   const [cryptoData] = useAtom(CryptoDataAtom);
   const [currency, setCurrency] = useAtom(currencyAtom);
-  // const [exchangeData] = useAtom(ExchangeDataAtom);
   const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom);
   const [duringProgress, setDuringProgress] = useState(false);
   const springRef = useSpringRef();
   const [, setAnimation] = useAtom(setAnimationAtom);
 
   const updatePrice = useCallback(async () => {
-    // console.log(" call update", cryptoData);
     setLoading(true);
     const { openingPrice, tradePrice, priceChangePercentage } = await getPrice(
       cryptoData.cryptoId,
       currency
     );
-    // console.log(priceChangePercentage);
     updateCryptoPrice({
       openingPrice,
       tradePrice,
       priceChangePercentage,
-      // bitcatState:
-      //   tradePrice > openingPrice
-      //     ? BitcatState.STATE_HAPPY
-      //     : BitcatState.STATE_PANIC,
     });
     setAnimation({ percentage: priceChangePercentage });
     setLoading(false);
-
-    // setDuringProgress(true);
-    springRef.start({
-      to: {
-        height: UI.frameHeight,
-        width: UI.frameWidth * 0.75 * preference.scale,
-        backgroundColor: UI.fillBackgroundColor,
-        // borderRadius: (UI.priceBarHeight / 2) * preference.scale,
-      },
-      onRest: async () => {
-        // console.log("onreset");
-        updatePrice();
-      },
-    });
+    setDuringProgress(true);
   }, [
     cryptoData.cryptoSymbol,
     preference.scale,
@@ -71,31 +51,12 @@ export const CryptoInfo = () => {
     springRef,
     updateCryptoPrice,
   ]);
-
-  const fillColor = () => {
-    springRef.start({
-      to: {
-        height: UI.frameHeight,
-        width: UI.frameWidth * 0.75 * preference.scale,
-        backgroundColor: UI.fillBackgroundColor,
-        // borderRadius: (UI.priceBarHeight / 2) * preference.scale,
-      },
-      onRest: async () => {
-        updatePrice();
-      },
-    });
-  };
-
   useEffect(() => {
     updatePrice();
   }, []);
 
   return (
     <div
-      onClick={() => {
-        fillColor();
-      }}
-      // ref={ref}
       style={{
         backgroundColor: UI.SurfaceColor,
         height: UI.priceBarHeight * preference.scale,
@@ -112,28 +73,33 @@ export const CryptoInfo = () => {
         // flexDirection: "row",
       }}
     >
-      {/* <Spring
-        onStart={() => {
-          console.log("onstart");
-        }}
-        // onResolve={(e) => {
-        //   console.log("resolve", duringProgress);
-        //   if (duringProgress) setDuringProgress(!duringProgress);
-        // }}
-        reset={duringProgress}
-        loop={false}
-        from={{
-          backgroundColor: UI.fillBackgroundColor,
-          // borderRadius: (UI.priceBarHeight / 2) * preference.scale,
-          height: UI.frameHeight,
-          width: 0,
-        }}
-        config={{
-          duration: UI.updateDuration,
-        }}
-      >
-        {(styles) => <animated.div style={styles}></animated.div>}
-      </Spring> */}
+      {duringProgress && (
+        <Spring
+          onStart={() => {
+            console.log("onstart");
+          }}
+          reset={duringProgress}
+          loop={false}
+          to={{
+            height: UI.frameHeight,
+            width: UI.frameWidth * 0.75 * preference.scale,
+            backgroundColor: UI.fillBackgroundColor,
+          }}
+          from={{
+            backgroundColor: UI.fillBackgroundColor,
+            height: UI.frameHeight,
+            width: 0,
+          }}
+          config={{
+            duration: UI.updateDuration,
+          }}
+          onRest={async () => {
+            updatePrice();
+          }}
+        >
+          {(styles) => <animated.div style={styles}></animated.div>}
+        </Spring>
+      )}
       <animated.div
         style={{
           position: "absolute",

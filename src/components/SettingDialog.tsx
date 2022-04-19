@@ -119,7 +119,8 @@ export const SettingDialog = () => {
             //     ? BitcatState.STATE_HAPPY
             //     : BitcatState.STATE_PANIC,
           });
-          setAnimation({ percentage: priceChangePercentage });
+          if (priceChangePercentage !== cryptoData.priceChangePercentage)
+            setAnimation({ percentage: priceChangePercentage });
           setCurrency(event?.target?.value);
         })
         .catch(console.log)

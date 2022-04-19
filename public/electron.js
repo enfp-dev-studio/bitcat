@@ -151,6 +151,13 @@ function initialize() {
     settingWindow = null;
   });
 
+  mainWindow.on("moved", async (e, d) => {
+    await mainWindow.webContents.send("MOVE_WINDOW", {
+      x: e.sender.getBounds().x,
+      y: e.sender.getBounds().y,
+    });
+  });
+
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
 

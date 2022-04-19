@@ -63,7 +63,8 @@ export default function CryptoSelect() {
                   //     ? BitcatState.STATE_HAPPY
                   //     : BitcatState.STATE_PANIC,
                 });
-                setAnimation({ percentage: priceChangePercentage });
+                if (priceChangePercentage !== cryptoData.priceChangePercentage)
+                  setAnimation({ percentage: priceChangePercentage });
               })
               .catch(console.log);
           }

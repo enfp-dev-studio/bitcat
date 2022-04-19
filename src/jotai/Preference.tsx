@@ -22,7 +22,7 @@ export const Preference = atomWithStorage<PreferenceType>(
 );
 
 const savePosition = (preference: PreferenceType, x: number, y: number) => {
-  sendToMain("SET_POSITION", { x, y });
+  // sendToMain("SET_POSITION", { x, y });
   return {
     ...preference,
     positionX: x,
