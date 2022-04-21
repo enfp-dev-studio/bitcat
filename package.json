@@ -47,15 +47,37 @@
   "homepage": "./",
   "build": {
     "productName": "Bitcat",
-    "asar": true,
     "appId": "com.enfpdev.bitcat",
+    "asar": true,
     "mac": {
-      "target": "dmg",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": true,
-      "extendInfo": {
-        "NSScreenCaptureDescription": "Let me take screenshots"
-      }
+      "target": [
+        "default"
+      ],
+      "icon": "build/icons/icon.icns"
+    },
+    "dmg": {
+      "title": "Bitcat",
+      "icon": "build/icons/icon.icns",
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "perMachine": true,
+      "installerIcon": "build/favicon.ico",
+      "shortcutName": "Bitcat",
+      "artifactName": "Bitcat-${version}.${ext}",
+      "uninstallDisplayName": "Bitcat"
+    },
+    "directories": {
+      "buildResources": "./build/",
+      "output": "./dist/"
     }
   },
   "scripts": {

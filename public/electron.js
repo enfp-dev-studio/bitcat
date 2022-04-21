@@ -9,6 +9,7 @@ const {
   shell,
   Tray,
   Menu,
+  nativeImage,
 } = require("electron");
 
 const isDev = require("electron-is-dev");
@@ -22,6 +23,33 @@ let tray = null;
 
 const windowWidth = 649;
 const windowHeight = 381;
+
+const getTraySourceImage = () => {
+  //   'aix'
+  // 'darwin'
+  // 'freebsd'
+  // 'linux'
+  // 'openbsd'
+  // 'sunos'
+  // 'win32'
+
+  let trayImage = null;
+  switch (process.platform) {
+    case "darwin":
+      trayImage = nativeImage.createFromPath(
+        path.join(__dirname, "logo192.png")
+      );
+      trayImage.setTemplateImage(true);
+      trayImage = trayImage.resize({ width: 16, height: 16 });
+      break;
+    default:
+      trayImage = nativeImage.createFromPath(
+        path.join(__dirname, "favicon.ico")
+      );
+      break;
+  }
+  return trayImage;
+};
 
 const createSettingWindow = () => {
   settingWindow = new BrowserWindow({
@@ -297,8 +325,7 @@ function initialize() {
     settingWindow.setResizable(false);
   });
 
-  // Create Tray
-  tray = new Tray(path.join(__dirname, "logo192.png"));
+  tray = new Tray(getTraySourceImage());
   const contextMenu = Menu.buildFromTemplate([
     {
       label: "설정",

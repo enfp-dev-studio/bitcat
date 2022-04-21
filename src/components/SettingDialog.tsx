@@ -147,7 +147,7 @@ export const SettingDialog = () => {
       <div
         className="container"
         style={{
-          position: "sticky",
+          // position: "sticky",
           height: 40,
           backgroundColor: UI.PrimaryColor,
         }}

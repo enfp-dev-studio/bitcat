@@ -164,9 +164,6 @@ function App() {
     >
       <div
         className="container"
-        onMouseUp={(e) => {
-          console.log("123");
-        }}
         // draggable="true"
         //   // onDrag={(e) => {
         //   //   console.log(e);
