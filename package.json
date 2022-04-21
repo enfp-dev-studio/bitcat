@@ -57,7 +57,7 @@
     },
     "dmg": {
       "title": "Bitcat",
-      "icon": "build/icons/icon.icns",
+      "icon": "build/icons/icon.icns"
     },
     "win": {
       "target": [
