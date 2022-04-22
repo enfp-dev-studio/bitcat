@@ -399,6 +399,13 @@ app.on("before-quit", function () {
   tray.destroy();
 });
 
+
+// 시작 시 자동 실행
+// 단 관리자 권한을 요구할 경우 동작하지 않는다는 스택오버플로우 글이 있었음 참조
+app.setLoginItemSettings({
+  openAtLogin: true
+})
+
 const sendCaptureEvent = async ({ thumbnail, width, height }) => {
   // console.log(win);
   if (mainWindow) {
