@@ -23,6 +23,7 @@ import "react-use-measure";
 import { IpcRenderer } from "electron";
 import { Row, VerticalDivider } from "./HTMLComponents";
 import {
+  autoLaunchAtom,
   Preference,
   setDisplayIndexAtom,
   setScaleAtom,
@@ -59,6 +60,7 @@ export const SettingDialog = () => {
   const [, setDisplayIndex] = useAtom(setDisplayIndexAtom);
   const [selectedDisplay, setSelectedDisplay] = useState<Electron.Display>();
   const [displays, setDisplays] = useState<Electron.Display[]>();
+  const [autoLaunch, setAutoLaunch] = useAtom(autoLaunchAtom);
 
   const [position, setPosition] = useState({
     x: preference.positionX,
@@ -134,6 +136,10 @@ export const SettingDialog = () => {
   //   window?.addEventListener("resize", handleResize);
   //   return window?.removeEventListener("resize", handleResize);
   // }, []);
+  const handleSetAutoLaunch = (autoLaunch: boolean) => {
+    setAutoLaunch(autoLaunch);
+    sendToMain("SET_AUTO_LAUNCH", { autoLaunch });
+  };
 
   return (
     <div
@@ -252,9 +258,7 @@ export const SettingDialog = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <FormLabel id="demo-radio-buttons-group-label">
-                  <Typography fontFamily={"Maplestory"}>비트캣 크기</Typography>
-                </FormLabel>
+                <Typography fontFamily={"Maplestory"}>비트캣 크기</Typography>
                 <VerticalDivider></VerticalDivider>
                 <RadioGroup
                   onChange={(e) => {
@@ -281,6 +285,44 @@ export const SettingDialog = () => {
                     value="1"
                     control={<Radio />}
                     label="크게"
+                  />
+                </RadioGroup>
+              </div>
+            </FormControl>
+          </Row>
+          <Row>
+            <FormControl>
+              <div
+                style={{
+                  display: "flex",
+                  flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography fontFamily={"Maplestory"}>자동실행</Typography>
+                <VerticalDivider></VerticalDivider>
+                <RadioGroup
+                  onChange={(e) => {
+                    e.preventDefault();
+                    const autoLaunch = e.target.value === "true";
+                    handleSetAutoLaunch(autoLaunch);
+                  }}
+                  row
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue={autoLaunch}
+                  name="radio-buttons-group"
+                >
+                  <FormControlLabel
+                    value={true}
+                    control={<Radio />}
+                    label="예"
+                  />
+                  <FormControlLabel
+                    value={false}
+                    control={<Radio />}
+                    label="아니오"
                   />
                 </RadioGroup>
               </div>

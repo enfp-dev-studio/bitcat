@@ -15,6 +15,7 @@
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.13",
+    "auto-launch": "^5.0.5",
     "country-locale-map": "^1.8.0",
     "dayjs": "^1.11.0",
     "electron-is-dev": "^2.0.0",

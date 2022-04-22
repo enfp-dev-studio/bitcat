@@ -9,6 +9,8 @@ export type PreferenceType = {
   displayIndex: number;
 };
 
+export const autoLaunchAtom = atom(true);
+
 export const defaultPreference: PreferenceType = {
   positionX: 0,
   positionY: 0,
@@ -77,3 +79,20 @@ export const resetPreferenceAtom = atom(
     set(Preference, resetPreference());
   }
 );
+
+// export const setAutoLaunch = (
+//   preference: PreferenceType,
+//   autoLaunch: boolean
+// ) => {
+//   return {
+//     ...preference,
+//     autoLaunch,
+//   };
+// };
+
+// export const setAutoLaunchAtom = atom(
+//   () => "",
+//   (get, set, { autoLaunch }: { autoLaunch: boolean }) => {
+//     set(Preference, setAutoLaunch(get(Preference), autoLaunch));
+//   }
+// );

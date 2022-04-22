@@ -319,10 +319,18 @@ function initialize() {
   });
 
   ipcMain.on("SET_SETTING_DIALOG_WINDOW_SIZE", (event, { width, height }) => {
-    console.log(width, height);
     settingWindow.setResizable(true);
     settingWindow.setSize(Math.ceil(width), Math.ceil(height), false);
     settingWindow.setResizable(false);
+  });
+
+  ipcMain.on("SET_AUTO_LAUNCH", (event, { autoLaunch }) => {
+    console.log("SET_AUTO_LAUNCH: ", autoLaunch)
+    app.setLoginItemSettings({
+      openAtLogin: autoLaunch,
+      path: `"${process.execPath.toString()}"`,
+    });
+    
   });
 
   tray = new Tray(getTraySourceImage());
@@ -399,12 +407,12 @@ app.on("before-quit", function () {
   tray.destroy();
 });
 
-
 // 시작 시 자동 실행
 // 단 관리자 권한을 요구할 경우 동작하지 않는다는 스택오버플로우 글이 있었음 참조
 app.setLoginItemSettings({
-  openAtLogin: true
-})
+  openAtLogin: true,
+  path: `"${process.execPath.toString()}"`,
+});
 
 const sendCaptureEvent = async ({ thumbnail, width, height }) => {
   // console.log(win);

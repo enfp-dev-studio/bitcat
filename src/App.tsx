@@ -4,11 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Spritesheet from "react-responsive-spritesheet";
 //@ts-ignore
 // import Spritesheet from "react-spritesheet";
-
-//@ts-ignore
-// import { rootPath } from "electron-root-path";
 import { CryptoInfo } from "./components/CryptoInfo";
 import { CircularProgress, Modal } from "@mui/material";
+//@ts-ignore
+import AutoLaunch from "auto-launch";
 import { UI } from "./constants/UI";
 // import { BitcatState } from "./jotai/Crypto";
 import { useAtom } from "jotai";
@@ -144,6 +143,27 @@ function App() {
       }
     };
     applyPreference();
+    // var autoLauncher = new AutoLaunch({
+    //   name: "Bitcat",
+    //   path: "/Applications/Bitcat.app",
+    // });
+
+    // if (autoLaunch) {
+    //   console.log(autoLaunch);
+    //   autoLauncher
+    //     .isEnabled()
+    //     .then((isEnabled: boolean) => {
+    //       console.log(autoLaunch);
+    //       if (isEnabled) {
+    //         return;
+    //       }
+    //       autoLauncher.enable();
+    //     })
+    //     .catch(console.log);
+    // } else {
+    //   autoLauncher.disable();
+    // }
+
     // ipcRenderer.on("SET_SOURCE", async (event: any, sourceId: any) => {});
   }, []);
 
