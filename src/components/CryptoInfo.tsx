@@ -162,18 +162,20 @@ export const CryptoInfo = () => {
             <div
               style={{
                 fontSize: UI.textSize * UIScale * preference.scale,
-                marginLeft: 10,
+                marginLeft: 4,
               }}
             >
               {currency}
             </div>
+            {getPriceIcon(
+              cryptoData?.priceChangePercentage,
+              UI.textSize * UIScale * preference.scale
+            )}
             <div
               style={{
                 fontSize: UI.textSize * UIScale * preference.scale,
-                marginLeft: 10,
               }}
             >
-              {getPriceIcon(cryptoData?.priceChangePercentage)}
               {Math.abs(cryptoData?.priceChangePercentage).toFixed(2)}%
             </div>
           </div>

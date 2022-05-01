@@ -12,17 +12,37 @@ export const getPriceColor = (percentage: number) => {
   else return UI.EqualColor;
 };
 
-export const getPriceIcon = (percentage: number): any => {
+export const getPriceIcon = (percentage: number, size: number): any => {
   if (percentage > 0)
     return (
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <ArrowDropUpIcon sx={{ width: UI.textSize, height: UI.textSize }} />;
+      <div
+        style={{
+          marginLeft: 4,
+          width: size,
+          height: size,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          overflow: "hidden",
+        }}
+      >
+        <ArrowDropUpIcon sx={{ width: size, height: size }} />;
       </div>
     );
   else if (percentage < 0)
     return (
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <ArrowDropDownIcon sx={{ width: UI.textSize, height: UI.textSize }} />
+      <div
+        style={{
+          marginLeft: 4,
+          width: size,
+          height: size,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          overflow: "hidden",
+        }}
+      >
+        <ArrowDropDownIcon sx={{ width: size, height: size }} />
       </div>
     );
   else

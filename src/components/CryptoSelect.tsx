@@ -14,6 +14,7 @@ import { Row, VerticalDivider } from "./HTMLComponents";
 import { Typography } from "@mui/material";
 import { useAtom } from "jotai";
 import { setAnimationAtom } from "../jotai/Animation";
+import { UI } from "../constants/UI";
 
 export default function CryptoSelect() {
   const [coins, setCoins] = React.useState([]);
@@ -34,12 +35,15 @@ export default function CryptoSelect() {
     <div
       style={{
         display: "flex",
+        flex: 1,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
       }}
     >
-      <Typography fontFamily={"Maplestory"}>코인: </Typography>
+      <Typography fontFamily={"Maplestory"} sx={{ width: UI.LabelWidth }}>
+        코인:{" "}
+      </Typography>
       <VerticalDivider></VerticalDivider>
       <Autocomplete
         onChange={(e, d) => {
@@ -71,7 +75,7 @@ export default function CryptoSelect() {
         }}
         id="crypto-select-demo"
         size="small"
-        sx={{ width: 300 }}
+        sx={{ flex: 1 }}
         options={coins}
         autoHighlight
         value={{

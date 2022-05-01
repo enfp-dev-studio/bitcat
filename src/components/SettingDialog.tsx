@@ -2,23 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import {
   FormControl,
   FormControlLabel,
-  FormLabel,
+  IconButton,
   MenuItem,
   Radio,
   RadioGroup,
 } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   setExchangeAtom,
   currencyAtom,
   CryptoDataAtom,
-  getPrice,
   updateCryptoPriceAtom,
 } from "../jotai/Crypto";
 import { useAtom } from "jotai";
 import { Typography } from "@mui/material";
-import { Divider } from "@mui/material";
-import { Button } from "@mui/material";
 import "react-use-measure";
 import { IpcRenderer } from "electron";
 import { Row, VerticalDivider } from "./HTMLComponents";
@@ -141,6 +139,11 @@ export const SettingDialog = () => {
     sendToMain("SET_AUTO_LAUNCH", { autoLaunch });
   };
 
+  const handleCloseApp = (e: any) => {
+    e.preventDefault();
+    sendToMain("HIDE_SETTING_DIALOG", {});    
+  };
+
   return (
     <div
       ref={ref}
@@ -151,13 +154,23 @@ export const SettingDialog = () => {
       }}
     >
       <div
-        className="container"
         style={{
           // position: "sticky",
           height: 40,
           backgroundColor: UI.PrimaryColor,
+          display: "flex",
+          flex: 1,
+          flexDirection: "row",
         }}
-      ></div>
+      >
+        <div
+          className="container"
+          style={{ display: "flex", flex: 1, flexDirection: "row", height: 40 }}
+        ></div>
+        <IconButton onClick={handleCloseApp}>
+          <CloseIcon></CloseIcon>
+        </IconButton>
+      </div>
       <div
         ref={ref}
         style={{
@@ -197,10 +210,17 @@ export const SettingDialog = () => {
             <CryptoSelect></CryptoSelect>
           </Row>
           <Row>
-            <Typography fontFamily={"Maplestory"}>통화: </Typography>
+            <Typography
+              sx={{
+                width: UI.LabelWidth,
+              }}
+              fontFamily={"Maplestory"}
+            >
+              통화:{" "}
+            </Typography>
             <VerticalDivider></VerticalDivider>
             <Select
-              sx={{ width: 200 }}
+              sx={{ flex: 1 }}
               size="small"
               value={currency}
               onChange={handleChangeCurrency}
@@ -215,10 +235,17 @@ export const SettingDialog = () => {
             </Select>
           </Row>
           <Row>
-            <Typography fontFamily={"Maplestory"}>디스플레이: </Typography>
+            <Typography
+              fontFamily={"Maplestory"}
+              sx={{
+                width: UI.LabelWidth,
+              }}
+            >
+              디스플레이:{" "}
+            </Typography>
             <VerticalDivider></VerticalDivider>
             <Select
-              sx={{ width: 200 }}
+              sx={{ flex: 1 }}
               size="small"
               value={preference.displayIndex.toString()}
               onChange={handleChangeDisplayIndex}
@@ -258,9 +285,23 @@ export const SettingDialog = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <Typography fontFamily={"Maplestory"}>비트캣 크기</Typography>
+                <Typography
+                  fontFamily={"Maplestory"}
+                  sx={{
+                    width: UI.LabelWidth,
+                  }}
+                >
+                  비트캣 크기
+                </Typography>
                 <VerticalDivider></VerticalDivider>
                 <RadioGroup
+                  sx={{
+                    display: "flex",
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
                   onChange={(e) => {
                     e.preventDefault();
                     // console.log(e.target.value);
@@ -301,7 +342,14 @@ export const SettingDialog = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <Typography fontFamily={"Maplestory"}>자동실행</Typography>
+                <Typography
+                  fontFamily={"Maplestory"}
+                  sx={{
+                    width: UI.LabelWidth,
+                  }}
+                >
+                  자동실행
+                </Typography>
                 <VerticalDivider></VerticalDivider>
                 <RadioGroup
                   onChange={(e) => {
@@ -328,40 +376,7 @@ export const SettingDialog = () => {
               </div>
             </FormControl>
           </Row>
-        </div>
-        <Divider></Divider>
-        <div
-          style={{
-            padding: 30,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {/* <Button
-            sx={{ width: 100 }}
-            variant="contained"
-            onClick={() => {
-              savePosition(position);
-              // console.log("restart", tempScale, preference.scale);
-              setScale({ scale: tempScale });
-            }}
-          >
-            <Typography fontFamily={"Maplestory"}>적용하기</Typography>
-          </Button>
-          <VerticalDivider></VerticalDivider> */}
-          <Button
-            sx={{ width: 100 }}
-            variant="contained"
-            onClick={() => {
-              sendToMain("HIDE_SETTING_DIALOG", {});
-            }}
-          >
-            <Typography fontFamily={"Maplestory"}>닫기</Typography>
-          </Button>
-        </div>
-        {/* <div style={{ position: "absolute", top: 10, right: 10 }}>
+        </div>        {/* <div style={{ position: "absolute", top: 10, right: 10 }}>
           <IconButton
             onClick={() => {
               // updatePrice();
