@@ -7,6 +7,7 @@ import {
   getPrice,
   // ExchangeDataAtom,
   getPriceColor,
+  getPriceIcon,
   // getPriceIcon,
   updateCryptoPriceAtom,
 } from "../jotai/Crypto";
@@ -172,7 +173,8 @@ export const CryptoInfo = () => {
                 marginLeft: 10,
               }}
             >
-              {cryptoData?.priceChangePercentage?.toFixed(2)}%
+              {getPriceIcon(cryptoData?.priceChangePercentage)}
+              {Math.abs(cryptoData?.priceChangePercentage).toFixed(2)}%
             </div>
           </div>
         </div>

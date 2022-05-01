@@ -54,17 +54,17 @@
       "target": [
         "default"
       ],
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icon.icns"
     },
     "dmg": {
       "title": "Bitcat",
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icon.icns"
     },
     "win": {
       "target": [
         "nsis"
       ],
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -87,6 +87,7 @@
     "react-test": "react-scripts test",
     "react-eject": "react-scripts eject",
     "start": "concurrently \"cross-env NODE_ENV=development BROWSER=none craco start\" \"wait-on http://localhost:3000 && electron .\"",
+    "build:front": "craco build",
     "build": "craco build && electron-builder",
     "release": "craco build && electron-builder --publish=always"
   },

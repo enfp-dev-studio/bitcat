@@ -77,7 +77,7 @@ const createSettingWindow = () => {
       preload: path.join(__dirname, "preload.js"), // Preload.js 에서 필요한 모듈들을 미리 로드해서 사용한다 (리모트 모듈 사용 위해서)
       contextIsolation: false, //없으면 ipcRenderer가 옮겨지지 않는다
     },
-    icon: path.join(__dirname, "../src/assets/icons/logo192.png"),
+    icon: path.join(__dirname, "logo.png"),
   });
   settingWindow.hide(); //일단 hide하고 시작해서 옵션 버튼을 누른 경우 보이게
 };
@@ -132,7 +132,7 @@ function initialize() {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: false, //없으면 ipcRenderer가 옮겨지지 않는다
     },
-    icon: path.join(__dirname, "../src/assets/icons/logo192.png"),
+    icon: path.join(__dirname, "logo192.png"),
   });
 
   createSettingWindow();

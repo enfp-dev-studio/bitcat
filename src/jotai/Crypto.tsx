@@ -12,14 +12,27 @@ export const getPriceColor = (percentage: number) => {
   else return UI.EqualColor;
 };
 
-export const getPriceIcon = (tradePrice: number, openingPrice: number): any => {
-  if (tradePrice > openingPrice)
-    return <ArrowDropUpIcon sx={{ width: UI.textSize, height: UI.textSize }} />;
-  else if (tradePrice < openingPrice)
+export const getPriceIcon = (percentage: number): any => {
+  if (percentage > 0)
     return (
-      <ArrowDropDownIcon sx={{ width: UI.textSize, height: UI.textSize }} />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ArrowDropUpIcon sx={{ width: UI.textSize, height: UI.textSize }} />;
+      </div>
     );
-  else return <div></div>;
+  else if (percentage < 0)
+    return (
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ArrowDropDownIcon sx={{ width: UI.textSize, height: UI.textSize }} />
+      </div>
+    );
+  else
+    return (
+      <div
+        style={{
+          width: UI.textSize,
+        }}
+      ></div>
+    );
 };
 
 // export enum CryptoSymbol {
@@ -249,7 +262,7 @@ const setCrypto = (
     cryptoSymbol,
     cryptoId,
     cryptoImage,
-    cryptoName
+    cryptoName,
   };
 };
 
@@ -262,7 +275,7 @@ export const setCryptoAtom = atom(
       cryptoSymbol,
       cryptoId,
       cryptoImage,
-      cryptoName
+      cryptoName,
     }: {
       cryptoSymbol: string;
       cryptoId: string;
@@ -272,7 +285,13 @@ export const setCryptoAtom = atom(
   ) => {
     set(
       CryptoDataAtom,
-      setCrypto(get(CryptoDataAtom), cryptoSymbol, cryptoId, cryptoImage, cryptoName)
+      setCrypto(
+        get(CryptoDataAtom),
+        cryptoSymbol,
+        cryptoId,
+        cryptoImage,
+        cryptoName
+      )
     );
   }
 );
