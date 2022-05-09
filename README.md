@@ -1,5 +1,5 @@
 
-![HeaderSection](https://user-images.githubusercontent.com/57121116/167403237-31119b97-5950-4e05-a337-3d56a8e0acc8.png, =480x480)
+![HeaderSection](https://user-images.githubusercontent.com/57121116/167403237-31119b97-5950-4e05-a337-3d56a8e0acc8.png=480x480)
 
 # Bitcat
 Bitcat is a desktop widget app where cute kittens wish the skyrocket in cryptocurrency.
