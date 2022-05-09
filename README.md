@@ -15,7 +15,7 @@ We will cheer up the skyrocket of your cryptocurrency. Please watch how hard we 
 
 ## Why We are here
 
-For us, seeing cryptocurrency prices has become a daily routine. But looking at the bar charts on the exchange is really boring. But unfortunately our precious money is at stake, so we can't ignore it. So Bitcat came along.
+Checking the price of cryptocurrency has become our daily routine. But it's boring to always see similar bar charts and price numbers. Nevertheless, we cannot ignore it because our precious money is at stake. If you have to check the price anyway, wouldn't it be better to look cute?
 
 ## How to use
 
