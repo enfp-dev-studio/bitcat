@@ -1,5 +1,4 @@
-![HeaderSection](https://user-images.githubusercontent.com/57121116/167403780-54f3baa2-abfe-4c26-b6e2-7918578f6e4c.png)
-
+<img src='https://user-images.githubusercontent.com/57121116/167403780-54f3baa2-abfe-4c26-b6e2-7918578f6e4c.png' width='480'>
 
 # Bitcat
 Bitcat is a desktop widget app where cute kittens wish the skyrocket in cryptocurrency.
