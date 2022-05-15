@@ -8,14 +8,21 @@ Bitcat is a desktop widget app where cute kittens wish the skyrocket in cryptocu
 No more checking cryptocurrency prices with boring charts. Us,
 Bitcat will let you know the price of the cryptocurrency you want, and will always pray for a surge. Launch Bitcat, select the cryptocurrency you are interested in, and choose the right size and currency. And place us wherever you want.
 
+<p align=center><img src='https://bitcat.app/_next/image?url=%2FSubSectionWhat.png' width='480'></p>
+
+
 
 ## What we will do
 
 We will cheer up the skyrocket of your cryptocurrency. Please watch how hard we cheer and what expressions we make. It will make cryptocurrency life a little more enjoyable.
 
+<p align=center><img src='https://bitcat.app/_next/image?url=%2FSubSectionWhy.png' width='480'></p>
+
 ## Why We are here
 
 Checking the price of cryptocurrency has become our daily routine. But it's boring to always see similar bar charts and price numbers. Nevertheless, we cannot ignore it because our precious money is at stake. If you have to check the price anyway, wouldn't it be better to look cute?
+
+<p align=center><img src='https://bitcat.app/_next/image?url=%2FSubSectionHow.png' width='480'></p>
 
 ## How to use
 
