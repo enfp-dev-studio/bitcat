@@ -1,7 +1,7 @@
 
 <p align=center><img src='https://user-images.githubusercontent.com/57121116/167403780-54f3baa2-abfe-4c26-b6e2-7918578f6e4c.png' width='360'></p>
 
-<a align=center href="buymeacoffee.com/?via=enfpdev" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+<p align=center ><a href="buymeacoffee.com/?via=enfpdev" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 
 # Bitcat
 Bitcat is a desktop widget app where cute kittens wish the skyrocket in cryptocurrency.
