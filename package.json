@@ -1,123 +1,61 @@
 {
-  "name": "Bitcat",
-  "version": "0.1.1",
-  "private": true,
-  "dependencies": {
-    "@emotion/react": "^11.8.2",
-    "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.5.1",
-    "@mui/material": "^5.5.1",
-    "@react-spring/web": "^9.4.4",
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.3",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.4.1",
-    "@types/node": "^16.11.26",
-    "@types/react": "^17.0.39",
-    "@types/react-dom": "^17.0.13",
-    "auto-launch": "^5.0.5",
-    "country-locale-map": "^1.8.0",
-    "dayjs": "^1.11.0",
-    "electron-is-dev": "^2.0.0",
-    "electron-reload": "^2.0.0-alpha.1",
-    "electron-root-path": "^1.0.16",
-    "electron-store": "^8.0.1",
-    "get-user-locale": "^1.4.0",
-    "html2canvas": "^1.4.1",
-    "html2canvas-render-offscreen": "^0.0.3",
-    "immer": "^9.0.12",
-    "jotai": "^1.6.1",
-    "react": "^17.0.2",
-    "react-color": "^2.19.3",
-    "react-dom": "^17.0.2",
-    "react-draggable": "^4.4.4",
-    "react-flow-renderer": "^9.7.4",
-    "react-responsive-spritesheet": "^2.3.9",
-    "react-rnd": "^10.3.5",
-    "react-router-dom": "5.3.1",
-    "react-scripts": "5.0.0",
-    "react-spritesheet": "^1.0.1",
-    "react-textarea-autosize": "^8.3.3",
-    "react-use-measure": "^2.1.1",
-    "typescript": "^4.6.2",
-    "use-react-screenshot": "^3.0.0",
-    "uuid": "^8.3.2",
-    "web-vitals": "^2.1.4"
-  },
-  "main": "public/electron.js",
-  "homepage": "./",
-  "build": {
-    "productName": "Bitcat",
-    "appId": "com.enfpdev.bitcat",
-    "asar": true,
-    "mac": {
-      "target": [
-        "default"
-      ],
-      "icon": "build/icon.icns"
-    },
-    "dmg": {
-      "title": "Bitcat",
-      "icon": "build/icon.icns"
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "icon": "build/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": false,
-      "createDesktopShortcut": true,
-      "perMachine": true,
-      "installerIcon": "build/favicon.ico",
-      "shortcutName": "Bitcat",
-      "artifactName": "Bitcat-${version}.${ext}",
-      "uninstallDisplayName": "Bitcat"
-    },
-    "directories": {
-      "buildResources": "./build/",
-      "output": "./dist/"
-    }
-  },
+  "name": "bitcat-v2",
+  "version": "1.0.0",
+  "description": "An Electron application with React and TypeScript",
+  "main": "./out/main/index.js",
+  "author": "example.com",
+  "homepage": "https://www.electronjs.org",
   "scripts": {
-    "react-start": "react-scripts start",
-    "react-build": "react-scripts build",
-    "react-test": "react-scripts test",
-    "react-eject": "react-scripts eject",
-    "start": "concurrently \"cross-env NODE_ENV=development BROWSER=none craco start\" \"wait-on http://localhost:3000 && electron .\"",
-    "build:front": "craco build",
-    "build": "craco build && electron-builder",
-    "release": "craco build && electron-builder --publish=always"
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "build": "npm run typecheck && electron-vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "build:win": "npm run build && electron-builder --win --config",
+    "build:mac": "electron-vite build && electron-builder --mac --config",
+    "build:linux": "electron-vite build && electron-builder --linux --config"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "@electron-toolkit/preload": "^1.0.3",
+    "@electron-toolkit/utils": "^1.0.2",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.11.12",
+    "@react-spring/web": "^9.7.1",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^5.3.0",
+    "jotai": "^2.0.3",
+    "react-responsive-spritesheet": "^2.3.9",
+    "wouter": "^2.10.0"
   },
   "devDependencies": {
-    "@craco/craco": "^6.4.3",
-    "@types/react-color": "^3.0.6",
-    "@types/react-router-dom": "^5.3.3",
-    "@types/uuid": "^8.3.4",
-    "concurrently": "^7.0.0",
-    "cross-env": "^7.0.3",
-    "electron": "^17.1.0",
-    "electron-builder": "^22.14.13",
-    "wait-on": "^6.0.1"
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@electron/notarize": "^1.2.3",
+    "@types/node": "16.18.11",
+    "@types/react": "18.0.26",
+    "@types/react-dom": "18.0.10",
+    "@types/react-responsive-spritesheet": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "@typescript-eslint/parser": "^5.48.0",
+    "@vitejs/plugin-react": "^3.0.1",
+    "autoprefixer": "^10.4.13",
+    "electron": "^21.3.3",
+    "electron-builder": "^23.6.0",
+    "electron-vite": "^1.0.17",
+    "eslint": "^8.31.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.11",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.2.7",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.4"
   }
 }
