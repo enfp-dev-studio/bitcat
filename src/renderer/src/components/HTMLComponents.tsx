@@ -32,7 +32,7 @@ export const RowRight = (props: any) => {
   );
 };
 
-export const VerticalDivider = (props: any) => {
+export const VerticalDivider = () => {
   return (
     <div
       style={{
@@ -47,7 +47,7 @@ export const VerticalDivider = (props: any) => {
   );
 };
 
-export const HorizontalDivider = (props: any) => {
+export const HorizontalDivider = () => {
   return (
     <div
       style={{

@@ -1,4 +1,3 @@
-import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import DownAnimation from "../assets/image/bitcat_down_sheet.png";
 import UpAnimation from "../assets/image/bitcat_up_sheet.png";
@@ -28,18 +27,4 @@ const defaultAnimation: AnimationType = {
 export const AnimationAtom = atomWithStorage<AnimationType>(
   "bitcat_animation",
   defaultAnimation
-);
-
-const setAnimation = (animation: AnimationType, percentage: number) => {
-  return {
-    spritesheet: getSpritesheet(percentage),
-    fps: getFPS(percentage),
-  };
-};
-
-export const setAnimationAtom = atom(
-  () => "",
-  (get, set, { percentage }: { percentage: number }) => {
-    set(AnimationAtom, setAnimation(get(AnimationAtom), percentage));
-  }
 );

@@ -14,18 +14,18 @@ import {
 import { UI } from '../constants/UI'
 import { formatNumber } from '../util/Util'
 import { Spring, animated } from '@react-spring/web'
-import { setAnimationAtom } from '../jotai/Animation'
 import { loadingAtom } from '../jotai/Loading'
+import { AnimationAtom, getFPS, getSpritesheet } from '../jotai/Animation'
 
 const UIScale = 0.6
 
-export const CryptoInfo = ({ scale }) => {
+export const CryptoInfo = ({ scale }: { scale: number }) => {
   const [, setLoading] = useAtom(loadingAtom)
   const [cryptoData] = useAtom(CryptoDataAtom)
   const [currency] = useAtom(currencyAtom)
   const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom)
   const [duringProgress, setDuringProgress] = useState(false)
-  const [, setAnimation] = useAtom(setAnimationAtom)
+  const [, setAnimation] = useAtom(AnimationAtom)
 
   const updatePrice = useCallback(async () => {
     setLoading(true)
@@ -38,8 +38,11 @@ export const CryptoInfo = ({ scale }) => {
       tradePrice,
       priceChangePercentage
     })
-    if (priceChangePercentage !== cryptoData.priceChangePercentage)
-      setAnimation({ percentage: priceChangePercentage })
+    if (priceChangePercentage !== cryptoData.priceChangePercentage) {
+      const spritesheet = getSpritesheet(priceChangePercentage)
+      const fps = getFPS(priceChangePercentage)
+      setAnimation({ spritesheet, fps })
+    }
     setLoading(false)
     setDuringProgress(true)
   }, [cryptoData, currency])
@@ -75,6 +78,7 @@ export const CryptoInfo = ({ scale }) => {
         userSelect: 'none'
         // flexDirection: "row",
       }}
+      className="shadow-lg"
     >
       {duringProgress && (
         <Spring
@@ -101,7 +105,7 @@ export const CryptoInfo = ({ scale }) => {
             // updatePrice();
           }}
         >
-          {(styles) => <animated.div style={styles}></animated.div>}
+          {(styles: any) => <animated.div style={styles}></animated.div>}
         </Spring>
       )}
       <animated.div

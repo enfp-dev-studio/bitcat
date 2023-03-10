@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Router, Route, useSearch } from 'wouter'
+import { Router, Route } from 'wouter'
 import App from './App'
 import { SettingDialog } from './components/SettingDialog'
 

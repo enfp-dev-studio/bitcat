@@ -478,10 +478,3 @@ app.setLoginItemSettings({
   openAtLogin: true,
   path: `"${process.execPath.toString()}"`
 })
-
-const sendResetEvent = async () => {
-  // console.log(win);
-  if (mainWindow) {
-    await mainWindow?.webContents.send('RESET_PREFERENCE', {})
-  }
-}

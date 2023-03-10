@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   FormControl,
   FormControlLabel,
@@ -21,7 +21,7 @@ import { getLocalCurrencies, sendToMain, sendToMainAsync } from '../util/Util'
 
 import CryptoSelect from './CryptoSelect'
 import { CloseIcon } from './Icons'
-import { Scale, scaleAtom } from '@renderer/jotai/Preference'
+import { Scale, scaleAtom } from '../jotai/Preference'
 
 export const SettingDialog = () => {
   const [currency, setCurrency] = useAtom(currencyAtom)
@@ -102,16 +102,15 @@ export const SettingDialog = () => {
           className="movable"
           style={{ display: 'flex', flex: 1, flexDirection: 'row', height: 40 }}
         ></div>
-        <IconButton onClick={handleCloseApp}>
-          <CloseIcon size={24}></CloseIcon>
-        </IconButton>
+        <div className="p-1 rounded-full opacity-50 hover:opacity-100" onClick={handleCloseApp}>
+          <CloseIcon size={28}></CloseIcon>
+        </div>
       </div>
       <div
         // ref={ref}
         style={{
           display: 'flex',
           flexDirection: 'column',
-          // padding: 10,
           justifyContent: 'space-between'
         }}
       >
