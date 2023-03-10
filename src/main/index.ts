@@ -445,7 +445,10 @@ function initialize() {
 
 app.on('before-quit', () => {
   console.log('before-quit', lastScale)
-  store.set('position', mainWindow?.getPosition())
+  store.set('position', {
+    x: mainWindow?.getPosition()[0],
+    y: mainWindow?.getPosition()[1]
+  })
   store.set('scale', lastScale)
 })
 

@@ -63,6 +63,7 @@ export const SettingDialog = () => {
   }
   const handleSetAutoLaunch = (autoLaunch: boolean) => {
     sendToMain('SET_AUTO_LAUNCH', { autoLaunch })
+    setAutoLaunch(autoLaunch)
   }
 
   const handleCloseApp = (e: any) => {
