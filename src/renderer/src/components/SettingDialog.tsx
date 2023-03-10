@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import {
   FormControl,
   FormControlLabel,
-  IconButton,
   MenuItem,
   Radio,
   RadioGroup
@@ -300,7 +299,6 @@ export const SettingDialog = () => {
           >
             <RefreshIcon></RefreshIcon>
           </IconButton>
-
           <IconButton
             onClick={() => {
               sendToMain("OPEN_DOCUMENT_SITE", {});

@@ -11,6 +11,7 @@ import {
 } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+//@ts-ignore
 import TrayIcon from '../../resources/trayTemplate.png?asset'
 const Store = require('electron-store')
 
@@ -24,8 +25,8 @@ let lastScale = 1.0
 const windowWidth = 650
 const windowHeight = 380
 
-export const pathCreator = (route) => {
-  if (is.dev) {
+export const pathCreator = (route: string) => {
+  if (false) {
     const port = 5173
     const url = new URL(`http://localhost:${port}`)
     return url.href + '?' + route
@@ -78,10 +79,9 @@ const createSettingWindow = () => {
     fullscreen: false,
     useContentSize: true,
     webPreferences: {
-      nodeIntegration: true, // 노드 기본 API들 사용 위해서
       devTools: is.dev,
       preload: join(__dirname, '../preload/index.js'), // Preload.js 에서 필요한 모듈들을 미리 로드해서 사용한다 (리모트 모듈 사용 위해서)
-      contextIsolation: false //없으면 ipcRenderer가 옮겨지지 않는다
+      sandbox: false
     },
     icon: join(__dirname, 'logo192.png')
   })
@@ -202,10 +202,9 @@ function initialize() {
     fullscreen: false,
     useContentSize: true,
     webPreferences: {
-      nodeIntegration: true,
       devTools: is.dev,
       preload: join(__dirname, '../preload/index.js'),
-      contextIsolation: false //없으면 ipcRenderer가 옮겨지지 않는다
+      sandbox: false
     },
     icon: join(__dirname, 'logo192.png')
   })
@@ -264,7 +263,7 @@ function initialize() {
     settingWindow = null
   })
 
-  mainWindow?.on('moved', async (e, _d) => {
+  mainWindow?.on('moved', async (e: any, _d: any) => {
     await mainWindow?.webContents.send('MOVE_WINDOW', {
       x: e.sender.getBounds().x,
       y: e.sender.getBounds().y

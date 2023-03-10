@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: bitcat-v2
+appId: com.enfpdev.bitcat
+productName: bitcat
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ asarUnpack:
   - resources/*
 afterSign: build/notarize.js
 win:
-  executableName: bitcat-v2
+  executableName: bitcat
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -32,11 +32,12 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: ENFP-Dev-Studio
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: enfp-dev-studio
+  repo: bitcat

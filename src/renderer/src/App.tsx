@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import Spritesheet from 'react-responsive-spritesheet'
 import { CryptoInfo } from './components/CryptoInfo'
@@ -105,50 +105,18 @@ function App() {
         loop
         speed={900}
       /> */}
-        <Suspense>
-          <div
-            style={{
-              position: 'absolute',
-              top: 40 * scale,
-              width: '100%',
-              // bottom: 0,
-              left: 'auto',
-              right: 'auto'
-            }}
-          >
-            <CryptoInfo scale={scale}></CryptoInfo>
-          </div>
-        </Suspense>
-        {/* <div style={{ position: "absolute", bottom: 10, right: 10 }}>
-        <Paper elevation={3} style={{ borderRadius: 40 }}>
-          <IconButton
-            onClick={() => {
-              // setIsPlaying(!isPlaying);
-              setFPS(fps + 12);
-              // @ts-ignore
-              spritesheetRef.current.setFps(fps + 12);
-            }}
-          >
-            <FastForwardIcon />
-          </IconButton>
-        </Paper>
-        <Paper
-          elevation={3}
-          style={{ borderRadius: UI.textSize * preference.scale }}
+        <div
+          style={{
+            position: 'absolute',
+            top: 40 * scale,
+            width: '100%',
+            // bottom: 0,
+            left: 'auto',
+            right: 'auto'
+          }}
         >
-          <IconButton
-            style={{ fontSize: UI.textSize * preference.scale }}
-            onClick={() => {
-              // setIsPlaying(!isPlaying);
-              setFPS(fps - 12 > 0 ? fps - 12 : 1);
-              // @ts-ignore
-              spritesheetRef.current.setFps(fps - 12 > 0 ? fps - 12 : 1);
-            }}
-          >
-            <FastRewindIcon />
-          </IconButton>
-        </Paper>
-      </div> */}
+          <CryptoInfo scale={scale}></CryptoInfo>
+        </div>
       </div>
       {/* <Modal
         open={loading}

@@ -1,3 +1,7 @@
-provider: generic
-url: https://example.com/auto-updates
-updaterCacheDirName: bitcat-v2-updater
+# provider: generic
+# url: https://example.com/auto-updates
+# updaterCacheDirName: capture-note--updater
+# FOR AUTO UPDATER TEST
+provider: github
+owner: enfp-dev-studio
+repo: bitcat
