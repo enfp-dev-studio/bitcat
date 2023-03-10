@@ -9,31 +9,13 @@ import { AnimationAtom } from './jotai/Animation'
 import './App.css'
 import { scaleAtom } from './jotai/Preference'
 import { SpriteAnimator } from './components/SpriteAnimator'
+import { useTranslation } from 'react-i18next'
 // import { loadingAtom } from './jotai/Loading'
 
 function App() {
   const [animation] = useAtom(AnimationAtom)
   const spritesheetRef = useRef<Spritesheet | null>(null)
   const [scale] = useAtom(scaleAtom)
-  // const [isGrabbing, setIsGrabbing] = useState(false);
-  // const [windowInfo, setWindowInfo] = useState<WindowInfo>({
-  //   x: 0,
-  //   y: 0,
-  //   maxX: UI.frameWidth * preference.scale,
-  //   maxY: UI.frameHeight * preference.scale,
-  // });
-
-  // const [winSize, setWinSize] = useState({
-  //   width: 1,
-  //   height: 1,
-  // });
-  useEffect(() => {
-    // const init = async () => {
-    //   const result = await sendToMainAsync('GET_SCALE', {})
-    //   setScale(result)
-    // }
-    // init()
-  })
 
   useEffect(() => {
     if (animation.fps !== spritesheetRef?.current?.getInfo('fps')) {
@@ -54,19 +36,12 @@ function App() {
       <div
         style={{
           display: 'flex',
-          // overflow: 'hidden',
-          // backgroundColor: 'transparent',
           alignItems: 'center',
           justifyContent: 'center',
-          // alignSelf: 'center',
-          // backgroundColor: 'rgba(255, 255, 255, 0.3)',
           cursor: 'grabbing'
-          // backdropFilter: "blur(30px)",
-          // WebkitBackdropFilter: "blur(30px)",
         }}
       >
         <SpriteAnimator
-          // className="movable"
           scale={scale}
           spritesheet={animation.spritesheet}
           widthFrame={UI.frameWidth}
@@ -80,7 +55,6 @@ function App() {
             position: 'absolute',
             top: 40 * scale,
             width: '100%',
-            // bottom: 0,
             left: 'auto',
             right: 'auto'
           }}
@@ -88,21 +62,6 @@ function App() {
           <CryptoInfo scale={scale}></CryptoInfo>
         </div>
       </div>
-      {/* <Modal
-        open={loading}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <div
-          style={{
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <CircularProgress></CircularProgress>
-        </div>
-      </Modal> */}
     </div>
   )
 }

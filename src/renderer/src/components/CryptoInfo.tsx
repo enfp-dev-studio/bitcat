@@ -1,14 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAtom } from 'jotai'
 import {
-  // BitcatState,
   CryptoDataAtom,
   currencyAtom,
   getPrice,
-  // ExchangeDataAtom,
   getPriceColor,
   getPriceIcon,
-  // getPriceIcon,
   updateCryptoPriceAtom
 } from '../jotai/Crypto'
 import { UI } from '../constants/UI'
@@ -65,7 +62,6 @@ export const CryptoInfo = ({ scale }: { scale: number }) => {
         backgroundColor: UI.SurfaceColor,
         height: UI.priceBarHeight * scale,
         borderRadius: (UI.priceBarHeight / 2) * scale,
-        // border: "solid 4px black",
         width: UI.frameWidth * 0.75 * scale,
         overflow: 'hidden',
         paddingLeft: 10,
@@ -75,15 +71,12 @@ export const CryptoInfo = ({ scale }: { scale: number }) => {
         display: 'flex',
         justifyContent: 'center',
         pointerEvents: 'none',
-        userSelect: 'none'
-        // flexDirection: "row",
+        userSelect: 'none',
+        boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
       }}
     >
       {duringProgress && (
         <Spring
-          // onStart={(e) => {
-          //   console.log("onstart");
-          // }}
           reset={duringProgress}
           loop={false}
           to={{
@@ -101,7 +94,6 @@ export const CryptoInfo = ({ scale }: { scale: number }) => {
           }}
           onRest={async () => {
             setDuringProgress(false)
-            // updatePrice();
           }}
         >
           {(styles: any) => <animated.div style={styles}></animated.div>}
@@ -116,14 +108,10 @@ export const CryptoInfo = ({ scale }: { scale: number }) => {
           bottom: 0,
           marginLeft: 'auto',
           marginRight: 'auto',
-          // topmargin: "auto",
-          // bottommargin: "auto",
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center'
-          // backgroundColor: "red",
-          // maxWidth: UI.frameWidth * 0.75 * scale,
         }}
       >
         <img
@@ -132,13 +120,10 @@ export const CryptoInfo = ({ scale }: { scale: number }) => {
           width={UI.textSize * scale}
           height={UI.textSize * scale}
           style={{
-            // padding: 2,
             alignSelf: 'center',
             borderRadius: '50%'
-            // backgroundColor: "black",
           }}
         ></img>
-        {/* <VerticalDivider></VerticalDivider> */}
         <div
           style={{
             height: '100%',
@@ -151,7 +136,6 @@ export const CryptoInfo = ({ scale }: { scale: number }) => {
             marginLeft: 10
           }}
         >
-          {/* {getPriceIcon(cryptoData.tradePrice, cryptoData.openingPrice)} */}
           {formatNumber(cryptoData.tradePrice)}
           <div
             style={{

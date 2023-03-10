@@ -13,5 +13,5 @@ export const UI = {
   margin: 10,
   DialogBackgroundColor: "#FFFFFF",
   ScreenBackground: "#073b4c",
-  LabelWidth: 80,
+  LabelWidth: 100,
 };

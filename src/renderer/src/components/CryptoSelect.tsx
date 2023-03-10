@@ -14,15 +14,14 @@ import { useAtom } from 'jotai'
 // import { setAnimationAtom } from '../jotai/Animation'
 import { UI } from '../constants/UI'
 import { Box } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 export default function CryptoSelect() {
+  const { t } = useTranslation()
   const [coins, setCoins] = React.useState([])
-  // const [selectedCoin, setSelectedCoin] = React.useState()
   const [cryptoData] = useAtom(CryptoDataAtom)
   const [currency] = useAtom(currencyAtom)
   const [, setCrypto] = useAtom(setCryptoAtom)
-  // const [, updateCryptoPrice] = useAtom(updateCryptoPriceAtom)
-  // const [, setAnimation] = useAtom(setAnimationAtom)
   React.useEffect(() => {
     getCoinList(currency).then((result) => {
       setCoins(result)
@@ -40,7 +39,9 @@ export default function CryptoSelect() {
         justifyContent: 'space-between'
       }}
     >
-      <p style={{ width: UI.LabelWidth, fontFamily: 'Maplestory' }}>코인: </p>
+      <p style={{ width: UI.LabelWidth, fontFamily: 'Maplestory' }}>
+        {t('SETTING_LABEL_CRYPTO')}:{' '}
+      </p>
       <VerticalDivider></VerticalDivider>
       <Autocomplete
         isOptionEqualToValue={(option, value) => option.id === value.id}

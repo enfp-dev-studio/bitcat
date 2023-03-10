@@ -60,7 +60,6 @@ const getTraySourceImage = () => {
 
 const createSettingWindow = () => {
   settingWindow = new BrowserWindow({
-    parent: mainWindow ? mainWindow : undefined,
     width: 480,
     height: 320,
     transparent: true,

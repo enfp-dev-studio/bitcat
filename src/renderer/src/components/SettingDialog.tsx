@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import {
-  // setExchangeAtom,
-  currencyAtom
-  // CryptoDataAtom,
-  // updateCryptoPriceAtom
-} from '../jotai/Crypto'
+import { currencyAtom } from '../jotai/Crypto'
 import { useAtom } from 'jotai'
 import { Row, VerticalDivider } from './HTMLComponents'
 import { UI } from '../constants/UI'
@@ -15,8 +10,10 @@ import { getLocalCurrencies, sendToMain, sendToMainAsync } from '../util/Util'
 import CryptoSelect from './CryptoSelect'
 import { CloseIcon } from './Icons'
 import { Scale, scaleAtom } from '../jotai/Preference'
+import { useTranslation } from 'react-i18next'
 
 export const SettingDialog = () => {
+  const { t } = useTranslation()
   const [currency, setCurrency] = useAtom(currencyAtom)
   // const ref = useRef<HTMLInputElement>(null)
   const [scale, setScale] = useAtom(scaleAtom)
@@ -113,25 +110,6 @@ export const SettingDialog = () => {
             padding: 20
           }}
         >
-          {/* <Row>
-          <p fontFamily={"Maplestory"}>거래소: </p>
-          <VerticalDivider></VerticalDivider>
-          <Select
-            // labelId="demo-simple-select-label"
-            // id="demo-simple-select"
-            value={exchangeData.enum}
-            // label="Exchange"
-            onChange={handleChange}
-          >
-            {ExchangeDatas.map((e) => {
-              return (
-                <MenuItem key={e.enum} value={e.enum}>
-                  {e.enum}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </Row> */}
           <Row>
             <CryptoSelect></CryptoSelect>
           </Row>
@@ -142,7 +120,7 @@ export const SettingDialog = () => {
                 fontFamily: 'Maplestory'
               }}
             >
-              통화:{' '}
+              {t('SETTING_LABEL_CURRENCY')}{' '}
             </p>
             <VerticalDivider></VerticalDivider>
             <Select
@@ -160,46 +138,6 @@ export const SettingDialog = () => {
               })}
             </Select>
           </Row>
-          {/* <Row>
-            <p
-              style={{
-                width: UI.LabelWidth,
-                fontFamily: 'Maplestory'
-              }}
-            >
-              디스플레이:{' '}
-            </p>
-            <VerticalDivider></VerticalDivider>
-            <Select
-              style={{ flex: 1 }}
-              size="small"
-              value={preference.displayIndex.toString()}
-              onChange={handleChangeDisplayIndex}
-            >
-              {displays?.map((display, index) => {
-                return (
-                  <MenuItem key={index} value={display?.id}>
-                    Display {index + 1}
-                  </MenuItem>
-                )
-              })}
-            </Select>
-          </Row> */}
-          {/* <div
-          style={{
-            padding: 10,
-          }}
-        >
-          <p fontFamily={"Maplestory"}>비트캣 위치</p>
-          <HorizontalDivider></HorizontalDivider>
-          {selectedDisplay && (
-            <PositionSelect
-              position={position}
-              setPosition={setPosition}
-              display={selectedDisplay}
-            ></PositionSelect>
-          )}
-        </div> */}
           <Row>
             <FormControl>
               <div
@@ -217,7 +155,7 @@ export const SettingDialog = () => {
                     width: UI.LabelWidth
                   }}
                 >
-                  비트캣 크기
+                  {t('SETTING_LABEL_WIDGET_SIZE')}
                 </p>
                 <VerticalDivider></VerticalDivider>
                 <RadioGroup
@@ -240,9 +178,21 @@ export const SettingDialog = () => {
                   value={scale}
                   name="radio-buttons-group"
                 >
-                  <FormControlLabel value={Scale.small} control={<Radio />} label="작게" />
-                  <FormControlLabel value={Scale.medium} control={<Radio />} label="중간" />
-                  <FormControlLabel value={Scale.large} control={<Radio />} label="크게" />
+                  <FormControlLabel
+                    value={Scale.small}
+                    control={<Radio />}
+                    label={t('SETTING_LABEL_SIZE_RADIO_SMALL')}
+                  />
+                  <FormControlLabel
+                    value={Scale.medium}
+                    control={<Radio />}
+                    label={t('SETTING_LABEL_SIZE_RADIO_MEDIUM')}
+                  />
+                  <FormControlLabel
+                    value={Scale.large}
+                    control={<Radio />}
+                    label={t('SETTING_LABEL_SIZE_RADIO_LARGE')}
+                  />
                 </RadioGroup>
               </div>
             </FormControl>
@@ -264,7 +214,7 @@ export const SettingDialog = () => {
                     fontFamily: 'Maplestory'
                   }}
                 >
-                  자동실행
+                  {t('SETTING_LABEL_AUTO_LAUNCH')}
                 </p>
                 <VerticalDivider></VerticalDivider>
                 <RadioGroup
@@ -278,30 +228,21 @@ export const SettingDialog = () => {
                   value={autoLaunch}
                   name="radio-buttons-group"
                 >
-                  <FormControlLabel value={true} control={<Radio />} label="예" />
-                  <FormControlLabel value={false} control={<Radio />} label="아니오" />
+                  <FormControlLabel
+                    value={true}
+                    control={<Radio />}
+                    label={t('SETTING_LABEL_RADIO_YES')}
+                  />
+                  <FormControlLabel
+                    value={false}
+                    control={<Radio />}
+                    label={t('SETTING_LABEL_RADIO_NO')}
+                  />
                 </RadioGroup>
               </div>
             </FormControl>
           </Row>
-        </div>{' '}
-        {/* <div style={{ position: "absolute", top: 10, right: 10 }}>
-          <IconButton
-            onClick={() => {
-              // updatePrice();
-              resetPreference();
-            }}
-          >
-            <RefreshIcon></RefreshIcon>
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              sendToMain("OPEN_DOCUMENT_SITE", {});
-            }}
-          >
-            <QuestionMarkIcon></QuestionMarkIcon>
-          </IconButton>
-        </div> */}
+        </div>
       </div>
     </div>
   )
