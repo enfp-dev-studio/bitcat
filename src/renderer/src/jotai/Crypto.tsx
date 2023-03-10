@@ -17,13 +17,11 @@ export const getPriceIcon = (percentage: number, size: number): any => {
     return (
       <div
         style={{
-          marginLeft: 4,
           width: size,
           height: size,
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
-          overflow: 'hidden'
+          alignItems: 'center'
         }}
       >
         <ArrowDropUpIcon size={size} />
@@ -33,13 +31,11 @@ export const getPriceIcon = (percentage: number, size: number): any => {
     return (
       <div
         style={{
-          marginLeft: 4,
           width: size,
           height: size,
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
-          overflow: 'hidden'
+          alignItems: 'center'
         }}
       >
         <ArrowDropDownIcon size={size} />

@@ -78,7 +78,6 @@ export const CryptoInfo = ({ scale }: { scale: number }) => {
         userSelect: 'none'
         // flexDirection: "row",
       }}
-      className="shadow-lg"
     >
       {duringProgress && (
         <Spring
@@ -170,7 +169,13 @@ export const CryptoInfo = ({ scale }: { scale: number }) => {
             >
               {currency}
             </div>
-            <div className="flex flex-row items-center">
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
               {getPriceIcon(cryptoData?.priceChangePercentage, UI.textSize * UIScale * scale)}
               <div
                 style={{

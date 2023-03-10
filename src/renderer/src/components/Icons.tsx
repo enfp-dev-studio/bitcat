@@ -17,7 +17,15 @@ export const CloseIcon = ({ size }: { size: number | string }) => {
 
 export const ArrowDropUpIcon = ({ size }: { size: number | string }) => {
   return (
-    <div style={{ width: size, height: size }}>
+    <div
+      style={{
+        width: size,
+        height: size,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
       <svg
         width="100%"
         height="100%"
@@ -33,7 +41,15 @@ export const ArrowDropUpIcon = ({ size }: { size: number | string }) => {
 
 export const ArrowDropDownIcon = ({ size }: { size: number | string }) => {
   return (
-    <div style={{ width: size, height: size }}>
+    <div
+      style={{
+        width: size,
+        height: size,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
       <svg
         width="100%"
         height="100%"

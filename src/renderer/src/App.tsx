@@ -8,6 +8,7 @@ import { useAtom } from 'jotai'
 import { AnimationAtom } from './jotai/Animation'
 import './App.css'
 import { scaleAtom } from './jotai/Preference'
+import { SpriteAnimator } from './components/SpriteAnimator'
 // import { loadingAtom } from './jotai/Loading'
 
 function App() {
@@ -40,71 +41,40 @@ function App() {
     }
   }, [animation])
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
+    <div
+      className="movable"
+      style={{
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
       <div
-        // draggable="true"
-        //   // onDrag={(e) => {
-        //   //   console.log(e);
-        //   // }}
-        //   onDragStart={(e) => {
-        //     // e.preventDefault();
-        //     console.log(e);
-        //     // e.dataTransfer.setDragImage(document.getElementById("myElement", 0, 0));
-        //     setDragOffset({ x: e.clientX, y: e.clientY });
-        //   }}
-        //   onDragOver={(e) => {
-        //     e.preventDefault();
-        //     // console.log(e);
-        //   }}
-        //   onDragEnd={(e) => {
-        //     e.preventDefault();
-        //     console.log(dragOffset, e.screenX, e.screenY);
-        //     sendToMain("SET_POSITION", {
-        //       x: e.screenX - dragOffset.x,
-        //       y: e.screenY - dragOffset.y,
-        //     });
-        //   }}
         style={{
           display: 'flex',
           // overflow: 'hidden',
           // backgroundColor: 'transparent',
           alignItems: 'center',
           justifyContent: 'center',
-          alignSelf: 'center',
+          // alignSelf: 'center',
           // backgroundColor: 'rgba(255, 255, 255, 0.3)',
-          width: UI.frameWidth * scale,
-          height: UI.frameHeight * scale,
           cursor: 'grabbing'
           // backdropFilter: "blur(30px)",
           // WebkitBackdropFilter: "blur(30px)",
         }}
       >
-        <Spritesheet
-          className="movable"
-          style={{ width: '100%', height: '100%' }}
-          ref={spritesheetRef}
-          image={animation.spritesheet}
+        <SpriteAnimator
+          // className="movable"
+          scale={scale}
+          spritesheet={animation.spritesheet}
           widthFrame={UI.frameWidth}
           heightFrame={UI.frameHeight}
           steps={9}
           fps={animation.fps}
-          direction={'forward'}
           loop={true}
-          /////////////
-          // background={`https://raw.githubusercontent.com/danilosetra/react-responsive-spritesheet/master/assets/images/examples/sprite-image-background.png`}
-          // backgroundSize={`cover`}
-          // backgroundRepeat={`no-repeat`}
-          // backgroundPosition={`center center`}
-        />
-        {/* <Spritesheet.AnimatedSpriteSheet
-        filename="image/bitcat_down_sheet.png"
-        initialFrame={0}
-        frame={{ width: UI.frameWidth, height: UI.frameHeight }}
-        bounds={{ x: 0, y: 0, width: 5841, height: UI.frameHeight }}
-        isPlaying={isPlaying}
-        loop
-        speed={900}
-      /> */}
+        ></SpriteAnimator>
         <div
           style={{
             position: 'absolute',

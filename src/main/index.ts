@@ -26,7 +26,7 @@ const windowWidth = 650
 const windowHeight = 380
 
 export const pathCreator = (route: string) => {
-  if (false) {
+  if (is.dev) {
     const port = 5173
     const url = new URL(`http://localhost:${port}`)
     return url.href + '?' + route

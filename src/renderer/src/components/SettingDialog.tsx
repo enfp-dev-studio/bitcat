@@ -1,11 +1,5 @@
 import { useEffect, useState } from 'react'
-import {
-  FormControl,
-  FormControlLabel,
-  MenuItem,
-  Radio,
-  RadioGroup
-} from '@mui/material'
+import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import {
   // setExchangeAtom,
@@ -101,7 +95,7 @@ export const SettingDialog = () => {
           className="movable"
           style={{ display: 'flex', flex: 1, flexDirection: 'row', height: 40 }}
         ></div>
-        <div className="p-1 rounded-full opacity-50 hover:opacity-100" onClick={handleCloseApp}>
+        <div style={{ padding: 4 }} onClick={handleCloseApp}>
           <CloseIcon size={28}></CloseIcon>
         </div>
       </div>
