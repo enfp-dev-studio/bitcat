@@ -78,7 +78,7 @@ const createSettingWindow = () => {
     // fullscreenable:false,
     resizable: false, // 마우스로 사이즈 조절 하는 거 방지
     fullscreen: false,
-    useContentSize: true,
+    // useContentSize: true,
     webPreferences: {
       devTools: is.dev,
       preload: join(__dirname, '../preload/index.js'), // Preload.js 에서 필요한 모듈들을 미리 로드해서 사용한다 (리모트 모듈 사용 위해서)
@@ -125,7 +125,7 @@ const createSettingWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.enfpdev.bitcat')
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -185,9 +185,10 @@ app.on('window-all-closed', () => {
 function initialize() {
   const position = store.get('position')
   const scale = store.get('scale')
+  // 사이즈가 정수가 아니면 이상한 크기가 된다 주의!
   mainWindow = new BrowserWindow({
-    width: scale ? windowWidth * scale : windowWidth,
-    height: scale ? windowHeight * scale : windowHeight,
+    width: scale ? Math.ceil(windowWidth * scale) : windowWidth,
+    height: scale ? Math.ceil(windowHeight * scale) : windowHeight,
     x: position ? position.x : undefined,
     y: position ? position.y : undefined,
     // transparent: is.dev ? false : true, // 배경이 투명하게 만들려면 이렇게 해야 한다
@@ -201,7 +202,7 @@ function initialize() {
     center: position ? false : true,
     // fullscreenable:false,
     fullscreen: false,
-    useContentSize: true,
+    // useContentSize: true,
     webPreferences: {
       devTools: is.dev,
       preload: join(__dirname, '../preload/index.js'),
@@ -304,6 +305,8 @@ function initialize() {
 
   ipcMain.on('SET_SCALE', async (_event, { scale }) => {
     if (lastScale !== scale) {
+      // console.log("set scale")
+      // console.log(Math.ceil(windowWidth * scale), Math.ceil(windowHeight * scale))
       mainWindow?.setResizable(true)
       mainWindow?.setSize(Math.ceil(windowWidth * scale), Math.ceil(windowHeight * scale), true)
       mainWindow?.setResizable(false)

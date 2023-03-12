@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
-import Spritesheet from 'react-responsive-spritesheet'
+// import Spritesheet from 'react-responsive-spritesheet'
 import { CryptoInfo } from './components/CryptoInfo'
 import { UI } from './constants/UI'
 // import { BitcatState } from "./jotai/Crypto";
@@ -9,18 +9,12 @@ import { AnimationAtom } from './jotai/Animation'
 import './App.css'
 import { scaleAtom } from './jotai/Preference'
 import { SpriteAnimator } from './components/SpriteAnimator'
+// import Spritesheet from './components/SpriteSheet'
 // import { loadingAtom } from './jotai/Loading'
 
 function App() {
   const [animation] = useAtom(AnimationAtom)
-  const spritesheetRef = useRef<Spritesheet | null>(null)
   const [scale] = useAtom(scaleAtom)
-
-  useEffect(() => {
-    if (animation.fps !== spritesheetRef?.current?.getInfo('fps')) {
-      spritesheetRef?.current?.setFps(animation.fps)
-    }
-  }, [animation])
   return (
     <div
       className="movable"
@@ -29,7 +23,7 @@ function App() {
         width: '100vw',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
       }}
     >
       <div
@@ -37,7 +31,7 @@ function App() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          cursor: 'grabbing'
+          cursor: 'grabbing',
         }}
       >
         <SpriteAnimator

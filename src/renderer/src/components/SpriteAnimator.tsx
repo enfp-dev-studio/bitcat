@@ -15,7 +15,7 @@ let position = 0
 export const SpriteAnimator = (props: Props) => {
   const animationInterval = useRef<NodeJS.Timer | null>(null)
   const ref = useRef<HTMLDivElement | null>(null)
-  const [backgroundPosition, setBackgroundPosition] = useState('0px 0px')
+  // const [backgroundPosition, setBackgroundPosition] = useState('0px 0px')
   const stopAnimation = () => {
     animationInterval.current && clearInterval(animationInterval.current)
   }
@@ -28,7 +28,9 @@ export const SpriteAnimator = (props: Props) => {
       } else {
         position += diff
       }
-      setBackgroundPosition(`-${position}px 0px`)
+      if (ref.current) {
+        ref.current.style.backgroundPosition = `-${position}px 0px`
+      }
     }, props.fps)
   }
   useEffect(() => {
@@ -38,15 +40,32 @@ export const SpriteAnimator = (props: Props) => {
     }
   }, [props.spritesheet, props.fps, props.widthFrame, props.heightFrame, props.steps])
   return (
-    <div
-      ref={ref}
-      style={{
-        transform: `scale(${props.scale})`,
-        width: props.widthFrame,
-        height: props.heightFrame,
-        backgroundImage: `url(${props.spritesheet})`,
-        backgroundPosition: backgroundPosition
-      }}
-    ></div>
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      overflow: 'hidden',
+      width: `${props.widthFrame}px`,
+      height: `${props.heightFrame}px`,
+      transform: `scale(${props.scale})`,
+      transformOrigin: '0 0',
+      backgroundColor:'rgba(255,255,255,0.03)',
+      borderRadius: 20
+    }}>
+      <div
+        ref={ref}
+        style={{
+          overflow: 'hidden',
+          // backgroundRepeat: 'no-repeat',
+          display: 'table-cell',
+          backgroundImage: `url(${props.spritesheet})`,
+          width: `${props.widthFrame}px`,
+          height: `${props.heightFrame}px`,
+          // transformOrigin: '0 50%'
+        }}
+      ></div>
+    </div>
   )
 }

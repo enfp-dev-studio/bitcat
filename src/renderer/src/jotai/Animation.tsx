@@ -3,10 +3,16 @@ import DownAnimation from "../assets/image/bitcat_down_sheet.png";
 import UpAnimation from "../assets/image/bitcat_up_sheet.png";
 
 export const getFPS = (percentage: number) => {
-  // 0~30% 12~72fps
-  if (percentage === 0) return 12;
-  else if (percentage < 0) return Math.abs(Math.ceil(percentage)) * 2 + 12;
-  else return Math.ceil(percentage) * 2 + 12;
+  // 0~30% 10~100
+  let val = percentage
+  if (percentage < -30) {
+    val = -30
+  } else if(percentage > 30) {
+    val = 30
+  }
+  if (val === 0) return 100;
+  else if (val < 0) return 100 - Math.abs(Math.ceil(percentage)) * 3;
+  else return 100 - Math.ceil(val) * 3;
 };
 
 export const getSpritesheet = (percentage: number) => {
@@ -20,7 +26,7 @@ export type AnimationType = {
 };
 
 const defaultAnimation: AnimationType = {
-  fps: 12,
+  fps: 100,
   spritesheet: DownAnimation,
 };
 
