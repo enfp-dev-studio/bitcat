@@ -9,7 +9,6 @@ import { AnimationAtom } from './jotai/Animation'
 import './App.css'
 import { scaleAtom } from './jotai/Preference'
 import { SpriteAnimator } from './components/SpriteAnimator'
-import { useTranslation } from 'react-i18next'
 // import { loadingAtom } from './jotai/Loading'
 
 function App() {
