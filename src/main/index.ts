@@ -84,7 +84,6 @@ const createSettingWindow = () => {
       preload: join(__dirname, '../preload/index.js'), // Preload.js 에서 필요한 모듈들을 미리 로드해서 사용한다 (리모트 모듈 사용 위해서)
       sandbox: false
     },
-    icon: join(__dirname, 'logo192.png')
   })
 }
 
@@ -208,7 +207,7 @@ function initialize() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     },
-    icon: join(__dirname, 'logo192.png')
+    icon: join(__dirname, 'favicon.ico')
   })
   if (scale && lastScale !== scale) {
     lastScale = scale
@@ -224,7 +223,7 @@ function initialize() {
   //   settingWindow?.hide();
   // });
 
-  // console.log(join(__dirname, "../src/assets/icons/logo192.png"));
+  // console.log(join(__dirname, "../src/assets/icons/favicon.ico"));
   // const backgroundURL = 'file://' + __dirname + '/background.html';
   // const backgroundProcessHandler = main.createBackgroundProcess(backgroundURL, true);
   // mainWindow = new BrowserWindow({width: 1280, height: 600});

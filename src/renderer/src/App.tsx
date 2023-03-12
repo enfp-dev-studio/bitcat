@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 // import Spritesheet from 'react-responsive-spritesheet'
 import { CryptoInfo } from './components/CryptoInfo'
 import { UI } from './constants/UI'
