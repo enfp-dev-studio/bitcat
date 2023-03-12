@@ -13,6 +13,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 //@ts-ignore
 import TrayIcon from '../../resources/trayTemplate.png?asset'
+//@ts-ignore
+import TrayFavicon from '../../resources/favicon.ico?asset'
 const Store = require('electron-store')
 
 const store = new Store()
@@ -52,7 +54,7 @@ const getTraySourceImage = () => {
       trayImage = trayImage.resize({ width: 16, height: 16 })
       break
     default:
-      trayImage = nativeImage.createFromPath(join(__dirname, 'favicon.ico'))
+      trayImage = nativeImage.createFromPath(TrayFavicon)
       break
   }
   return trayImage
@@ -229,6 +231,7 @@ function initialize() {
   // mainWindow?.loadURL('file://' + __dirname + '/foreground.html');
 
   mainWindow?.on('ready-to-show', () => {
+    mainWindow?.setAlwaysOnTop(true, 'screen-saver');
     mainWindow?.show()
   })
 
@@ -254,7 +257,6 @@ function initialize() {
   }
 
   // mainWindow?.setResizable(false);
-  mainWindow?.focus()
   mainWindow?.on('closed', () => {
     mainWindow = null
     // 세팅윈도우는 숨기기만 하기 때문에 끄면 같이 해제 되도록 처리
@@ -414,15 +416,6 @@ function initialize() {
       }
     },
     {
-      label: 'Help',
-      type: 'normal',
-      click: () => {
-        shell.openExternal(
-          'https://puffy-sauce-5a7.notion.site/Bitcat-76740b78aa3e4fe69312f14983d60924'
-        )
-      }
-    },
-    {
       label: '',
       type: 'separator'
     },
@@ -443,12 +436,13 @@ function initialize() {
 }
 
 app.on('before-quit', () => {
-  console.log('before-quit', lastScale)
   store.set('position', {
     x: mainWindow?.getPosition()[0],
     y: mainWindow?.getPosition()[1]
   })
   store.set('scale', lastScale)
+  tray?.destroy()
+  tray = null
 })
 
 app.on('window-all-closed', () => {
