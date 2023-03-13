@@ -89,7 +89,7 @@ const createSettingWindow = () => {
       devTools: is.dev,
       preload: join(__dirname, '../preload/index.js'), // Preload.js 에서 필요한 모듈들을 미리 로드해서 사용한다 (리모트 모듈 사용 위해서)
       sandbox: false
-    },
+    }
   })
 }
 
@@ -241,7 +241,7 @@ function initialize() {
   // mainWindow?.loadURL('file://' + __dirname + '/foreground.html');
 
   mainWindow?.on('ready-to-show', () => {
-    mainWindow?.setAlwaysOnTop(true, 'screen-saver');
+    mainWindow?.setAlwaysOnTop(true, 'screen-saver')
     mainWindow?.show()
   })
 
@@ -445,6 +445,11 @@ function initialize() {
   tray.on('click', () => {
     tray?.popUpContextMenu()
   })
+
+  const template: any = [{ role: 'appMenu', submenu: [{ role: 'quit' }] }]
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 }
 
 app.on('before-quit', () => {

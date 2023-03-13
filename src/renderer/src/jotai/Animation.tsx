@@ -13,12 +13,7 @@ export const getFPS = (percentage: number) => {
   } else if (percentage < -32) {
     val = -32
   }
-  const result = 100 - Math.abs(Math.ceil(Math.log2(Math.abs(val)))) * 16
-  console.log(percentage, result)
-  return result
-  // if (val === 0) return 100;
-  // else if (val < 0) return 100 - Math.abs(Math.ceil(percentage)) * 3;
-  // else return 100 - Math.ceil(val) * 3;
+  return 100 - Math.abs(Math.ceil(Math.log2(Math.abs(val)))) * 16
 }
 
 export const getSpritesheet = (percentage: number) => {
