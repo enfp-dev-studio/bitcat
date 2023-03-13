@@ -1,36 +1,39 @@
-import { atomWithStorage } from "jotai/utils";
-import DownAnimation from "../assets/image/bitcat_down_sheet.png";
-import UpAnimation from "../assets/image/bitcat_up_sheet.png";
+import { atomWithStorage } from 'jotai/utils'
+import DownAnimation from '../assets/image/bitcat_down_sheet.png'
+import UpAnimation from '../assets/image/bitcat_up_sheet.png'
 
 export const getFPS = (percentage: number) => {
+  // 100 - log2(percent) * 16
   // 0~30% 10~100
   let val = percentage
-  if (percentage < -30) {
-    val = -30
-  } else if(percentage > 30) {
-    val = 30
+  if (percentage > 2 && percentage < -2) {
+    val = 2
+  } else if (percentage > 32) {
+    val = 32
+  } else if (percentage < -32) {
+    val = -32
   }
-  if (val === 0) return 100;
-  else if (val < 0) return 100 - Math.abs(Math.ceil(percentage)) * 3;
-  else return 100 - Math.ceil(val) * 3;
-};
+  const result = 100 - Math.abs(Math.ceil(Math.log2(Math.abs(val)))) * 16
+  console.log(percentage, result)
+  return result
+  // if (val === 0) return 100;
+  // else if (val < 0) return 100 - Math.abs(Math.ceil(percentage)) * 3;
+  // else return 100 - Math.ceil(val) * 3;
+}
 
 export const getSpritesheet = (percentage: number) => {
-  if (percentage <= 0) return DownAnimation;
-  else return UpAnimation;
-};
+  if (percentage <= 0) return DownAnimation
+  else return UpAnimation
+}
 
 export type AnimationType = {
-  fps: number;
-  spritesheet: string;
-};
+  fps: number
+  spritesheet: string
+}
 
 const defaultAnimation: AnimationType = {
-  fps: 100,
-  spritesheet: DownAnimation,
-};
+  fps: 84,
+  spritesheet: DownAnimation
+}
 
-export const AnimationAtom = atomWithStorage<AnimationType>(
-  "bitcat_animation",
-  defaultAnimation
-);
+export const AnimationAtom = atomWithStorage<AnimationType>('bitcat_animation', defaultAnimation)

@@ -15,13 +15,15 @@ function App() {
   const [scale] = useAtom(scaleAtom)
   return (
     <div
-      className="movable"
+      className="movable hover-background"
       style={{
         height: '100vh',
         width: '100vw',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: 10,
+        overflow: 'hidden'
       }}
     >
       <div
@@ -29,7 +31,7 @@ function App() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          cursor: 'grabbing',
+          cursor: 'grabbing'
         }}
       >
         <SpriteAnimator

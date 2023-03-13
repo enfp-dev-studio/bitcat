@@ -27,6 +27,12 @@ let lastScale = 1.0
 const windowWidth = 650
 const windowHeight = 380
 
+const Scale = {
+  small: 0.5,
+  medium: 0.75,
+  large: 1
+}
+
 export const pathCreator = (route: string) => {
   if (is.dev) {
     const port = 5173
@@ -183,7 +189,11 @@ app.on('window-all-closed', () => {
 
 function initialize() {
   const position = store.get('position')
-  const scale = store.get('scale')
+  let scale = store.get('scale')
+  if (scale === undefined) {
+    scale = Scale.medium
+  }
+  
   // 사이즈가 정수가 아니면 이상한 크기가 된다 주의!
   mainWindow = new BrowserWindow({
     width: scale ? Math.ceil(windowWidth * scale) : windowWidth,

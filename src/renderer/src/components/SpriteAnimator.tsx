@@ -51,8 +51,7 @@ export const SpriteAnimator = (props: Props) => {
       height: `${props.heightFrame}px`,
       transform: `scale(${props.scale})`,
       transformOrigin: '0 0',
-      backgroundColor:'rgba(255,255,255,0.03)',
-      borderRadius: 20
+      backgroundColor: 'transparent'
     }}>
       <div
         ref={ref}
