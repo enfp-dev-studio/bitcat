@@ -38,7 +38,7 @@ export const SpriteAnimator = (props: Props) => {
     return () => {
       stopAnimation()
     }
-  }, [props.spritesheet, props.fps, props.widthFrame, props.heightFrame, props.steps])
+  }, [])
   return (
     <div style={{
       position: 'absolute',
