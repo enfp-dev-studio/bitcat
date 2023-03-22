@@ -7,12 +7,20 @@ import { AnimationAtom } from './jotai/Animation'
 import './App.css'
 import { scaleAtom } from './jotai/Preference'
 import { SpriteAnimator } from './components/SpriteAnimator'
+import { useEffect } from 'react'
 // import Spritesheet from './components/SpriteSheet'
 // import { loadingAtom } from './jotai/Loading'
 
 function App() {
   const [animation] = useAtom(AnimationAtom)
-  const [scale] = useAtom(scaleAtom)
+  const [scale, setScale] = useAtom(scaleAtom)
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on("PARAMS_FROM_ELECTRON", (_e, { scale }) => {
+      setScale(scale)
+    })
+
+  }, [])
   return (
     <div
       className="movable hover-background"

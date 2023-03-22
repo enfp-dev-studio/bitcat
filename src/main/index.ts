@@ -243,6 +243,7 @@ function initialize() {
   mainWindow?.on('ready-to-show', () => {
     mainWindow?.setAlwaysOnTop(true, 'screen-saver')
     mainWindow?.show()
+    mainWindow?.webContents.send("PARAMS_FROM_ELECTRON", {scale})
   })
 
   mainWindow?.webContents.setWindowOpenHandler((details) => {
@@ -274,12 +275,12 @@ function initialize() {
     settingWindow = null
   })
 
-  mainWindow?.on('moved', async (e: any, _d: any) => {
-    await mainWindow?.webContents.send('MOVE_WINDOW', {
-      x: e.sender.getBounds().x,
-      y: e.sender.getBounds().y
-    })
-  })
+  // mainWindow?.on('moved', async (e: any, _d: any) => {
+  //   await mainWindow?.webContents.send('MOVE_WINDOW', {
+  //     x: e.sender.getBounds().x,
+  //     y: e.sender.getBounds().y
+  //   })
+  // })
 
   // const registered = globalShortcut.register("PrintScreen", () => {
   //   desktopCapturer
