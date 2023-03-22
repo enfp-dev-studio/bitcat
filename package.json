@@ -1,6 +1,6 @@
 {
   "name": "bitcat",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Bitcat is a desktop widget app where cute kittens wish the skyrocket in cryptocurrency",
   "main": "./out/main/index.js",
   "author": "enfp-dev-studio",
