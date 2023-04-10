@@ -12,14 +12,9 @@ asarUnpack:
   - resources/*
 afterSign: build/notarize.js
 win:
-  target: # build win32 in macos
-    - target: nsis # build win32 in macos
-      arch: # build win32 in macos
-        - arm64 # build win32 in macos
-        - x64 # build win32 in macos
   executableName: bitcat
 nsis:
-  artifactName: ${name}-${version}-setup-${arch}.${ext} # build win32 in macos
+  artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
