@@ -12,13 +12,23 @@ asarUnpack:
   - resources/*
 afterSign: build/notarize.js
 win:
+  target: # build win32 in macos
+    - target: nsis # build win32 in macos
+      arch: # build win32 in macos
+        - arm64 # build win32 in macos
+        - x64 # build win32 in macos
   executableName: bitcat
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  artifactName: ${name}-${version}-setup-${arch}.${ext} # build win32 in macos
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
+  target: # for univeral
+    - target: 'default' # for univeral
+      arch: # for univeral
+        - x64 # for univeral
+        - arm64 # for univeral
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
@@ -26,7 +36,7 @@ mac:
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${name}-${version}-${arch}.${ext}
 linux:
   target:
     - AppImage
@@ -35,7 +45,7 @@ linux:
   maintainer: ENFP-Dev-Studio
   category: Utility
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${name}-${version}-${arch}.${ext}
 npmRebuild: false
 publish:
   provider: github

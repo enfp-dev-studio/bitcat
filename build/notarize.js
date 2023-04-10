@@ -16,7 +16,7 @@ module.exports = async (context) => {
     return
   }
 
-  const appId = 'com.enfpdev.capture-note'
+  const appId = 'com.enfpdev.bitcat'
 
   const { appOutDir } = context
 
